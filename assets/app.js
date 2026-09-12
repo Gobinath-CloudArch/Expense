@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwKFk7CfOfJ6kr2tOczkmqZtZvphj2GfAJWl3C-c-Qred37TxlvYV_owLZBSiSTuxVncg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby07_UsjF06riVfx8-7frZUJiYgkwed3bSofJLE_rTn9WywfKp7uJSqp6oOTB5Wf-OmgQ/exec";
 let pendingSetupUsername = null;
 
 const loginForm = document.getElementById('login-form');
