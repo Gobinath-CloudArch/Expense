@@ -689,7 +689,7 @@
 
   <script>
     // --- THIS IS THE ONLY LINE YOU NEED TO UPDATE ---
-    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
 
     // --- IDLE TIMEOUT (10 MINUTES) ---
     let idleTime = 0;
@@ -797,7 +797,7 @@
 
     async function bootApp() {
       try {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
             alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices. Loading in offline demo mode.");
             // Fallback to local storage for demo if URL is empty
             ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [
@@ -1553,7 +1553,7 @@
       });
 
       if (addedCount > 0) {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
           localStorage.setItem('gf_ledger', JSON.stringify(ledger));
           alert(`Successfully imported ${addedCount} transactions locally. Please verify them in the All Records tab.`);
         } else {
@@ -1677,7 +1677,7 @@
     async function deleteTx(id) {
       if (!confirm('Delete this transaction permanently?')) return;
 
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
         // Local mode
         ledger = ledger.filter(x => x.id !== id);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
@@ -1717,7 +1717,7 @@
         user: document.getElementById('tx-user').value
       };
 
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
         // Local Mode
         const idx = ledger.findIndex(x => x.id === id);
         if (idx >= 0) ledger[idx] = record;
