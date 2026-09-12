@@ -97,6 +97,7 @@
       padding: 24px 16px; 
       backdrop-filter: blur(var(--glass-blur)); 
       -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: 0.3s;
     }
     
     .main { 
@@ -258,11 +259,17 @@
       color: #fff; 
     }
     
+    .table-responsive { 
+      overflow-x: auto; 
+      width: 100%; 
+    }
+    
     table { 
       width: 100%; 
       border-collapse: collapse; 
       text-align: left; 
       font-size: 13px; 
+      min-width: 600px;
     }
     
     th { 
@@ -275,9 +282,7 @@
       user-select: none; 
     }
     
-    th:hover { 
-      color: var(--text); 
-    }
+    th:hover { color: var(--text); }
     
     td { 
       padding: 14px 10px; 
@@ -289,7 +294,9 @@
       border-radius: 6px; 
       font-size: 10.5px; 
       font-weight: 700; 
+      white-space: nowrap;
     }
+    
     .badge.debit { background: rgba(255,82,99,0.15); color: var(--red); }
     .badge.credit { background: rgba(46,213,115,0.15); color: var(--green); }
     .badge.warn { background: rgba(251,197,49,0.15); color: var(--warn); }
@@ -336,9 +343,7 @@
     }
     
     /* Budget Progress */
-    .budget-row { 
-      margin-bottom: 16px; 
-    }
+    .budget-row { margin-bottom: 16px; }
     
     .budget-info { 
       display: flex; 
@@ -387,7 +392,7 @@
       backdrop-filter: blur(8px); 
       display: none; 
       place-items: center; 
-      z-index: 1000; 
+      z-index: 2000; 
     }
     
     .modal { 
@@ -461,6 +466,95 @@
       min-width: 220px; 
       flex-shrink: 0; 
     }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 850px) {
+      body { 
+        flex-direction: column; 
+      }
+      
+      .sidebar {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 75px;
+        flex-direction: row;
+        padding: 0;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        z-index: 1000;
+        background: var(--sidebar);
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+      }
+      
+      .brand-box { 
+        display: none; 
+      }
+      
+      .nav-list { 
+        flex-direction: row; 
+        width: 100%; 
+        overflow-x: auto; 
+        padding: 0 10px; 
+        align-items: center; 
+        justify-content: flex-start; 
+        -ms-overflow-style: none;  
+        scrollbar-width: none;  
+      }
+      
+      .nav-list::-webkit-scrollbar { 
+        display: none; 
+      }
+      
+      .nav-item { 
+        flex-direction: column; 
+        font-size: 10px; 
+        gap: 6px; 
+        padding: 8px 14px; 
+        white-space: nowrap; 
+        border: none;
+        border-radius: 8px;
+      }
+      
+      .nav-item .nav-text { 
+        display: block; 
+      }
+      
+      .main { 
+        padding: 16px; 
+        padding-bottom: 90px; 
+      }
+      
+      .grid-2 { 
+        grid-template-columns: 1fr; 
+      }
+      
+      .kpi-grid { 
+        grid-template-columns: 1fr; 
+      }
+      
+      .modern-clock-box { 
+        width: 100%; 
+        text-align: center; 
+        padding: 12px; 
+        margin-top: 10px; 
+      }
+      
+      .panel-head { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 12px; 
+      }
+      
+      .table-controls { 
+        flex-direction: column; 
+      }
+      
+      .modal { 
+        padding: 16px; 
+        margin: 10px; 
+      }
+    }
   </style>
 </head>
 <body>
@@ -472,14 +566,30 @@
       <div class="brand-title">Gobinath Family<br><span style="font-size:11px; color:var(--muted); font-weight:400;">Finance Workspace</span></div>
     </div>
     <nav class="nav-list">
-      <button class="nav-item active" onclick="navigate('home', this)">🏠 Home</button>
-      <button class="nav-item" onclick="navigate('overview', this)">⌂ Overview Dashboard</button>
-      <button class="nav-item" onclick="navigate('records', this)">▤ All Records</button>
-      <button class="nav-item" onclick="navigate('analyzer', this)">📈 Spend Analyzer</button>
-      <button class="nav-item" onclick="navigate('budget', this)">🎯 Budget Tracker</button>
-      <button class="nav-item" onclick="navigate('reminders', this)">🔔 Reminders & Dates</button>
-      <button class="nav-item" onclick="navigate('statements', this)">📥 Statements (Import/Export)</button>
-      <button class="nav-item" onclick="navigate('settings', this)">⚙ Settings & Users</button>
+      <button class="nav-item active" onclick="navigate('home', this)">
+        <span class="nav-icon">🏠</span><span class="nav-text">Home</span>
+      </button>
+      <button class="nav-item" onclick="navigate('overview', this)">
+        <span class="nav-icon">⌂</span><span class="nav-text">Overview</span>
+      </button>
+      <button class="nav-item" onclick="navigate('records', this)">
+        <span class="nav-icon">▤</span><span class="nav-text">Records</span>
+      </button>
+      <button class="nav-item" onclick="navigate('analyzer', this)">
+        <span class="nav-icon">📈</span><span class="nav-text">Analyzer</span>
+      </button>
+      <button class="nav-item" onclick="navigate('budget', this)">
+        <span class="nav-icon">🎯</span><span class="nav-text">Budget</span>
+      </button>
+      <button class="nav-item" onclick="navigate('reminders', this)">
+        <span class="nav-icon">🔔</span><span class="nav-text">Reminders</span>
+      </button>
+      <button class="nav-item" onclick="navigate('statements', this)">
+        <span class="nav-icon">📥</span><span class="nav-text">Export/Import</span>
+      </button>
+      <button class="nav-item" onclick="navigate('settings', this)">
+        <span class="nav-icon">⚙</span><span class="nav-text">Settings</span>
+      </button>
     </nav>
   </aside>
 
@@ -662,6 +772,11 @@
   </div>
 
   <script>
+    // --- APP SCRIPT URL ---
+    // If you want live sync to Google Sheets, uncomment and add your URL here.
+    // Otherwise, the app uses localStorage.
+    const APPS_SCRIPT_URL = ""; 
+
     // --- IDLE TIMEOUT (10 MINUTES) ---
     let idleTime = 0;
     
@@ -673,6 +788,7 @@
     document.onmousemove = resetTimer;
     document.onkeypress = resetTimer;
     document.onclick = resetTimer;
+    document.ontouchstart = resetTimer; 
     
     setInterval(() => {
       idleTime++;
@@ -693,7 +809,7 @@
         const ampm = hours >= 12 ? 'pm' : 'am';
         
         hours = hours % 12;
-        hours = hours ? hours : 12;
+        hours = hours ? hours : 12; 
         
         const mins = now.getMinutes().toString().padStart(2, '0');
         const secs = now.getSeconds().toString().padStart(2, '0');
@@ -725,8 +841,8 @@
     // Data Models
     let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [
       { id: '1', date: '2026-09-12', type: 'DEBIT', category: 'Groceries', desc: 'Monthly superstore shopping', method: 'UPI', notes: '', amount: 3260, user: 'Gobinath' },
-      { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', method: 'UPI', notes: 'Monthly Payroll', amount: 68000, user: 'Gobinath' },
-      { id: '3', date: '2026-09-08', type: 'DEBIT', category: 'Credit Card Bill', desc: 'HDFC Payment', method: 'UPI', notes: '', amount: 15400, user: 'Avadaipriya K.' },
+      { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', method: 'NetBanking', notes: 'Monthly Payroll', amount: 68000, user: 'Gobinath' },
+      { id: '3', date: '2026-09-08', type: 'DEBIT', category: 'Credit Card Bill', desc: 'HDFC Payment', method: 'NetBanking', notes: '', amount: 15400, user: 'Avadaipriya K.' },
       { id: '4', date: '2026-08-15', type: 'DEBIT', category: 'Groceries', desc: 'August Groceries', method: 'UPI', notes: '', amount: 12000, user: 'Gobinath' }
     ];
     
@@ -807,20 +923,17 @@
     function processVoiceCommand(text) {
       const lower = text.toLowerCase();
       
-      // 1. Determine Debit vs Credit (Type)
       let type = 'DEBIT';
       if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received') || lower.includes('refund') || lower.includes('bonus')) {
         type = 'CREDIT';
       }
 
-      // 2. Extract Amount
       let amount = '';
       const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i);
       if (amtMatch) {
         amount = parseFloat(amtMatch[1]);
       }
 
-      // 3. Extract Payment Method
       let method = 'UPI';
       if (lower.includes('credit card') || lower.includes('creditcard')) {
         method = 'Credit Card';
@@ -832,9 +945,8 @@
         method = 'UPI';
       }
 
-      // 4. Extract Category
       const availableCategories = type === 'DEBIT' ? expCategories : incCategories;
-      let category = availableCategories[0]; // fallback
+      let category = availableCategories[0]; 
       
       const voiceCatMap = {
         'grocery': 'Groceries', 'groceries': 'Groceries', 'supermarket': 'Groceries',
@@ -858,7 +970,6 @@
         }
       }
 
-      // Open Modal and populate
       openTxModal(type);
       document.getElementById('tx-amount').value = amount || '';
       document.getElementById('tx-category').value = category;
@@ -1154,12 +1265,14 @@
               <input type="month" id="cmp-month-b" class="input-field" value="${selectedMonthB}" onchange="updateAnalyzerMonths()">
             </div>
           </div>
-          <table style="margin-bottom: 24px;">
-            <thead>
-              <tr><th>Category</th><th>Month A</th><th>Month B</th><th>Difference</th></tr>
-            </thead>
-            <tbody>${compRows}</tbody>
-          </table>
+          <div class="table-responsive">
+            <table style="margin-bottom: 24px;">
+              <thead>
+                <tr><th>Category</th><th>Month A</th><th>Month B</th><th>Difference</th></tr>
+              </thead>
+              <tbody>${compRows}</tbody>
+            </table>
+          </div>
           
           <div class="panel-head"><h3>Selected Month (B) Distribution</h3></div>
           <div class="chart-container" style="height:250px;"><canvas id="analyzerChart"></canvas></div>
@@ -1193,7 +1306,8 @@
         },
         options: { 
           responsive: true, 
-          maintainAspectRatio: false 
+          maintainAspectRatio: false, 
+          plugins: { legend: { position: 'right' } } 
         }
       });
     }
@@ -1288,21 +1402,25 @@
             <h3>Scheduled Tracker</h3>
             <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
           </div>
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr>
-            </thead>
-            <tbody>
-              ${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No pending reminders.</td></tr>'}
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                ${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No pending reminders.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
           <br>
           <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
-          <table>
-            <tbody style="opacity: 0.6;">
-              ${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No completed history.</td></tr>'}
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table>
+              <tbody style="opacity: 0.6;">
+                ${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No completed history.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
       `;
     }
@@ -1442,6 +1560,7 @@
       const lines = text.split('\n');
       let addedCount = 0;
 
+      // Smart category mapping
       const catMap = {
         'zomato': 'Dining Out', 'swiggy': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out',
         'amazon': 'Groceries', 'flipkart': 'Groceries', 'supermarket': 'Groceries', 'mart': 'Groceries',
@@ -1460,6 +1579,7 @@
       lines.forEach(line => {
         if (!line.trim()) return;
 
+        // 1. Extract Date
         let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/);
         let dateStr = new Date().toISOString().slice(0, 10);
         
@@ -1477,6 +1597,7 @@
           dateStr = `${part3}-${part2.padStart(2, '0')}-${part1.padStart(2, '0')}`;
         }
 
+        // 2. Extract Amount
         let amtMatch = line.match(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g);
         let amount = 0;
         let isCredit = false;
@@ -1491,6 +1612,7 @@
 
         if (!amount || isNaN(amount)) return;
 
+        // 3. Extract Description
         let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '')
                        .replace(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '')
                        .trim();
@@ -1499,6 +1621,7 @@
           desc = 'Imported Transaction';
         }
 
+        // 4. Guess Category
         let category = isCredit ? 'Reimbursement' : 'Other Expense';
         let lowerDesc = desc.toLowerCase();
         
@@ -1573,9 +1696,11 @@
             <button class="btn primary" onclick="document.getElementById('user-modal').style.display='grid'">+ Add New User</button>
           </div>
           <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, reset passwords, and assign permissions.</p>
-          <table style="margin-bottom:16px;">
-            ${usersHtml}
-          </table>
+          <div class="table-responsive">
+            <table style="margin-bottom:16px;">
+              ${usersHtml}
+            </table>
+          </div>
         </div>
       `;
     }
@@ -1704,36 +1829,38 @@
         
       return `
         ${title ? `<div class="panel-head"><h3>${title}</h3></div>` : ''}
-        <table>
-          <thead>
-            <tr>
-              ${th('Date','date')} 
-              ${th('Type','type')} 
-              ${th('Category','category')} 
-              ${th('Description','desc')} 
-              ${th('Amount','amount')} 
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
-            ${data.map(t => `
+        <div class="table-responsive">
+          <table>
+            <thead>
               <tr>
-                <td>${t.date}</td>
-                <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
-                <td>${t.category}</td>
-                <td>${t.desc}</td>
-                <td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">
-                  ${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}
-                </td>
-                <td>
-                  <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button>
-                  <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
-                </td>
+                ${th('Date','date')} 
+                ${th('Type','type')} 
+                ${th('Category','category')} 
+                ${th('Description','desc')} 
+                ${th('Amount','amount')} 
+                <th>Actions</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
+              ${data.map(t => `
+                <tr>
+                  <td>${t.date}</td>
+                  <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
+                  <td>${t.category}</td>
+                  <td>${t.desc}</td>
+                  <td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">
+                    ${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}
+                  </td>
+                  <td>
+                    <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button>
+                    <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
       `;
     }
 
