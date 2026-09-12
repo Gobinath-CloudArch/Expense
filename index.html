@@ -7,37 +7,133 @@
   <title>Gobinath Family Expense — Secure Gateway</title>
   <style>
     :root {
-      --bg: #070b14;
-      --card-bg: rgba(14, 21, 38, 0.85);
-      --border: rgba(45, 65, 105, 0.5);
       --primary: #4f6bf7;
       --primary-hover: #3d58e3;
       --primary-glow: rgba(79, 107, 247, 0.45);
       --text: #f3f7fd;
-      --muted: #8598b8;
-      --input-bg: rgba(7, 13, 26, 0.9);
-      --danger: #ff5263;
-      --success: #2ed573;
+      --muted: #a0b2d2;
+      --input-bg: rgba(7, 13, 26, 0.6);
+      --card-bg: rgba(14, 21, 38, 0.65);
+      --border: rgba(255, 255, 255, 0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
     body {
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(circle at 50% 20%, rgba(46, 76, 175, 0.22) 0%, transparent 55%),
-        radial-gradient(circle at 80% 80%, rgba(120, 50, 220, 0.12) 0%, transparent 50%);
+      /* Pleasant, warm family/home background image with a dark overlay for readability */
+      background-image: linear-gradient(to right, rgba(4, 9, 20, 0.95) 0%, rgba(4, 9, 20, 0.75) 50%, rgba(4, 9, 20, 0.4) 100%), url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color: var(--text);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    /* Small Corner Clock */
+    .corner-clock {
+      position: fixed;
+      top: 24px;
+      right: 32px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 100;
+      letter-spacing: 0.5px;
+    }
+
+    /* Layout Wrapper */
+    .layout-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
       padding: 20px;
+      gap: 60px;
+      align-items: center;
+    }
+
+    /* Left Info Section */
+    .info-section {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+    }
+
+    .info-section h1 {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff, #a0b2d2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .family-quote {
+      font-size: 16px;
+      font-style: italic;
+      color: #7b96ff;
+      margin-bottom: 32px;
+      border-left: 3px solid var(--primary);
+      padding-left: 14px;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .feature-icon {
+      font-size: 20px;
+      background: rgba(79, 107, 247, 0.15);
+      border: 1px solid rgba(79, 107, 247, 0.3);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .feature-text h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .feature-text p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Right Login Section */
+    .login-section {
+      flex: 0 1 420px;
+      width: 100%;
     }
 
     .login-card {
       width: 100%;
-      max-width: 420px;
       background: var(--card-bg);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
@@ -63,13 +159,13 @@
       box-shadow: 0 10px 25px var(--primary-glow);
     }
 
-    h1 { font-size: 23px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+    .login-card h2 { font-size: 23px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
     .sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
 
     .user-toggle {
       display: flex;
       gap: 8px;
-      background: rgba(4, 9, 20, 0.6);
+      background: rgba(0, 0, 0, 0.3);
       padding: 5px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -90,9 +186,10 @@
     }
 
     .user-btn.active {
-      background: rgba(79, 107, 247, 0.22);
-      color: #9ab0ff;
+      background: rgba(79, 107, 247, 0.25);
+      color: #fff;
       border: 1px solid rgba(79, 107, 247, 0.4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
     .input-box {
@@ -104,7 +201,7 @@
       display: block;
       font-size: 11.5px;
       font-weight: 700;
-      color: #a0b2d2;
+      color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 6px;
@@ -115,7 +212,7 @@
       height: 48px;
       padding: 0 16px;
       background: var(--input-bg);
-      border: 1px solid #1e2e4e;
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 12px;
       color: var(--text);
       font-size: 14.5px;
@@ -126,6 +223,7 @@
     .input-field:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(79, 107, 247, 0.2);
+      background: rgba(0,0,0,0.5);
     }
 
     .btn-submit {
@@ -148,63 +246,131 @@
     }
 
     .btn-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .toast {
       position: fixed;
       top: 20px;
-      padding: 12px 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
       border-radius: 30px;
       font-size: 13px;
       font-weight: 600;
       display: none;
-      z-index: 100;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .toast.err { background: #321217; color: #ff8591; border: 1px solid #73222a; }
     .toast.suc { background: #0f2c1f; color: #43ebb3; border: 1px solid #165b3f; }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .layout-wrapper { flex-direction: column; gap: 40px; padding-top: 60px; }
+      .info-section { text-align: center; }
+      .family-quote { border-left: none; border-bottom: 2px solid var(--primary); padding-left: 0; padding-bottom: 10px; display: inline-block; }
+      .feature-item { text-align: left; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Live Corner Clock -->
+  <div id="corner-clock" class="corner-clock">--:--:--</div>
+
   <div id="toast" class="toast"></div>
 
-  <div class="login-card">
-    <div class="brand-icon-wrap">G</div>
-    <h1>Gobinath Family Expense</h1>
-    <p class="sub" id="form-sub">Enterprise Household Finance Ledger</p>
-
-    <div class="user-toggle">
-      <button type="button" class="user-btn active" onclick="switchUser('gobinath', 'Gobinath', this)">Gobinath</button>
-      <button type="button" class="user-btn" onclick="switchUser('avadaipriya', 'Avadaipriya K.', this)">Avadaipriya K.</button>
+  <div class="layout-wrapper">
+    
+    <!-- Left Info & Features Section -->
+    <div class="info-section">
+      <h1>Gobinath Family<br>Finance Workspace</h1>
+      <p class="family-quote">"A family that plans together, prospers together. Track, budget, and grow your wealth securely."</p>
+      
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">📈</div>
+          <div class="feature-text">
+            <h3>Advanced Spend Analyzer</h3>
+            <p>Compare month-over-month expenses dynamically to identify where your money is going.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎯</div>
+          <div class="feature-text">
+            <h3>Smart Budget Tracker</h3>
+            <p>Set fixed or percentage-based limits for categories like Groceries or Credit Card bills to prevent overspending.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📥</div>
+          <div class="feature-text">
+            <h3>Intelligent Statement Importer</h3>
+            <p>Copy and paste raw bank statements. The system will auto-extract dates, amounts, and categorize them for you.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔔</div>
+          <div class="feature-text">
+            <h3>Scheduled Reminders</h3>
+            <p>Keep track of important dates, EMI payments, and utility bill due dates right on your home screen.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <form id="auth-form">
-      <input type="hidden" id="account-id" value="gobinath">
+    <!-- Right Login Section -->
+    <div class="login-section">
+      <div class="login-card">
+        <div class="brand-icon-wrap">G</div>
+        <h2>Secure Gateway</h2>
+        <p class="sub" id="form-sub">Enterprise Household Finance Ledger</p>
 
-      <div class="input-box">
-        <label>Account</label>
-        <input type="text" id="display-user" class="input-field" value="gobinath" readonly style="opacity: 0.8; background: #0b1222;">
+        <div class="user-toggle">
+          <button type="button" class="user-btn active" onclick="switchUser('gobinath', 'Gobinath', this)">Gobinath</button>
+          <button type="button" class="user-btn" onclick="switchUser('avadaipriya', 'Avadaipriya K.', this)">Avadaipriya K.</button>
+        </div>
+
+        <form id="auth-form">
+          <input type="hidden" id="account-id" value="gobinath">
+
+          <div class="input-box">
+            <label>Selected Account</label>
+            <input type="text" id="display-user" class="input-field" value="gobinath" readonly style="opacity: 0.7; background: rgba(0,0,0,0.5); cursor: not-allowed;">
+          </div>
+
+          <div class="input-box" id="pass-box">
+            <label id="pass-label">Password</label>
+            <input type="password" id="pass-input" class="input-field" placeholder="Enter your password" required>
+          </div>
+
+          <div class="input-box" id="confirm-box" style="display: none;">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirm-input" class="input-field" placeholder="Repeat your password">
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-submit">
+            <span id="btn-text">Sign In to Ledger</span> &nbsp;→
+          </button>
+        </form>
       </div>
+    </div>
 
-      <div class="input-box" id="pass-box">
-        <label id="pass-label">Password</label>
-        <input type="password" id="pass-input" class="input-field" placeholder="Enter your password" required>
-      </div>
-
-      <div class="input-box" id="confirm-box" style="display: none;">
-        <label>Confirm First-Time Password</label>
-        <input type="password" id="confirm-input" class="input-field" placeholder="Repeat your password">
-      </div>
-
-      <button type="submit" class="btn-submit" id="btn-submit">
-        <span id="btn-text">Sign In to Ledger</span> →
-      </button>
-    </form>
   </div>
 
   <script>
     // Paste your Apps Script Web App URL here when deploying live
     const APPS_SCRIPT_URL = ""; 
+
+    // --- LIVE CORNER CLOCK ---
+    setInterval(() => {
+      const clockEl = document.getElementById('corner-clock');
+      if (clockEl) {
+        const now = new Date();
+        clockEl.innerText = now.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }) + ' • ' + 
+                            now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+      }
+    }, 1000);
 
     let selectedUser = 'gobinath';
     let selectedName = 'Gobinath';
@@ -247,8 +413,10 @@
       selectedName = name;
       document.getElementById('account-id').value = id;
       document.getElementById('display-user').value = id;
+      
       document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      
       document.getElementById('pass-input').value = '';
       document.getElementById('confirm-input').value = '';
       checkUserStatus();
@@ -261,35 +429,54 @@
       const storedHashes = JSON.parse(localStorage.getItem('gf_passwords') || '{}');
       const isFirstTime = !storedHashes[selectedUser];
 
-      if (isFirstTime) {
-        if (pass.length < 6) return showToast('Password must be at least 6 characters.', true);
-        if (pass !== confirmPass) return showToast('Passwords do not match.', true);
-        
-        // Save first-time password
-        storedHashes[selectedUser] = btoa(pass);
-        localStorage.setItem('gf_passwords', JSON.stringify(storedHashes));
-        showToast('Password established! Launching dashboard...');
-      } else {
-        if (storedHashes[selectedUser] !== btoa(pass)) {
-          return showToast('Invalid password. Please try again.', true);
-        }
-        showToast('Authenticated successfully.');
-      }
+      const submitBtn = document.getElementById('btn-submit');
+      submitBtn.disabled = true;
+      document.getElementById('btn-text').textContent = 'Authenticating...';
 
-      // 10-Hour Session Enforcement
-      const session = {
-        userId: selectedUser,
-        name: selectedName,
-        role: 'Owner',
-        loginTime: Date.now(),
-        expiresAt: Date.now() + (10 * 60 * 60 * 1000)
-      };
-      localStorage.setItem('gf_token', 'gf_token_' + selectedUser + '_' + Date.now());
-      localStorage.setItem('gf_user', JSON.stringify(session));
-
+      // Small artificial delay for visual feedback
       setTimeout(() => {
-        window.location.href = './dashboard/index.html';
-      }, 500);
+        if (isFirstTime) {
+          if (pass.length < 6) {
+            submitBtn.disabled = false;
+            document.getElementById('btn-text').textContent = 'Set Password & Launch';
+            return showToast('Password must be at least 6 characters.', true);
+          }
+          if (pass !== confirmPass) {
+            submitBtn.disabled = false;
+            document.getElementById('btn-text').textContent = 'Set Password & Launch';
+            return showToast('Passwords do not match.', true);
+          }
+          
+          // Save first-time password
+          storedHashes[selectedUser] = btoa(pass);
+          localStorage.setItem('gf_passwords', JSON.stringify(storedHashes));
+          showToast('Password established! Launching workspace...');
+        } else {
+          if (storedHashes[selectedUser] !== btoa(pass)) {
+            submitBtn.disabled = false;
+            document.getElementById('btn-text').textContent = 'Sign In to Ledger';
+            return showToast('Invalid password. Please try again.', true);
+          }
+          showToast('Authenticated successfully. Loading dashboard...');
+        }
+
+        // 10-Hour Session Enforcement
+        const session = {
+          userId: selectedUser,
+          name: selectedName,
+          role: 'Owner (Read/Write)',
+          loginTime: Date.now(),
+          expiresAt: Date.now() + (10 * 60 * 60 * 1000)
+        };
+        localStorage.setItem('gf_token', 'gf_token_' + selectedUser + '_' + Date.now());
+        localStorage.setItem('gf_user', JSON.stringify(session));
+
+        // Navigate to Dashboard
+        setTimeout(() => {
+          window.location.href = './dashboard/index.html';
+        }, 800);
+        
+      }, 600);
     });
 
     // Run check on initial load
