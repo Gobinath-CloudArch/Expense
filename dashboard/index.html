@@ -807,80 +807,92 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-    // --- CLOUD SYNC ENGINE ---
-    async function apiCall(action, data = {}) {
-      const token = localStorage.getItem('gf_token');
-      if (!token) {
-        window.location.href = '../index.html';
-        throw new Error("No session token.");
-      }
-      if (! ||  === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-        throw new Error("API URL is missing.");
-      }
+// --- CLOUD SYNC ENGINE (BULLETPROOF VERSION) ---
+async function apiCall(action, data = {}) {
+  const token = localStorage.getItem('gf_token');
+  if (!token) throw new Error("No session token.");
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+    throw new Error("API URL is missing.");
+  }
 
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action, token, data })
-      });
-      const result = await res.json();
-      if (result.error) throw new Error(result.error);
-      return result;
+  // 1. We use text/plain to completely bypass Google's strict CORS preflight blocks
+  // 2. We use redirect: 'follow' because Google Apps Script always responds with a 302 redirect
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action, token, data }),
+    redirect: 'follow'
+  });
+  
+  const rawText = await res.text();
+  
+  try {
+    const result = JSON.parse(rawText);
+    if (result.error) throw new Error(result.error);
+    return result;
+  } catch (e) {
+    // If Google returns an HTML login page or error instead of JSON, we catch it here
+    if (rawText.includes("<html")) {
+      throw new Error("Google Apps Script blocked the request. Ensure deployment access is set strictly to 'Anyone'.");
     }
+    throw new Error(e.message + " | " + rawText);
+  }
+}
 
-    async function bootApp() {
-      try {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-            alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices.");
-            ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-            navigate('home');
-            return;
-        }
-
-        const data = await apiCall('getDashboard');
-        ledger = data.transactions || [];
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        navigate('home');
-      } catch (err) {
-        alert("Session expired or network error. Loading local data.");
+async function bootApp() {
+  try {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+        alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices.");
         ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
         navigate('home');
-      }
+        return;
     }
 
-    async function forceSync() {
-      const btn = document.getElementById('sync-btn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '⏳ Syncing...';
-      btn.disabled = true;
+    const data = await apiCall('getDashboard');
+    ledger = data.transactions || [];
+    localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+    navigate('home');
+  } catch (err) {
+    alert("Connection Error: " + err.message + "\n\nRedirecting to login to refresh your session token.");
+    localStorage.removeItem('gf_token'); // Clear the corrupted/expired token
+    window.location.href = '../index.html';
+  }
+}
 
-      try {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-          throw new Error("API URL is missing.");
-        }
-        const data = await apiCall('getDashboard');
-        ledger = data.transactions || [];
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        
-        // Refresh current view safely
-        const activeNav = document.querySelector('.nav-item.active');
-        if (activeNav) {
-          const navText = activeNav.innerText;
-          if(navText.includes('Records')) navigate('records');
-          else if(navText.includes('Analyzer')) navigate('analyzer');
-          else if(navText.includes('Budget')) navigate('budget');
-          else navigate('home');
-        } else {
-          navigate('home');
-        }
+async function forceSync() {
+  const btn = document.getElementById('sync-btn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Syncing...';
+  btn.disabled = true;
 
-        alert('✅ Sync complete! Ledger updated from Google Sheets.');
-      } catch (err) {
-        alert('❌ Sync failed: ' + err.message);
-      } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }
+  try {
+    const data = await apiCall('getDashboard');
+    ledger = data.transactions || [];
+    localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+    
+    const activeNav = document.querySelector('.nav-item.active');
+    if (activeNav) {
+      const navText = activeNav.innerText;
+      if(navText.includes('Records')) navigate('records');
+      else if(navText.includes('Analyzer')) navigate('analyzer');
+      else if(navText.includes('Budget')) navigate('budget');
+      else navigate('home');
+    } else {
+      navigate('home');
     }
+
+    alert('✅ Sync complete! Ledger updated directly from Google Sheets.');
+  } catch (err) {
+    alert('❌ Sync failed: ' + err.message);
+    if (err.message.includes("token")) {
+       localStorage.removeItem('gf_token');
+       window.location.href = '../index.html';
+    }
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
 
     // Trigger boot on load
     window.addEventListener('DOMContentLoaded', bootApp);
