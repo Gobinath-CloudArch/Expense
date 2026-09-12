@@ -98,6 +98,7 @@
       backdrop-filter: blur(var(--glass-blur)); 
       -webkit-backdrop-filter: blur(var(--glass-blur));
       transition: 0.3s;
+      z-index: 1000;
     }
     
     .main { 
@@ -344,45 +345,13 @@
     
     /* Budget Progress */
     .budget-row { margin-bottom: 16px; }
+    .budget-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+    .bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
     
-    .budget-info { 
-      display: flex; 
-      justify-content: space-between; 
-      font-size: 13px; 
-      margin-bottom: 6px; 
-    }
-    
-    .bar-bg { 
-      width: 100%; 
-      height: 8px; 
-      background: rgba(255,255,255,0.1); 
-      border-radius: 6px; 
-      overflow: hidden; 
-    }
-    
-    .bar-fill { 
-      height: 100%; 
-      border-radius: 6px; 
-      transition: width 0.3s; 
-    }
-    
-    .grid-2 { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 16px; 
-    }
-    
-    .kpi-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); 
-      gap: 16px; 
-      margin-bottom: 24px; 
-    }
-    
-    .kpi-val { 
-      font-size: 26px; 
-      font-weight: 800; 
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-val { font-size: 26px; font-weight: 800; }
 
     /* Modal System */
     .modal-overlay { 
@@ -414,31 +383,10 @@
       margin-bottom: 20px; 
     }
     
-    .modal-head h3 { 
-      font-size: 18px; 
-      font-weight: 700; 
-    }
-    
-    .close-btn { 
-      background: none; 
-      border: none; 
-      font-size: 24px; 
-      color: var(--muted); 
-      cursor: pointer; 
-    }
-    
-    .form-group { 
-      margin-bottom: 16px; 
-    }
-    
-    .form-group label { 
-      display: block; 
-      font-size: 11.5px; 
-      color: var(--muted); 
-      margin-bottom: 6px; 
-      text-transform: uppercase; 
-      font-weight: 700; 
-    }
+    .modal-head h3 { font-size: 18px; font-weight: 700; }
+    .close-btn { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; font-weight: 700; }
 
     /* Home Screen Quick Tiles & Reminders */
     .quick-tile { 
@@ -467,7 +415,7 @@
       flex-shrink: 0; 
     }
 
-    /* --- MOBILE RESPONSIVENESS --- */
+    /* --- MOBILE RESPONSIVENESS (Fixes Mobile UI Issues) --- */
     @media (max-width: 850px) {
       body { 
         flex-direction: column; 
@@ -482,14 +430,9 @@
         padding: 0;
         border-right: none;
         border-top: 1px solid var(--border);
-        z-index: 1000;
-        background: var(--sidebar);
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
       }
       
-      .brand-box { 
-        display: none; 
-      }
+      .brand-box { display: none; }
       
       .nav-list { 
         flex-direction: row; 
@@ -501,10 +444,7 @@
         -ms-overflow-style: none;  
         scrollbar-width: none;  
       }
-      
-      .nav-list::-webkit-scrollbar { 
-        display: none; 
-      }
+      .nav-list::-webkit-scrollbar { display: none; }
       
       .nav-item { 
         flex-direction: column; 
@@ -516,44 +456,14 @@
         border-radius: 8px;
       }
       
-      .nav-item .nav-text { 
-        display: block; 
-      }
-      
-      .main { 
-        padding: 16px; 
-        padding-bottom: 90px; 
-      }
-      
-      .grid-2 { 
-        grid-template-columns: 1fr; 
-      }
-      
-      .kpi-grid { 
-        grid-template-columns: 1fr; 
-      }
-      
-      .modern-clock-box { 
-        width: 100%; 
-        text-align: center; 
-        padding: 12px; 
-        margin-top: 10px; 
-      }
-      
-      .panel-head { 
-        flex-direction: column; 
-        align-items: flex-start; 
-        gap: 12px; 
-      }
-      
-      .table-controls { 
-        flex-direction: column; 
-      }
-      
-      .modal { 
-        padding: 16px; 
-        margin: 10px; 
-      }
+      .nav-item .nav-text { display: block; }
+      .main { padding: 16px; padding-bottom: 90px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .modern-clock-box { width: 100%; text-align: center; padding: 12px; margin-top: 10px; }
+      .panel-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .table-controls { flex-direction: column; }
+      .modal { padding: 16px; margin: 10px; }
     }
   </style>
 </head>
@@ -585,7 +495,7 @@
         <span class="nav-icon">🔔</span><span class="nav-text">Reminders</span>
       </button>
       <button class="nav-item" onclick="navigate('statements', this)">
-        <span class="nav-icon">📥</span><span class="nav-text">Export/Import</span>
+        <span class="nav-icon">📥</span><span class="nav-text">Import/Export</span>
       </button>
       <button class="nav-item" onclick="navigate('settings', this)">
         <span class="nav-icon">⚙</span><span class="nav-text">Settings</span>
@@ -607,7 +517,13 @@
       </div>
     </div>
     
-    <div id="view-container"></div>
+    <div id="view-container">
+      <!-- Loading indicator -->
+      <div style="text-align: center; padding: 40px; color: var(--muted);">
+        <h2>Syncing Ledger...</h2>
+        <p>Connecting to Google Sheets database.</p>
+      </div>
+    </div>
   </main>
 
   <!-- Transaction Modal (Add/Edit) -->
@@ -772,10 +688,8 @@
   </div>
 
   <script>
-    // --- APP SCRIPT URL ---
-    // If you want live sync to Google Sheets, uncomment and add your URL here.
-    // Otherwise, the app uses localStorage.
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby07_UsjF06riVfx8-7frZUJiYgkwed3bSofJLE_rTn9WywfKp7uJSqp6oOTB5Wf-OmgQ/exec"; 
+    // --- THIS IS THE ONLY LINE YOU NEED TO UPDATE ---
+    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // --- IDLE TIMEOUT (10 MINUTES) ---
     let idleTime = 0;
@@ -788,7 +702,7 @@
     document.onmousemove = resetTimer;
     document.onkeypress = resetTimer;
     document.onclick = resetTimer;
-    document.ontouchstart = resetTimer; 
+    document.ontouchstart = resetTimer; // For mobile taps
     
     setInterval(() => {
       idleTime++;
@@ -838,13 +752,8 @@
       'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    // Data Models
-    let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [
-      { id: '1', date: '2026-09-12', type: 'DEBIT', category: 'Groceries', desc: 'Monthly superstore shopping', method: 'UPI', notes: '', amount: 3260, user: 'Gobinath' },
-      { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', method: 'NetBanking', notes: 'Monthly Payroll', amount: 68000, user: 'Gobinath' },
-      { id: '3', date: '2026-09-08', type: 'DEBIT', category: 'Credit Card Bill', desc: 'HDFC Payment', method: 'NetBanking', notes: '', amount: 15400, user: 'Avadaipriya K.' },
-      { id: '4', date: '2026-08-15', type: 'DEBIT', category: 'Groceries', desc: 'August Groceries', method: 'UPI', notes: '', amount: 12000, user: 'Gobinath' }
-    ];
+    // Core Ledger Data (Starts empty, will fetch from Apps Script)
+    let ledger = [];
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || {
       'Groceries': { type: 'Fixed', val: 15000 },
@@ -866,11 +775,56 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-    // --- VOICE ASSISTANT ENGINE (Speech-To-Transaction) ---
+    // --- CLOUD SYNC ENGINE (Replaces local storage for transactions) ---
+    async function apiCall(action, data = {}) {
+      const token = localStorage.getItem('gf_token');
+      if (!token) {
+        window.location.href = '../index.html';
+        throw new Error("No token.");
+      }
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycby07_UsjF06riVfx8-7frZUJiYgkwed3bSofJLE_rTn9WywfKp7uJSqp6oOTB5Wf-OmgQ/exec") {
+        throw new Error("SYSTEM ERROR: Please update your APPS_SCRIPT_URL in dashboard/index.html");
+      }
+
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action, token, data })
+      });
+      const result = await res.json();
+      if (result.error) throw new Error(result.error);
+      return result;
+    }
+
+    async function bootApp() {
+      try {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+            alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices. Loading in offline demo mode.");
+            // Fallback to local storage for demo if URL is empty
+            ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [
+              { id: '1', date: '2026-09-12', type: 'DEBIT', category: 'Groceries', desc: 'Monthly superstore shopping', method: 'UPI', notes: '', amount: 3260, user: 'Gobinath' },
+              { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', method: 'NetBanking', notes: 'Monthly Payroll', amount: 68000, user: 'Gobinath' }
+            ];
+            navigate('home');
+            return;
+        }
+
+        const data = await apiCall('getDashboard');
+        ledger = data.transactions || [];
+        navigate('home');
+      } catch (err) {
+        alert("Session expired or network error: " + err.message);
+        window.location.href = '../index.html';
+      }
+    }
+
+    // Call bootApp when page loads
+    window.addEventListener('DOMContentLoaded', bootApp);
+
+    // --- VOICE ASSISTANT ENGINE ---
     function startVoiceAssistant() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        alert("Voice recognition is not supported in this browser. Please use Google Chrome, Edge, or Safari.");
+        alert("Voice recognition is not supported in this browser.");
         return;
       }
 
@@ -882,38 +836,18 @@
       const topBtn = document.getElementById('voice-top-btn');
       const modalBtn = document.getElementById('voice-modal-btn');
 
-      if (topBtn) {
-        topBtn.classList.add('voice-pulse');
-        topBtn.innerText = "🛑 Listening...";
-      }
-      if (modalBtn) {
-        modalBtn.classList.add('voice-pulse');
-        modalBtn.innerText = "🛑 Listening...";
-      }
+      if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; }
+      if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; }
 
-      recognition.onstart = () => {
-        console.log("Voice Assistant listening...");
-      };
-
-      recognition.onerror = (e) => {
-        console.error("Speech Recognition Error: ", e.error);
-        alert("Could not catch speech. Please try again.");
-      };
+      recognition.onerror = (e) => { alert("Could not catch speech. Please try again."); };
 
       recognition.onend = () => {
-        if (topBtn) {
-          topBtn.classList.remove('voice-pulse');
-          topBtn.innerText = "🎙️ Voice Add";
-        }
-        if (modalBtn) {
-          modalBtn.classList.remove('voice-pulse');
-          modalBtn.innerText = "🎙️ Speak";
-        }
+        if (topBtn) { topBtn.classList.remove('voice-pulse'); topBtn.innerText = "🎙️ Voice Add"; }
+        if (modalBtn) { modalBtn.classList.remove('voice-pulse'); modalBtn.innerText = "🎙️ Speak"; }
       };
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        console.log("Voice Heard: ", transcript);
         processVoiceCommand(transcript);
       };
 
@@ -930,43 +864,32 @@
 
       let amount = '';
       const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i);
-      if (amtMatch) {
-        amount = parseFloat(amtMatch[1]);
-      }
+      if (amtMatch) amount = parseFloat(amtMatch[1]);
 
       let method = 'UPI';
-      if (lower.includes('credit card') || lower.includes('creditcard')) {
-        method = 'Credit Card';
-      } else if (lower.includes('debit card') || lower.includes('debitcard')) {
-        method = 'Debit Card';
-      } else if (lower.includes('cash')) {
-        method = 'Cash';
-      } else if (lower.includes('upi') || lower.includes('gpay') || lower.includes('google pay') || lower.includes('phonepe') || lower.includes('paytm') || lower.includes('netbanking') || lower.includes('net banking')) {
-        method = 'UPI';
-      }
-
+      if (lower.includes('credit card')) method = 'Credit Card';
+      else if (lower.includes('debit card')) method = 'Debit Card';
+      else if (lower.includes('cash')) method = 'Cash';
+      
       const availableCategories = type === 'DEBIT' ? expCategories : incCategories;
       let category = availableCategories[0]; 
       
       const voiceCatMap = {
-        'grocery': 'Groceries', 'groceries': 'Groceries', 'supermarket': 'Groceries',
+        'grocery': 'Groceries', 'supermarket': 'Groceries',
         'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid',
-        'electricity': 'Electricity (EB)', 'eb': 'Electricity (EB)', 'current bill': 'Electricity (EB)',
-        'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'diesel': 'Fuel / Petrol',
-        'dining': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out', 'hotel': 'Dining Out',
-        'parking': 'Parking', 'snack': 'Snacks', 'snacks': 'Snacks', 'tea': 'Snacks', 'coffee': 'Snacks',
-        'credit card': 'Credit Card Bill', 'gold loan': 'Gold Loan', 'loan': 'Loan', 'emi': 'Loan',
-        'saloon': 'Saloon / Parlour', 'parlour': 'Saloon / Parlour', 'hair': 'Saloon / Parlour',
-        'lic': 'LIC Payment', 'insurance': 'LIC Payment', 'utility': 'Utility Bills',
-        'salary': 'Salary Received', 'bonus': 'Bonus', 'reimbursement': 'Reimbursement'
+        'electricity': 'Electricity (EB)', 'eb': 'Electricity (EB)',
+        'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol',
+        'dining': 'Dining Out', 'restaurant': 'Dining Out',
+        'parking': 'Parking', 'snack': 'Snacks',
+        'credit card': 'Credit Card Bill', 'loan': 'Loan', 'emi': 'Loan',
+        'saloon': 'Saloon / Parlour', 'lic': 'LIC Payment', 'utility': 'Utility Bills',
+        'salary': 'Salary Received', 'bonus': 'Bonus'
       };
 
       for (const [key, val] of Object.entries(voiceCatMap)) {
-        if (lower.includes(key)) {
-          if (availableCategories.includes(val)) {
-            category = val;
-            break;
-          }
+        if (lower.includes(key) && availableCategories.includes(val)) {
+          category = val;
+          break;
         }
       }
 
@@ -981,10 +904,8 @@
     // --- VIEW ROUTER ---
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      
-      if (btn) {
-        btn.classList.add('active');
-      } else {
+      if (btn) btn.classList.add('active');
+      else {
         const activeBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick').includes(`navigate('${view}'`));
         if (activeBtn) activeBtn.classList.add('active');
       }
@@ -994,61 +915,35 @@
       const sub = document.getElementById('view-sub');
 
       if (view === 'home') { 
-        title.innerText = 'Home'; 
-        sub.innerText = 'Welcome and quick actions.'; 
-        container.innerHTML = renderHome(); 
+        title.innerText = 'Home'; sub.innerText = 'Welcome and quick actions.'; container.innerHTML = renderHome(); 
       }
       else if (view === 'overview') { 
-        title.innerText = 'Overview Dashboard'; 
-        sub.innerText = 'Executive financial summary.'; 
-        container.innerHTML = renderOverview(); 
-        renderOverviewChart(); 
+        title.innerText = 'Overview Dashboard'; sub.innerText = 'Executive financial summary.'; container.innerHTML = renderOverview(); renderOverviewChart(); 
       }
       else if (view === 'records') { 
-        title.innerText = 'All Records'; 
-        sub.innerText = 'Search, sort, and manage ledger entries.'; 
-        container.innerHTML = renderAllRecords(); 
-        attachSearchLogic(); 
+        title.innerText = 'All Records'; sub.innerText = 'Search, sort, and manage ledger entries.'; container.innerHTML = renderAllRecords(); attachSearchLogic(); 
       }
       else if (view === 'analyzer') { 
-        title.innerText = 'Spend Analyzer'; 
-        sub.innerText = 'Deep dive into spending patterns.'; 
-        container.innerHTML = renderAnalyzer(); 
-        renderAnalyzerChart(); 
+        title.innerText = 'Spend Analyzer'; sub.innerText = 'Deep dive into spending patterns.'; container.innerHTML = renderAnalyzer(); renderAnalyzerChart(); 
       }
       else if (view === 'budget') { 
-        title.innerText = 'Budget Tracker'; 
-        sub.innerText = 'Set limits and monitor category spending.'; 
-        container.innerHTML = renderBudget(); 
+        title.innerText = 'Budget Tracker'; sub.innerText = 'Set limits and monitor category spending.'; container.innerHTML = renderBudget(); 
       }
       else if (view === 'reminders') { 
-        title.innerText = 'Reminders & Important Dates'; 
-        sub.innerText = 'Track upcoming bills, scheduled payments, and events.'; 
-        container.innerHTML = renderReminders(); 
+        title.innerText = 'Reminders & Important Dates'; sub.innerText = 'Track upcoming bills, scheduled payments, and events.'; container.innerHTML = renderReminders(); 
       }
       else if (view === 'statements') { 
-        title.innerText = 'Statements (Import / Export)'; 
-        sub.innerText = 'Import raw text or export your ledger to CSV.'; 
-        container.innerHTML = renderStatements(); 
+        title.innerText = 'Statements (Import / Export)'; sub.innerText = 'Import raw text or export your ledger to CSV.'; container.innerHTML = renderStatements(); 
       }
       else if (view === 'settings') { 
-        title.innerText = 'Settings, Users & Themes'; 
-        sub.innerText = 'Manage preferences and access control.'; 
-        container.innerHTML = renderSettings(); 
+        title.innerText = 'Settings, Users & Themes'; sub.innerText = 'Manage preferences and access control.'; container.innerHTML = renderSettings(); 
       }
     }
 
     // --- VIEW 0: HOME SCREEN ---
     function renderHome() {
       const currentHour = new Date().getHours();
-      let greeting = 'Good Evening';
-      
-      if (currentHour < 12) {
-        greeting = 'Good Morning';
-      } else if (currentHour < 18) {
-        greeting = 'Good Afternoon';
-      }
-      
+      const greeting = currentHour < 12 ? 'Good Morning' : currentHour < 18 ? 'Good Afternoon' : 'Good Evening';
       const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}');
       const userName = sessionData.name || 'Gobinath';
 
@@ -1575,6 +1470,7 @@
 
       const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}');
       const user = sessionData.name || 'Gobinath';
+      let updatesToSync = false;
 
       lines.forEach(line => {
         if (!line.trim()) return;
@@ -1653,11 +1549,19 @@
 
         ledger.unshift(tx);
         addedCount++;
+        updatesToSync = true;
       });
 
       if (addedCount > 0) {
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        alert(`Successfully imported ${addedCount} transactions! Please verify them in the All Records tab.`);
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+          localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+          alert(`Successfully imported ${addedCount} transactions locally. Please verify them in the All Records tab.`);
+        } else {
+          // If we have an API connected, we should ideally push these to the cloud. 
+          // For now, we save locally to maintain the state before cloud sync kicks in.
+          localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+          alert(`Successfully parsed ${addedCount} transactions. Note: API bulk upload is required to permanently save imports to Google Sheets.`);
+        }
         document.getElementById('import-text').value = '';
       } else {
         alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.');
@@ -1729,7 +1633,7 @@
       navigate('settings');
     }
 
-    // --- TRANSACTION MODAL CONTROLS ---
+    // --- TRANSACTION MODAL CONTROLS (Add, Edit, Delete) ---
     function openTxModal(type) {
       document.getElementById('tx-form').reset();
       document.getElementById('tx-id').value = '';
@@ -1770,19 +1674,35 @@
       document.getElementById('tx-modal').style.display = 'grid';
     }
 
-    function deleteTx(id) {
-      if (confirm('Delete this transaction permanently?')) {
+    async function deleteTx(id) {
+      if (!confirm('Delete this transaction permanently?')) return;
+
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+        // Local mode
         ledger = ledger.filter(x => x.id !== id);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        
         const activeNav = document.querySelector('.nav-item.active').innerText;
         if(activeNav.includes('Records')) navigate('records');
         else navigate('overview');
+        return;
+      }
+
+      // Cloud mode
+      try {
+        await apiCall('deleteTransaction', { id });
+        await bootApp(); // Resync from cloud
+      } catch (err) {
+        alert(err.message);
       }
     }
 
-    function saveTx(e) {
+    async function saveTx(e) {
       e.preventDefault();
+      
+      const btn = document.getElementById('tx-save-btn');
+      btn.disabled = true;
+      btn.innerText = 'Saving...';
+
       const id = document.getElementById('tx-id').value || String(Date.now());
       
       const record = {
@@ -1797,23 +1717,33 @@
         user: document.getElementById('tx-user').value
       };
 
-      const idx = ledger.findIndex(x => x.id === id);
-      
-      if (idx >= 0) {
-        ledger[idx] = record;
-      } else {
-        ledger.unshift(record);
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+        // Local Mode
+        const idx = ledger.findIndex(x => x.id === id);
+        if (idx >= 0) ledger[idx] = record;
+        else ledger.unshift(record);
+
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        closeModal('tx-modal');
+        btn.disabled = false;
+        
+        const activeNav = document.querySelector('.nav-item.active').innerText;
+        if(activeNav.includes('Records')) navigate('records');
+        else navigate('overview');
+        return;
       }
 
-      localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-      closeModal('tx-modal');
-      
-      const activeNav = document.querySelector('.nav-item.active').innerText;
-      
-      if(activeNav.includes('Records')) {
-        navigate('records');
-      } else {
-        navigate('overview');
+      // Cloud Mode
+      try {
+        const isEdit = document.getElementById('tx-id').value !== '';
+        await apiCall(isEdit ? 'editTransaction' : 'addTransaction', record);
+        closeModal('tx-modal');
+        await bootApp(); // Resync from cloud
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Save Transaction';
       }
     }
 
@@ -1864,8 +1794,6 @@
       `;
     }
 
-    // Boot App
-    navigate('home');
   </script>
 </body>
 </html>
