@@ -218,7 +218,6 @@
       cursor: not-allowed; 
     }
 
-    /* Pulse animation for voice recognition */
     .btn.voice-pulse {
       background: var(--red) !important;
       color: white !important;
@@ -345,13 +344,45 @@
     
     /* Budget Progress */
     .budget-row { margin-bottom: 16px; }
-    .budget-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
-    .bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
     
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .kpi-val { font-size: 26px; font-weight: 800; }
+    .budget-info { 
+      display: flex; 
+      justify-content: space-between; 
+      font-size: 13px; 
+      margin-bottom: 6px; 
+    }
+    
+    .bar-bg { 
+      width: 100%; 
+      height: 8px; 
+      background: rgba(255,255,255,0.1); 
+      border-radius: 6px; 
+      overflow: hidden; 
+    }
+    
+    .bar-fill { 
+      height: 100%; 
+      border-radius: 6px; 
+      transition: width 0.3s; 
+    }
+    
+    .grid-2 { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 16px; 
+    }
+    
+    .kpi-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); 
+      gap: 16px; 
+      margin-bottom: 24px; 
+    }
+    
+    .kpi-val { 
+      font-size: 26px; 
+      font-weight: 800; 
+    }
 
     /* Modal System */
     .modal-overlay { 
@@ -511,8 +542,8 @@
         <p id="view-sub" style="color:var(--muted); font-size:13px; margin-top:4px;">Welcome and quick actions.</p>
       </div>
       <div style="display: flex; gap: 10px; align-items:center; flex-wrap:wrap;">
-        <button class="btn" id="voice-top-btn" onclick="startVoiceAssistant()" style="border-color: var(--primary);">🎙️ Voice Add</button>
-        <button class="btn" onclick="openTxModal('CREDIT')">+ Add Income</button>
+        <button class="btn" id="sync-btn" onclick="forceSync()" style="border-color: var(--primary);">🔄 Sync Ledger</button>
+        <button class="btn" id="voice-top-btn" onclick="startVoiceAssistant()">🎙️ Voice Add</button>
         <button class="btn primary" onclick="openTxModal('DEBIT')">+ Add Expense</button>
       </div>
     </div>
@@ -688,8 +719,9 @@
   </div>
 
   <script>
-    // --- THIS IS THE ONLY LINE YOU NEED TO UPDATE ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
+    // --- APP SCRIPT URL ---
+    // PASTE YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL HERE
+    const  = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec"; 
 
     // --- IDLE TIMEOUT (10 MINUTES) ---
     let idleTime = 0;
@@ -702,7 +734,7 @@
     document.onmousemove = resetTimer;
     document.onkeypress = resetTimer;
     document.onclick = resetTimer;
-    document.ontouchstart = resetTimer; // For mobile taps
+    document.ontouchstart = resetTimer; 
     
     setInterval(() => {
       idleTime++;
@@ -752,7 +784,7 @@
       'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    // Core Ledger Data (Starts empty, will fetch from Apps Script)
+    // Core Data
     let ledger = [];
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || {
@@ -775,15 +807,15 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-    // --- CLOUD SYNC ENGINE (Replaces local storage for transactions) ---
+    // --- CLOUD SYNC ENGINE ---
     async function apiCall(action, data = {}) {
       const token = localStorage.getItem('gf_token');
       if (!token) {
         window.location.href = '../index.html';
-        throw new Error("No token.");
+        throw new Error("No session token.");
       }
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-        throw new Error("SYSTEM ERROR: Please update your APPS_SCRIPT_URL in dashboard/index.html");
+      if (! ||  === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+        throw new Error("API URL is missing.");
       }
 
       const res = await fetch(APPS_SCRIPT_URL, {
@@ -798,26 +830,59 @@
     async function bootApp() {
       try {
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-            alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices. Loading in offline demo mode.");
-            // Fallback to local storage for demo if URL is empty
-            ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [
-              { id: '1', date: '2026-09-12', type: 'DEBIT', category: 'Groceries', desc: 'Monthly superstore shopping', method: 'UPI', notes: '', amount: 3260, user: 'Gobinath' },
-              { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', method: 'NetBanking', notes: 'Monthly Payroll', amount: 68000, user: 'Gobinath' }
-            ];
+            alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices.");
+            ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
             navigate('home');
             return;
         }
 
         const data = await apiCall('getDashboard');
         ledger = data.transactions || [];
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         navigate('home');
       } catch (err) {
-        alert("Session expired or network error: " + err.message);
-        window.location.href = '../index.html';
+        alert("Session expired or network error. Loading local data.");
+        ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
+        navigate('home');
       }
     }
 
-    // Call bootApp when page loads
+    async function forceSync() {
+      const btn = document.getElementById('sync-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '⏳ Syncing...';
+      btn.disabled = true;
+
+      try {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+          throw new Error("API URL is missing.");
+        }
+        const data = await apiCall('getDashboard');
+        ledger = data.transactions || [];
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        
+        // Refresh current view safely
+        const activeNav = document.querySelector('.nav-item.active');
+        if (activeNav) {
+          const navText = activeNav.innerText;
+          if(navText.includes('Records')) navigate('records');
+          else if(navText.includes('Analyzer')) navigate('analyzer');
+          else if(navText.includes('Budget')) navigate('budget');
+          else navigate('home');
+        } else {
+          navigate('home');
+        }
+
+        alert('✅ Sync complete! Ledger updated from Google Sheets.');
+      } catch (err) {
+        alert('❌ Sync failed: ' + err.message);
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // Trigger boot on load
     window.addEventListener('DOMContentLoaded', bootApp);
 
     // --- VOICE ASSISTANT ENGINE ---
@@ -1076,21 +1141,15 @@
 
     function executeSearch() {
       const q = document.getElementById('search-input').value.toLowerCase();
-      
       const filtered = ledger.filter(t => 
-        t.desc.toLowerCase().includes(q) || 
-        t.category.toLowerCase().includes(q) || 
-        t.amount.toString().includes(q)
+        t.desc.toLowerCase().includes(q) || t.category.toLowerCase().includes(q) || t.amount.toString().includes(q)
       );
-      
       document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true);
     }
 
     function attachSearchLogic() {
       document.getElementById('search-input').addEventListener('keyup', (e) => { 
-        if(e.key === 'Enter') {
-          executeSearch(); 
-        }
+        if(e.key === 'Enter') executeSearch(); 
       });
     }
 
@@ -1101,12 +1160,7 @@
       ledger.sort((a, b) => {
         let valA = a[col];
         let valB = b[col];
-        
-        if (col === 'amount') { 
-          valA = parseFloat(valA); 
-          valB = parseFloat(valB); 
-        }
-        
+        if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); }
         return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1);
       });
       
@@ -1120,12 +1174,8 @@
       
       ledger.forEach(t => {
         if (t.type === 'DEBIT') {
-          if (t.date.startsWith(selectedMonthA)) {
-            aggA[t.category] = (aggA[t.category] || 0) + t.amount;
-          }
-          if (t.date.startsWith(selectedMonthB)) {
-            aggB[t.category] = (aggB[t.category] || 0) + t.amount;
-          }
+          if (t.date.startsWith(selectedMonthA)) aggA[t.category] = (aggA[t.category] || 0) + t.amount;
+          if (t.date.startsWith(selectedMonthB)) aggB[t.category] = (aggB[t.category] || 0) + t.amount;
         }
       });
       
@@ -1137,18 +1187,13 @@
         const diff = valB - valA;
         
         let diffStr = `<span>₹0</span>`;
-        if (diff > 0) {
-          diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString()}</span>`;
-        } else if (diff < 0) {
-          diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString()}</span>`;
-        }
+        if (diff > 0) diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString()}</span>`;
+        else if (diff < 0) diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString()}</span>`;
             
         return `<tr><td>${c}</td><td>₹${valA.toLocaleString()}</td><td>₹${valB.toLocaleString()}</td><td>${diffStr}</td></tr>`;
       }).join('');
 
-      if (!compRows) {
-        compRows = `<tr><td colspan="4" style="text-align:center;">No data for selected months.</td></tr>`;
-      }
+      if (!compRows) compRows = `<tr><td colspan="4" style="text-align:center;">No data for selected months.</td></tr>`;
 
       return `
         <div class="panel">
@@ -1218,13 +1263,9 @@
         const spent = ledger.filter(t => t.type === 'DEBIT' && t.category === cat && t.date.startsWith('2026-09')).reduce((s,t) => s + t.amount, 0);
         
         const pct = target > 0 ? Math.round((spent / target) * 100) : 0;
-        
         let color = 'var(--green)';
-        if (pct > 100) {
-          color = 'var(--red)';
-        } else if (pct > 85) {
-          color = 'var(--warn)';
-        }
+        if (pct > 100) color = 'var(--red)';
+        else if (pct > 85) color = 'var(--warn)';
         
         const remains = target - spent;
 
@@ -1267,7 +1308,6 @@
       
       budgets[cat] = { type, val };
       localStorage.setItem('gf_budgets', JSON.stringify(budgets));
-      
       closeModal('budget-modal');
       navigate('budget');
     }
@@ -1331,44 +1371,16 @@
     function saveReminder(e) {
       e.preventDefault();
       const id = document.getElementById('rem-id').value || 'r' + Date.now();
-      
-      const record = {
-        id: id,
-        date: document.getElementById('rem-date').value,
-        title: document.getElementById('rem-title').value,
-        type: document.getElementById('rem-type').value,
-        amount: parseFloat(document.getElementById('rem-amount').value) || null,
-        status: 'Pending'
-      };
-      
+      const record = { id: id, date: document.getElementById('rem-date').value, title: document.getElementById('rem-title').value, type: document.getElementById('rem-type').value, amount: parseFloat(document.getElementById('rem-amount').value) || null, status: 'Pending' };
       const idx = reminders.findIndex(x => x.id === id);
-      if (idx >= 0) {
-        reminders[idx] = record; 
-      } else {
-        reminders.push(record);
-      }
-      
+      if (idx >= 0) reminders[idx] = record; else reminders.push(record);
       localStorage.setItem('gf_reminders', JSON.stringify(reminders));
       closeModal('rem-modal');
       navigate('reminders');
     }
 
-    function markRemDone(id) {
-      const idx = reminders.findIndex(x => x.id === id);
-      if (idx >= 0) {
-        reminders[idx].status = 'Done';
-      }
-      localStorage.setItem('gf_reminders', JSON.stringify(reminders));
-      navigate('reminders');
-    }
-
-    function deleteRem(id) {
-      if(confirm('Delete this reminder?')) {
-        reminders = reminders.filter(x => x.id !== id);
-        localStorage.setItem('gf_reminders', JSON.stringify(reminders));
-        navigate('reminders');
-      }
-    }
+    function markRemDone(id) { const idx = reminders.findIndex(x => x.id === id); if (idx >= 0) reminders[idx].status = 'Done'; localStorage.setItem('gf_reminders', JSON.stringify(reminders)); navigate('reminders'); }
+    function deleteRem(id) { if(confirm('Delete this reminder?')) { reminders = reminders.filter(x => x.id !== id); localStorage.setItem('gf_reminders', JSON.stringify(reminders)); navigate('reminders'); } }
 
     // --- VIEW 6: STATEMENTS (IMPORT & EXPORT) ---
     function renderStatements() {
@@ -1417,7 +1429,6 @@
       const period = document.getElementById('export-period').value;
       let filtered = ledger;
       const now = new Date();
-      
       if (period !== 'ALL') {
         filtered = ledger.filter(t => {
           const tDate = new Date(t.date);
@@ -1428,34 +1439,26 @@
           return true;
         });
       }
-
       if (filtered.length === 0) return alert("No transactions available for this period.");
-      
       const headers = ['Date', 'Type', 'Category', 'Description', 'Method', 'Amount', 'User', 'Notes'];
       const rows = filtered.map(t => [t.date, t.type, t.category, `"${t.desc}"`, t.method || '', t.amount, t.user, `"${t.notes || ''}"`]);
       const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-      
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      
       link.href = url;
       link.download = `Gobinath_Statement_${period}.csv`;
-      document.body.appendChild(link); 
-      link.click(); 
-      document.body.removeChild(link);
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
-    function processImport() {
+    async function processImport() {
       const text = document.getElementById('import-text').value;
       const method = document.getElementById('import-method').value;
-      
       if (!text.trim()) return alert('Please paste some text to import.');
 
       const lines = text.split('\n');
       let addedCount = 0;
 
-      // Smart category mapping
       const catMap = {
         'zomato': 'Dining Out', 'swiggy': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out',
         'amazon': 'Groceries', 'flipkart': 'Groceries', 'supermarket': 'Groceries', 'mart': 'Groceries',
@@ -1470,72 +1473,42 @@
 
       const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}');
       const user = sessionData.name || 'Gobinath';
-      let updatesToSync = false;
+      
+      const parsedRecords = [];
 
       lines.forEach(line => {
         if (!line.trim()) return;
-
-        // 1. Extract Date
         let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/);
         let dateStr = new Date().toISOString().slice(0, 10);
-        
         if (dateMatch) {
-          let part1 = dateMatch[1];
-          let part2 = dateMatch[2];
-          let part3 = dateMatch[3];
-          
-          if (part1.length === 4) { 
-            part3 = part1; 
-            part1 = dateMatch[3]; 
-          } else if (part3.length === 2) { 
-            part3 = '20' + part3; 
-          }
+          let part1 = dateMatch[1], part2 = dateMatch[2], part3 = dateMatch[3];
+          if (part1.length === 4) { part3 = part1; part1 = dateMatch[3]; } else if (part3.length === 2) { part3 = '20' + part3; }
           dateStr = `${part3}-${part2.padStart(2, '0')}-${part1.padStart(2, '0')}`;
         }
-
-        // 2. Extract Amount
         let amtMatch = line.match(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g);
         let amount = 0;
         let isCredit = false;
-
         if (amtMatch && amtMatch.length > 0) {
           let lastAmt = amtMatch[amtMatch.length - 1];
-          if (lastAmt.toLowerCase().includes('cr')) {
-            isCredit = true;
-          }
+          if (lastAmt.toLowerCase().includes('cr')) isCredit = true;
           amount = parseFloat(lastAmt.replace(/[^\d.]/g, ''));
         }
-
         if (!amount || isNaN(amount)) return;
+        let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '').replace(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '').trim();
+        if (!desc) desc = 'Imported Transaction';
 
-        // 3. Extract Description
-        let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '')
-                       .replace(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '')
-                       .trim();
-                       
-        if (!desc) {
-          desc = 'Imported Transaction';
-        }
-
-        // 4. Guess Category
         let category = isCredit ? 'Reimbursement' : 'Other Expense';
         let lowerDesc = desc.toLowerCase();
-        
         for (const [key, val] of Object.entries(catMap)) {
           if (lowerDesc.includes(key)) {
             category = val;
-            if (incCategories.includes(val)) {
-              isCredit = true;
-            }
+            if (incCategories.includes(val)) isCredit = true;
             break;
           }
         }
-        
-        if (!isCredit && category === 'Reimbursement') {
-          category = 'Other Expense';
-        }
+        if (!isCredit && category === 'Reimbursement') category = 'Other Expense';
 
-        const tx = {
+        parsedRecords.push({
           id: 'tx_imp_' + Date.now() + Math.floor(Math.random()*1000),
           date: dateStr,
           type: isCredit ? 'CREDIT' : 'DEBIT',
@@ -1545,22 +1518,31 @@
           notes: 'Auto-Imported',
           amount: amount,
           user: user
-        };
-
-        ledger.unshift(tx);
-        addedCount++;
-        updatesToSync = true;
+        });
       });
 
-      if (addedCount > 0) {
+      if (parsedRecords.length > 0) {
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+          ledger = [...parsedRecords, ...ledger];
           localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-          alert(`Successfully imported ${addedCount} transactions locally. Please verify them in the All Records tab.`);
+          alert(`Successfully imported ${parsedRecords.length} transactions locally. Check the All Records tab.`);
         } else {
-          // If we have an API connected, we should ideally push these to the cloud. 
-          // For now, we save locally to maintain the state before cloud sync kicks in.
-          localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-          alert(`Successfully parsed ${addedCount} transactions. Note: API bulk upload is required to permanently save imports to Google Sheets.`);
+          // Send to API
+          const btn = document.querySelector('.btn.primary');
+          btn.innerText = "Syncing to Cloud...";
+          btn.disabled = true;
+          try {
+            for (const rec of parsedRecords) {
+              await apiCall('addTransaction', rec);
+            }
+            alert(`Successfully imported and synced ${parsedRecords.length} transactions to Google Sheets!`);
+            await forceSync(); // Pull latest
+          } catch(err) {
+            alert("Error syncing imports: " + err.message);
+          } finally {
+            btn.innerText = "Analyze & Import Transactions";
+            btn.disabled = false;
+          }
         }
         document.getElementById('import-text').value = '';
       } else {
@@ -1609,31 +1591,11 @@
       `;
     }
 
-    function changeTheme(val) {
-      currentTheme = val;
-      document.documentElement.setAttribute('data-theme', val);
-      localStorage.setItem('gf_theme', val);
-    }
+    function changeTheme(val) { currentTheme = val; document.documentElement.setAttribute('data-theme', val); localStorage.setItem('gf_theme', val); }
+    function resetMemberPassword(uid) { if(confirm(`Reset password for ${uid}? They will be forced to set a new password on their next login.`)) { alert(`Password cleared for ${uid}.`); } }
+    function saveUser(e) { e.preventDefault(); const name = document.getElementById('new-user-name').value; const role = document.getElementById('new-user-role').value; users.push({ name, role }); localStorage.setItem('gf_users_list', JSON.stringify(users)); closeModal('user-modal'); navigate('settings'); }
 
-    function resetMemberPassword(uid) {
-      if(confirm(`Reset password for ${uid}? They will be forced to set a new password on their next login.`)) {
-        alert(`Password cleared for ${uid}.`);
-      }
-    }
-
-    function saveUser(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-user-name').value;
-      const role = document.getElementById('new-user-role').value;
-      
-      users.push({ name, role });
-      localStorage.setItem('gf_users_list', JSON.stringify(users));
-      
-      closeModal('user-modal');
-      navigate('settings');
-    }
-
-    // --- TRANSACTION MODAL CONTROLS (Add, Edit, Delete) ---
+    // --- TRANSACTION MODAL CONTROLS ---
     function openTxModal(type) {
       document.getElementById('tx-form').reset();
       document.getElementById('tx-id').value = '';
@@ -1655,139 +1617,76 @@
     function editTx(id) {
       const t = ledger.find(x => x.id === id);
       if (!t) return;
-      
       document.getElementById('tx-id').value = t.id;
       document.getElementById('tx-modal-title').innerText = 'Edit Transaction';
       document.getElementById('tx-date').value = t.date;
       document.getElementById('tx-type').value = t.type;
-      
       updateCatOptions();
-      
       document.getElementById('tx-category').value = t.category;
       document.getElementById('tx-desc').value = t.desc;
       document.getElementById('tx-amount').value = t.amount;
       document.getElementById('tx-user').value = t.user;
       document.getElementById('tx-method').value = t.method || 'UPI';
       document.getElementById('tx-notes').value = t.notes || '';
-      
       document.getElementById('tx-save-btn').innerText = 'Update Transaction';
       document.getElementById('tx-modal').style.display = 'grid';
     }
 
     async function deleteTx(id) {
       if (!confirm('Delete this transaction permanently?')) return;
-
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-        // Local mode
         ledger = ledger.filter(x => x.id !== id);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         const activeNav = document.querySelector('.nav-item.active').innerText;
-        if(activeNav.includes('Records')) navigate('records');
-        else navigate('overview');
+        if(activeNav.includes('Records')) navigate('records'); else navigate('overview');
         return;
       }
-
-      // Cloud mode
       try {
         await apiCall('deleteTransaction', { id });
-        await bootApp(); // Resync from cloud
-      } catch (err) {
-        alert(err.message);
-      }
+        await forceSync();
+      } catch (err) { alert(err.message); }
     }
 
     async function saveTx(e) {
       e.preventDefault();
-      
       const btn = document.getElementById('tx-save-btn');
       btn.disabled = true;
       btn.innerText = 'Saving...';
-
       const id = document.getElementById('tx-id').value || String(Date.now());
+      const record = { id: id, date: document.getElementById('tx-date').value, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value };
       
-      const record = {
-        id: id,
-        date: document.getElementById('tx-date').value,
-        type: document.getElementById('tx-type').value,
-        category: document.getElementById('tx-category').value,
-        method: document.getElementById('tx-method').value,
-        desc: document.getElementById('tx-desc').value,
-        notes: document.getElementById('tx-notes').value,
-        amount: parseFloat(document.getElementById('tx-amount').value),
-        user: document.getElementById('tx-user').value
-      };
-
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
-        // Local Mode
         const idx = ledger.findIndex(x => x.id === id);
-        if (idx >= 0) ledger[idx] = record;
-        else ledger.unshift(record);
-
+        if (idx >= 0) ledger[idx] = record; else ledger.unshift(record);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         closeModal('tx-modal');
         btn.disabled = false;
-        
         const activeNav = document.querySelector('.nav-item.active').innerText;
-        if(activeNav.includes('Records')) navigate('records');
-        else navigate('overview');
+        if(activeNav.includes('Records')) navigate('records'); else navigate('overview');
         return;
       }
 
-      // Cloud Mode
       try {
         const isEdit = document.getElementById('tx-id').value !== '';
         await apiCall(isEdit ? 'editTransaction' : 'addTransaction', record);
         closeModal('tx-modal');
-        await bootApp(); // Resync from cloud
-      } catch (err) {
-        alert(err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Save Transaction';
-      }
+        await forceSync();
+      } catch (err) { alert(err.message); } finally { btn.disabled = false; btn.innerText = 'Save Transaction'; }
     }
 
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-    }
+    function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
     // --- REUSABLE HTML GENERATORS ---
     function renderTableHTML(data, title, sortable) {
-      const th = (lbl, col) => sortable 
-        ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` 
-        : `<th>${lbl}</th>`;
-        
+      const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
       return `
         ${title ? `<div class="panel-head"><h3>${title}</h3></div>` : ''}
         <div class="table-responsive">
           <table>
-            <thead>
-              <tr>
-                ${th('Date','date')} 
-                ${th('Type','type')} 
-                ${th('Category','category')} 
-                ${th('Description','desc')} 
-                ${th('Amount','amount')} 
-                <th>Actions</th>
-              </tr>
-            </thead>
+            <thead><tr>${th('Date','date')} ${th('Type','type')} ${th('Category','category')} ${th('Description','desc')} ${th('Amount','amount')} <th>Actions</th></tr></thead>
             <tbody>
               ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
-              ${data.map(t => `
-                <tr>
-                  <td>${t.date}</td>
-                  <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
-                  <td>${t.category}</td>
-                  <td>${t.desc}</td>
-                  <td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">
-                    ${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}
-                  </td>
-                  <td>
-                    <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button>
-                    <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
-                  </td>
-                </tr>
-              `).join('')}
+              ${data.map(t => `<tr><td>${t.date}</td><td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td><td>${t.category}</td><td>${t.desc}</td><td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}</td><td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button></td></tr>`).join('')}
             </tbody>
           </table>
         </div>
