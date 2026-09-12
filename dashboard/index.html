@@ -16,7 +16,6 @@
       --border: #e1e5eb; --text: #1a202c; --muted: #718096; --glass-blur: 0px;
     }
     :root[data-theme="neo-glass"] {
-      /* Neo Glass Graphic Theme with background meshes */
       --bg-color: #0f172a;
       --bg-img: 
         radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), 
@@ -76,6 +75,9 @@
     .input-field { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text); outline: none; font-size:14px; }
     .input-field:focus { border-color: var(--primary); }
     
+    /* Fix for dropdown options in dark themes */
+    select.input-field option { background-color: var(--panel); color: var(--text); }
+    
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
     th { color: var(--muted); padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; cursor: pointer; user-select: none; }
     th:hover { color: var(--text); }
@@ -98,7 +100,7 @@
 
     /* Modal System */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; place-items: center; z-index: 1000; }
-    .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 500px; padding: 24px; backdrop-filter: blur(var(--glass-blur)); max-height: 90vh; overflow-y: auto;}
+    .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 550px; padding: 24px; backdrop-filter: blur(var(--glass-blur)); max-height: 90vh; overflow-y: auto;}
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-head h3 { font-size: 18px; font-weight: 700; }
     .close-btn { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; }
@@ -162,9 +164,20 @@
             </select>
           </div>
         </div>
-        <div class="form-group">
-          <label>Category</label>
-          <select id="tx-category" class="input-field" required></select>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="tx-category" class="input-field" required></select>
+          </div>
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select id="tx-method" class="input-field">
+              <option value="UPI">UPI / NetBanking</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="Cash">Cash</option>
+            </select>
+          </div>
         </div>
         <div class="form-group">
           <label>Description</label>
@@ -183,6 +196,10 @@
             </select>
           </div>
         </div>
+        <div class="form-group">
+          <label>Additional Notes</label>
+          <input type="text" id="tx-notes" class="input-field" placeholder="Optional details...">
+        </div>
         <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="tx-save-btn">Save Transaction</button>
       </form>
     </div>
@@ -192,7 +209,7 @@
   <div id="budget-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
-        <h3>Edit Category Budget</h3>
+        <h3>Configure Budget</h3>
         <button class="close-btn" onclick="closeModal('budget-modal')">×</button>
       </div>
       <form onsubmit="saveBudget(event)">
@@ -218,32 +235,82 @@
     </div>
   </div>
 
+  <!-- Add User Modal -->
+  <div id="user-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Add Family Member</h3>
+        <button class="close-btn" onclick="closeModal('user-modal')">×</button>
+      </div>
+      <form onsubmit="saveUser(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="new-user-name" class="input-field" required>
+        </div>
+        <div class="form-group">
+          <label>Initial Password</label>
+          <input type="password" id="new-user-pass" class="input-field" required>
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="new-user-role" class="input-field">
+            <option value="Read/Write">Owner (Read/Write)</option>
+            <option value="Read Only">Guest (Read Only)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Create User</button>
+      </form>
+    </div>
+  </div>
+
   <script>
+    // --- IDLE TIMEOUT (10 MINUTES) ---
+    let idleTime = 0;
+    function resetTimer() { idleTime = 0; }
+    window.onload = resetTimer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    
+    setInterval(() => {
+      idleTime++;
+      if (idleTime >= 10) {
+        alert("Session expired due to 10 minutes of inactivity.");
+        window.location.href = '../index.html'; // Assuming this routes back to login
+      }
+    }, 60000); // Check every 1 minute
+
     // --- STATE & INITIALIZATION ---
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
-    const expCategories = ['Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 'Gold Loan', 'Loan', 'Home Maintenance'];
+    const expCategories = [
+      'Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 
+      'Parking', 'Snacks', 'Credit Card Bill', 'Gold Loan', 'Loan', 'Home Maintenance',
+      'Saloon / Parlour', 'LIC Payment', 'Utility Bills'
+    ];
     const incCategories = ['Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'];
 
-    // Mock initial data if empty to demonstrate functionality
+    // Mock initial data
     let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [
-      { id: '1', date: '2026-09-12', type: 'DEBIT', category: 'Groceries', desc: 'Monthly superstore shopping', amount: 3260, user: 'Gobinath' },
-      { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', amount: 68000, user: 'Gobinath' },
-      { id: '3', date: '2026-09-08', type: 'DEBIT', category: 'Credit Card Bill', desc: 'HDFC Payment', amount: 15400, user: 'Avadaipriya K.' },
-      { id: '4', date: '2026-08-15', type: 'DEBIT', category: 'Groceries', desc: 'August Groceries', amount: 12000, user: 'Gobinath' },
-      { id: '5', date: '2026-08-10', type: 'DEBIT', category: 'Parking', desc: 'Mall Parking', amount: 500, user: 'Gobinath' }
+      { id: '1', date: '2026-09-12', type: 'DEBIT', category: 'Groceries', desc: 'Monthly superstore shopping', method: 'UPI', notes: '', amount: 3260, user: 'Gobinath' },
+      { id: '2', date: '2026-09-11', type: 'CREDIT', category: 'Salary Received', desc: 'September Salary', method: 'NetBanking', notes: 'Monthly Payroll', amount: 68000, user: 'Gobinath' },
+      { id: '3', date: '2026-09-08', type: 'DEBIT', category: 'Credit Card Bill', desc: 'HDFC Payment', method: 'NetBanking', notes: '', amount: 15400, user: 'Avadaipriya K.' },
+      { id: '4', date: '2026-08-15', type: 'DEBIT', category: 'Groceries', desc: 'August Groceries', method: 'UPI', notes: '', amount: 12000, user: 'Gobinath' }
     ];
     
-    // Dynamic Budgets Config
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || {
       'Groceries': { type: 'Fixed', val: 15000 },
-      'Credit Card Bill': { type: 'Percentage', val: 15 } // 15% of income
+      'Credit Card Bill': { type: 'Percentage', val: 15 }
     };
 
+    let users = JSON.parse(localStorage.getItem('gf_users_list')) || [
+      { name: 'Gobinath', role: 'Owner (Read/Write)' },
+      { name: 'Avadaipriya K.', role: 'Owner (Read/Write)' }
+    ];
+
     let sortCol = 'date', sortAsc = false;
-    const CURRENT_MONTH = '2026-09';
-    const LAST_MONTH = '2026-08';
+    let selectedMonthA = '2026-08';
+    let selectedMonthB = '2026-09';
 
     // --- VIEW ROUTER ---
     function navigate(view) {
@@ -332,41 +399,53 @@
 
     // --- VIEW 3: SPEND ANALYZER (Dynamic Comparison) ---
     function renderAnalyzer() {
-      // Calculate dynamic comparison
-      const aggAug = {}, aggSep = {};
+      const aggA = {}, aggB = {};
       ledger.forEach(t => {
         if (t.type === 'DEBIT') {
-          if (t.date.startsWith(LAST_MONTH)) aggAug[t.category] = (aggAug[t.category] || 0) + t.amount;
-          if (t.date.startsWith(CURRENT_MONTH)) aggSep[t.category] = (aggSep[t.category] || 0) + t.amount;
+          if (t.date.startsWith(selectedMonthA)) aggA[t.category] = (aggA[t.category] || 0) + t.amount;
+          if (t.date.startsWith(selectedMonthB)) aggB[t.category] = (aggB[t.category] || 0) + t.amount;
         }
       });
       
-      const allCats = [...new Set([...Object.keys(aggAug), ...Object.keys(aggSep)])];
+      const allCats = [...new Set([...Object.keys(aggA), ...Object.keys(aggB)])];
       
       let compRows = allCats.map(c => {
-        const augVal = aggAug[c] || 0;
-        const sepVal = aggSep[c] || 0;
-        const diff = sepVal - augVal;
+        const valA = aggA[c] || 0;
+        const valB = aggB[c] || 0;
+        const diff = valB - valA;
         const diffStr = diff > 0 ? `<span style="color:var(--red);">+₹${diff.toLocaleString()}</span>` 
                       : diff < 0 ? `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString()}</span>` 
                       : `<span>₹0</span>`;
-        return `<tr><td>${c}</td><td>₹${augVal.toLocaleString()}</td><td>₹${sepVal.toLocaleString()}</td><td>${diffStr}</td></tr>`;
+        return `<tr><td>${c}</td><td>₹${valA.toLocaleString()}</td><td>₹${valB.toLocaleString()}</td><td>${diffStr}</td></tr>`;
       }).join('');
 
       if (!compRows) compRows = `<tr><td colspan="4" style="text-align:center;">No data for selected months.</td></tr>`;
 
       return `
         <div class="panel">
-          <div class="panel-head"><h3>Month-over-Month Comparison (August vs September)</h3></div>
+          <div class="panel-head">
+            <h3>Month-over-Month Comparison</h3>
+            <div style="display:flex; gap:10px;">
+              <input type="month" id="cmp-month-a" class="input-field" value="${selectedMonthA}" onchange="updateAnalyzerMonths()">
+              <span style="align-self:center;">vs</span>
+              <input type="month" id="cmp-month-b" class="input-field" value="${selectedMonthB}" onchange="updateAnalyzerMonths()">
+            </div>
+          </div>
           <table style="margin-bottom: 24px;">
-            <thead><tr><th>Category</th><th>August</th><th>September</th><th>Difference</th></tr></thead>
+            <thead><tr><th>Category</th><th>Month A</th><th>Month B</th><th>Difference</th></tr></thead>
             <tbody>${compRows}</tbody>
           </table>
           
-          <div class="panel-head"><h3>September Expense Distribution</h3></div>
+          <div class="panel-head"><h3>Selected Month (B) Distribution</h3></div>
           <div class="chart-container" style="height:250px;"><canvas id="analyzerChart"></canvas></div>
         </div>
       `;
+    }
+
+    function updateAnalyzerMonths() {
+      selectedMonthA = document.getElementById('cmp-month-a').value;
+      selectedMonthB = document.getElementById('cmp-month-b').value;
+      navigate('analyzer');
     }
 
     function renderAnalyzerChart() {
@@ -374,7 +453,7 @@
       if (!ctx || typeof Chart === 'undefined') return;
       
       const agg = {};
-      ledger.filter(t => t.type === 'DEBIT' && t.date.startsWith(CURRENT_MONTH)).forEach(t => {
+      ledger.filter(t => t.type === 'DEBIT' && t.date.startsWith(selectedMonthB)).forEach(t => {
         agg[t.category] = (agg[t.category] || 0) + t.amount;
       });
 
@@ -382,31 +461,30 @@
         type: 'doughnut',
         data: {
           labels: Object.keys(agg),
-          datasets: [{ data: Object.values(agg), backgroundColor: ['#4f6bf7', '#2ed573', '#ff5263', '#fbc531', '#a55eea'] }]
+          datasets: [{ data: Object.values(agg), backgroundColor: ['#4f6bf7', '#2ed573', '#ff5263', '#fbc531', '#a55eea', '#45aaf2'] }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
       });
     }
 
-    // --- VIEW 4: BUDGET TRACKER (Editable) ---
+    // --- VIEW 4: BUDGET TRACKER ---
     function renderBudget() {
-      let totalIncome = ledger.filter(t => t.type === 'CREDIT' && t.date.startsWith(CURRENT_MONTH)).reduce((s, t) => s + t.amount, 0);
-      if(totalIncome === 0) totalIncome = 68000; // fallback for calculation if no income logged
+      let totalIncome = ledger.filter(t => t.type === 'CREDIT' && t.date.startsWith('2026-09')).reduce((s, t) => s + t.amount, 0);
+      if(totalIncome === 0) totalIncome = 68000; 
 
       let budgetHTML = Object.keys(budgets).map(cat => {
         const b = budgets[cat];
         const target = b.type === 'Percentage' ? (totalIncome * b.val / 100) : b.val;
-        const spent = ledger.filter(t => t.type === 'DEBIT' && t.category === cat && t.date.startsWith(CURRENT_MONTH)).reduce((s,t) => s + t.amount, 0);
+        const spent = ledger.filter(t => t.type === 'DEBIT' && t.category === cat && t.date.startsWith('2026-09')).reduce((s,t) => s + t.amount, 0);
         
         const pct = target > 0 ? Math.round((spent / target) * 100) : 0;
         const color = pct > 100 ? 'var(--red)' : pct > 85 ? 'var(--warn)' : 'var(--green)';
         const remains = target - spent;
-        const labelStr = b.type === 'Percentage' ? `Percentage (${b.val}%)` : `Fixed`;
 
         return `
           <div class="budget-row">
             <div class="budget-info">
-              <div><strong>${cat}</strong> <span style="color:var(--muted); font-size:11px; margin-left:6px;">${labelStr}</span></div>
+              <div><strong>${cat}</strong> <span style="color:var(--muted); font-size:11px; margin-left:6px;">${b.type}</span></div>
               <div>₹${spent.toLocaleString()} / ₹${target.toLocaleString()} <span style="color:${color}; font-weight:700;">${pct}%</span></div>
             </div>
             <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct, 100)}%; background:${color};"></div></div>
@@ -443,10 +521,10 @@
       budgets[cat] = { type, val };
       localStorage.setItem('gf_budgets', JSON.stringify(budgets));
       closeModal('budget-modal');
-      document.getElementById('view-container').innerHTML = renderBudget();
+      navigate('budget');
     }
 
-    // --- VIEW 5: STATEMENT DOWNLOADER (Extended Periods) ---
+    // --- VIEW 5: STATEMENT DOWNLOADER ---
     function renderStatements() {
       return `
         <div class="panel">
@@ -473,13 +551,12 @@
     function exportCSV() {
       const period = document.getElementById('export-period').value;
       let filtered = ledger;
-      
-      const now = new Date('2026-09-13'); // Mocking current time for context
+      const now = new Date('2026-09-13');
       
       if (period !== 'ALL') {
         filtered = ledger.filter(t => {
           const tDate = new Date(t.date);
-          if (period === 'CUR_MONTH') return t.date.startsWith(CURRENT_MONTH);
+          if (period === 'CUR_MONTH') return t.date.startsWith('2026-09');
           if (period === 'LAST_3_MONTHS') return (now - tDate) <= (90 * 24 * 60 * 60 * 1000);
           if (period === 'LAST_6_MONTHS') return (now - tDate) <= (180 * 24 * 60 * 60 * 1000);
           if (period === 'LAST_1_YEAR') return (now - tDate) <= (365 * 24 * 60 * 60 * 1000);
@@ -489,8 +566,8 @@
 
       if (filtered.length === 0) return alert("No transactions available for this period.");
       
-      const headers = ['Date', 'Type', 'Category', 'Description', 'Amount', 'User'];
-      const rows = filtered.map(t => [t.date, t.type, t.category, `"${t.desc}"`, t.amount, t.user]);
+      const headers = ['Date', 'Type', 'Category', 'Description', 'Method', 'Amount', 'User', 'Notes'];
+      const rows = filtered.map(t => [t.date, t.type, t.category, `"${t.desc}"`, t.method || '', t.amount, t.user, `"${t.notes || ''}"`]);
       const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
       
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -503,6 +580,14 @@
 
     // --- VIEW 6: SETTINGS, USERS & THEMES ---
     function renderSettings() {
+      let usersHtml = users.map(u => `
+        <tr>
+          <td>${u.name}</td>
+          <td><span class="badge ${u.role.includes('Owner') ? 'credit' : 'debit'}">${u.role}</span></td>
+          <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('${u.name}')">Reset Password</button></td>
+        </tr>
+      `).join('');
+
       return `
         <div class="panel">
           <div class="panel-head"><h3>Appearance Customization</h3></div>
@@ -521,20 +606,11 @@
         <div class="panel">
           <div class="panel-head">
             <h3>User Management</h3>
-            <button class="btn primary" onclick="alert('Add User Modal Triggered')">+ Add New User</button>
+            <button class="btn primary" onclick="document.getElementById('user-modal').style.display='grid'">+ Add New User</button>
           </div>
           <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, reset passwords, and assign permissions.</p>
           <table style="margin-bottom:16px;">
-            <tr>
-              <td>Gobinath</td>
-              <td><span class="badge credit">Owner (Read/Write)</span></td>
-              <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('Gobinath')">Reset Password</button></td>
-            </tr>
-            <tr>
-              <td>Avadaipriya K.</td>
-              <td><span class="badge credit">Owner (Read/Write)</span></td>
-              <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('Avadaipriya')">Reset Password</button></td>
-            </tr>
+            ${usersHtml}
           </table>
         </div>
       `;
@@ -549,8 +625,18 @@
     function resetMemberPassword(uid) {
       if(confirm(`Reset password for ${uid}? They will be forced to set a new password on their next login.`)) {
         alert(`Password cleared for ${uid}.`);
-        // Actual implementation would call the backend / update local storage hashes here.
       }
+    }
+
+    function saveUser(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-user-name').value;
+      const role = document.getElementById('new-user-role').value;
+      users.push({ name, role });
+      localStorage.setItem('gf_users_list', JSON.stringify(users));
+      
+      closeModal('user-modal');
+      navigate('settings');
     }
 
     // --- TRANSACTION MODAL CONTROLS (Add, Edit, Delete) ---
@@ -572,6 +658,7 @@
       catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
+    // THIS FIXES THE ALERT ISSUE - Wires directly to the real modal
     function editTx(id) {
       const t = ledger.find(x => x.id === id);
       if (!t) return;
@@ -584,6 +671,8 @@
       document.getElementById('tx-desc').value = t.desc;
       document.getElementById('tx-amount').value = t.amount;
       document.getElementById('tx-user').value = t.user;
+      document.getElementById('tx-method').value = t.method || 'UPI';
+      document.getElementById('tx-notes').value = t.notes || '';
       document.getElementById('tx-save-btn').innerText = 'Update Transaction';
       document.getElementById('tx-modal').style.display = 'grid';
     }
@@ -593,7 +682,6 @@
         ledger = ledger.filter(x => x.id !== id);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         
-        // Refresh Current View
         const activeNav = document.querySelector('.nav-item.active').innerText;
         if(activeNav.includes('Records')) navigate('records');
         else navigate('overview');
@@ -609,7 +697,9 @@
         date: document.getElementById('tx-date').value,
         type: document.getElementById('tx-type').value,
         category: document.getElementById('tx-category').value,
+        method: document.getElementById('tx-method').value,
         desc: document.getElementById('tx-desc').value,
+        notes: document.getElementById('tx-notes').value,
         amount: parseFloat(document.getElementById('tx-amount').value),
         user: document.getElementById('tx-user').value
       };
