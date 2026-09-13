@@ -639,7 +639,7 @@
 
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
-    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
 
     // --- GLOBAL CLOCK ---
     setInterval(() => {
@@ -679,28 +679,37 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Loan Repayment'
     ];
 
-    let ledger = [];
-    
+    // Load purely from local device storage initially
+    let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
         'Groceries': { type: 'Fixed', val: 15000 }, 
         'Credit Card Bill': { type: 'Percentage', val: 15 } 
     };
-    
-    let reminders = [];
+    let reminders = JSON.parse(localStorage.getItem('gf_reminders')) || [];
 
     let sortCol = 'date';
     let sortAsc = false;
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-    // --- ADVANCED DATA SANITIZATION & DEDUPLICATION ---
+    // --- ADVANCED DATA SANITIZATION & DEDUPLICATION WITH UTC TIMEZONE FIX ---
     function deduplicateLedger(txList) {
         const unique = [];
         const seen = new Set();
         
         for (const tx of txList) {
-            if (tx.date && tx.date.includes('T')) tx.date = tx.date.split('T')[0];
-            const sig = `${tx.date}_${tx.amount}_${(tx.desc || '').trim().toLowerCase()}`;
+            // Correctly parse Google's UTC timestamp to local device date safely
+            if (tx.date && tx.date.includes('T')) {
+                const d = new Date(tx.date);
+                if (!isNaN(d.getTime())) {
+                    tx.date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                } else {
+                    tx.date = tx.date.split('T')[0];
+                }
+            }
+            
+            // Create a unique signature to prevent duplicate bugs
+            const sig = `${tx.date}_${Number(tx.amount)}_${(tx.desc || '').trim().toLowerCase()}`;
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(tx);
@@ -713,8 +722,15 @@
         const unique = [];
         const seen = new Set();
         for (const r of remList) {
-            if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0];
-            const sig = `${r.date}_${r.title}_${r.amount}`;
+            if (r.date && r.date.includes('T')) {
+                const d = new Date(r.date);
+                if (!isNaN(d.getTime())) {
+                    r.date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                } else {
+                    r.date = r.date.split('T')[0];
+                }
+            }
+            const sig = `${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`;
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(r);
@@ -723,7 +739,7 @@
         return unique.sort((a,b) => new Date(a.date) - new Date(b.date));
     }
 
-    // --- QUNTET CLOUD SYNC ENGINE (JSONP & NO-CORS POST) ---
+    // --- QUNTET CLOUD SYNC ENGINE ---
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return reject(new Error("Missing URL"));
@@ -741,11 +757,11 @@
       });
     }
 
+    // Standard POST without no-cors so we capture real completion and redirects
     async function apiPost(action, data) {
        try {
            await fetch(APPS_SCRIPT_URL, {
               method: 'POST',
-              mode: 'no-cors',
               headers: { 'Content-Type': 'text/plain;charset=utf-8' },
               body: JSON.stringify({ action, data })
            });
@@ -764,15 +780,15 @@
         
         // 1. Process Transactions
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
-        const cloudSignatures = new Set(cloudTxs.map(t => `${t.date}_${t.amount}_${(t.desc || '').trim().toLowerCase()}`));
+        const cloudSignatures = new Set(cloudTxs.map(t => `${t.date}_${Number(t.amount)}_${(t.desc || '').trim().toLowerCase()}`));
         let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
-        const missingInCloud = localTxs.filter(t => !cloudSignatures.has(`${t.date}_${t.amount}_${(t.desc || '').trim().toLowerCase()}`));
+        const missingInCloud = localTxs.filter(t => !cloudSignatures.has(`${t.date}_${Number(t.amount)}_${(t.desc || '').trim().toLowerCase()}`));
 
         // 2. Process Reminders
         let cloudRems = deduplicateReminders(cloudData.reminders || []);
-        const cloudRemSigs = new Set(cloudRems.map(r => `${r.date}_${r.title}_${r.amount}`));
+        const cloudRemSigs = new Set(cloudRems.map(r => `${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`));
         let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
-        const missingRems = localRems.filter(r => !cloudRemSigs.has(`${r.date}_${r.title}_${r.amount}`));
+        const missingRems = localRems.filter(r => !cloudRemSigs.has(`${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`));
 
         let requiresRefresh = false;
 
@@ -790,7 +806,9 @@
            await new Promise(r => setTimeout(r, 1500));
            const updatedCloudData = await apiGetJSONP('getDashboard');
            ledger = deduplicateLedger(updatedCloudData.transactions || []);
-           reminders = deduplicateReminders(updatedCloudData.reminders || []);
+           if (updatedCloudData.reminders) {
+               reminders = deduplicateReminders(updatedCloudData.reminders);
+           }
            requiresRefresh = true;
         } else {
            ledger = cloudTxs;
@@ -824,6 +842,7 @@
       const localData = localStorage.getItem('gf_ledger');
       const localRemData = localStorage.getItem('gf_reminders');
       
+      // If new device or empty storage, ALWAYS await cloud fetch before showing UI
       if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
           try {
               const cloudData = await apiGetJSONP('getDashboard');
@@ -842,6 +861,7 @@
       
       navigate('home');
 
+      // Trigger standard background sync to upload/download any mis-matches silently
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
           backgroundSync();
       }
@@ -939,9 +959,10 @@
           'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 
           'dining': 'Dining Out', 'restaurant': 'Dining Out', 
           'parking': 'Parking', 'snack': 'Snacks', 
-          'credit card': 'Credit Card Bill', 'loan': 'Loan', 'emi': 'Loan', 
+          'credit card': 'Credit Card Bill', 'loan': 'Loan', 'emi': 'Loan', 'repayment': 'Loan Repayment',
           'saloon': 'Saloon / Parlour', 'lic': 'LIC Payment', 
-          'utility': 'Utility Bills', 'salary': 'Salary Received', 'bonus': 'Bonus' 
+          'utility': 'Utility Bills', 'salary': 'Salary Received', 'bonus': 'Bonus',
+          'shopping': 'Shopping', 'amazon': 'Shopping', 'flipkart': 'Shopping', 'clothes': 'Shopping'
       };
       
       for (const [key, val] of Object.entries(voiceCatMap)) { 
