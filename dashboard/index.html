@@ -6,8 +6,8 @@
   <title>Gobinath Family Expense — Enterprise Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* --- Dynamic Enterprise Theming System with Backgrounds --- */
-    :root[data-theme="dark"] {
+    /* --- Dynamic Enterprise Theming System --- */
+    :root[data-theme="dark"] { 
       --bg-color: #070b14; 
       --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
       --sidebar: rgba(9, 15, 29, 0.7); 
@@ -15,12 +15,12 @@
       --border: rgba(30, 46, 78, 0.8); 
       --text: #f3f7fd; 
       --muted: #8598b8; 
-      --glass-blur: 16px;
+      --glass-blur: 16px; 
       --primary: #4f6bf7; 
-      --primary-hover: #3d58e3;
+      --primary-hover: #3d58e3; 
     }
     
-    :root[data-theme="light"] {
+    :root[data-theme="light"] { 
       --bg-color: #f4f7f9; 
       --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); 
       --sidebar: rgba(255, 255, 255, 0.6); 
@@ -28,43 +28,41 @@
       --border: rgba(225, 229, 235, 0.8); 
       --text: #1a202c; 
       --muted: #718096; 
-      --glass-blur: 16px;
+      --glass-blur: 16px; 
       --primary: #4f6bf7; 
-      --primary-hover: #3d58e3;
+      --primary-hover: #3d58e3; 
     }
     
-    :root[data-theme="neo-glass"] {
-      --bg-color: #0f172a;
-      --bg-img: 
-        radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), 
-        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%);
+    :root[data-theme="neo-glass"] { 
+      --bg-color: #0f172a; 
+      --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); 
       --sidebar: rgba(15, 23, 42, 0.4); 
-      --panel: rgba(17, 24, 39, 0.5);
+      --panel: rgba(17, 24, 39, 0.5); 
       --border: rgba(255, 255, 255, 0.1); 
       --text: #ffffff; 
       --muted: #94a3b8; 
-      --glass-blur: 16px;
+      --glass-blur: 16px; 
       --primary: #4f6bf7; 
-      --primary-hover: #3d58e3;
+      --primary-hover: #3d58e3; 
     }
     
-    :root[data-theme="love"] {
-      --bg-color: #1a050a;
-      --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop');
+    :root[data-theme="love"] { 
+      --bg-color: #1a050a; 
+      --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop'); 
       --sidebar: rgba(40, 10, 20, 0.5); 
-      --panel: rgba(60, 15, 30, 0.6);
+      --panel: rgba(60, 15, 30, 0.6); 
       --border: rgba(255, 77, 109, 0.25); 
       --text: #ffe0e6; 
       --muted: #ffb3c6; 
-      --glass-blur: 16px;
+      --glass-blur: 16px; 
       --primary: #ff4d6d; 
-      --primary-hover: #c9184a;
+      --primary-hover: #c9184a; 
     }
     
-    :root {
+    :root { 
       --green: #2ed573; 
       --red: #ff5263; 
-      --warn: #fbc531;
+      --warn: #fbc531; 
     }
 
     * { 
@@ -79,7 +77,7 @@
       background-image: var(--bg-img); 
       background-attachment: fixed; 
       background-size: cover; 
-      background-position: center;
+      background-position: center; 
       color: var(--text); 
       display: flex; 
       min-height: 100vh; 
@@ -87,7 +85,7 @@
       transition: background 0.3s, color 0.3s; 
     }
 
-    /* Layout & Glassmorphism */
+    /* --- LAYOUT & CONTAINERS --- */
     .sidebar { 
       width: 260px; 
       background: var(--sidebar); 
@@ -96,9 +94,9 @@
       flex-direction: column; 
       padding: 24px 16px; 
       backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      transition: 0.3s;
-      z-index: 1000;
+      -webkit-backdrop-filter: blur(var(--glass-blur)); 
+      transition: 0.3s; 
+      z-index: 1000; 
     }
     
     .main { 
@@ -114,10 +112,11 @@
       padding: 22px; 
       margin-bottom: 24px; 
       backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      -webkit-backdrop-filter: blur(var(--glass-blur)); 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
     }
 
+    /* --- BRANDING --- */
     .brand-box { 
       display: flex; 
       align-items: center; 
@@ -145,7 +144,7 @@
       line-height: 1.2; 
     }
     
-    /* Navigation */
+    /* --- NAVIGATION --- */
     .nav-list { 
       display: flex; 
       flex-direction: column; 
@@ -180,7 +179,7 @@
       border-color: var(--border); 
     }
 
-    /* Core UI Elements */
+    /* --- BUTTONS & CONTROLS --- */
     .panel-head { 
       display: flex; 
       justify-content: space-between; 
@@ -198,9 +197,9 @@
       color: var(--text); 
       cursor: pointer; 
       transition: 0.2s; 
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
     }
     
     .btn.primary { 
@@ -217,21 +216,20 @@
       opacity: 0.5; 
       cursor: not-allowed; 
     }
-
-    .btn.voice-pulse {
-      background: var(--red) !important;
-      color: white !important;
-      border-color: var(--red) !important;
-      animation: pulseAnim 1.2s infinite;
+    
+    .btn.voice-pulse { 
+      background: var(--red) !important; 
+      color: white !important; 
+      border-color: var(--red) !important; 
+      animation: pulseAnim 1.2s infinite; 
+    }
+    
+    @keyframes pulseAnim { 
+      0% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0.7); } 
+      70% { box-shadow: 0 0 0 10px rgba(255, 82, 99, 0); } 
+      100% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0); } 
     }
 
-    @keyframes pulseAnim {
-      0% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(255, 82, 99, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0); }
-    }
-
-    /* Tables & Forms */
     .table-controls { 
       display: flex; 
       gap: 12px; 
@@ -259,6 +257,7 @@
       color: #fff; 
     }
     
+    /* --- TABLES --- */
     .table-responsive { 
       overflow-x: auto; 
       width: 100%; 
@@ -269,7 +268,7 @@
       border-collapse: collapse; 
       text-align: left; 
       font-size: 13px; 
-      min-width: 600px;
+      min-width: 600px; 
     }
     
     th { 
@@ -294,7 +293,7 @@
       border-radius: 6px; 
       font-size: 10.5px; 
       font-weight: 700; 
-      white-space: nowrap;
+      white-space: nowrap; 
     }
     
     .badge.debit { background: rgba(255,82,99,0.15); color: var(--red); }
@@ -302,31 +301,31 @@
     .badge.warn { background: rgba(251,197,49,0.15); color: var(--warn); }
     .badge.primary { background: rgba(79, 107, 247, 0.15); color: var(--primary); }
 
+    /* --- CHARTS & COMPONENTS --- */
     .chart-container { 
       height: 300px; 
       width: 100%; 
       margin-bottom: 20px; 
     }
     
-    /* Modern Clock UI */
-    .modern-clock-box {
-      border: 1px solid var(--primary);
-      border-radius: 16px;
-      padding: 16px 28px;
-      text-align: right;
-      background: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    .modern-clock-box { 
+      border: 1px solid var(--primary); 
+      border-radius: 16px; 
+      padding: 16px 28px; 
+      text-align: right; 
+      background: rgba(0, 0, 0, 0.35); 
+      backdrop-filter: blur(8px); 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
     }
     
-    .modern-time {
-      font-size: 46px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 6px;
+    .modern-time { 
+      font-size: 46px; 
+      font-weight: 800; 
+      letter-spacing: 2px; 
+      font-variant-numeric: tabular-nums; 
+      color: var(--text); 
+      line-height: 1; 
+      margin-bottom: 6px; 
     }
     
     .modern-time span { 
@@ -335,56 +334,23 @@
       text-transform: lowercase; 
     }
     
-    .modern-date {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 14.5px;
-      letter-spacing: 0.5px;
+    .modern-date { 
+      color: var(--primary); 
+      font-weight: 700; 
+      font-size: 14.5px; 
+      letter-spacing: 0.5px; 
     }
     
-    /* Budget Progress */
     .budget-row { margin-bottom: 16px; }
+    .budget-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+    .bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
     
-    .budget-info { 
-      display: flex; 
-      justify-content: space-between; 
-      font-size: 13px; 
-      margin-bottom: 6px; 
-    }
-    
-    .bar-bg { 
-      width: 100%; 
-      height: 8px; 
-      background: rgba(255,255,255,0.1); 
-      border-radius: 6px; 
-      overflow: hidden; 
-    }
-    
-    .bar-fill { 
-      height: 100%; 
-      border-radius: 6px; 
-      transition: width 0.3s; 
-    }
-    
-    .grid-2 { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 16px; 
-    }
-    
-    .kpi-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); 
-      gap: 16px; 
-      margin-bottom: 24px; 
-    }
-    
-    .kpi-val { 
-      font-size: 26px; 
-      font-weight: 800; 
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-val { font-size: 26px; font-weight: 800; }
 
-    /* Modal System */
+    /* --- MODALS --- */
     .modal-overlay { 
       position: fixed; 
       inset: 0; 
@@ -404,22 +370,15 @@
       padding: 24px; 
       backdrop-filter: blur(var(--glass-blur)); 
       max-height: 90vh; 
-      overflow-y: auto;
+      overflow-y: auto; 
     }
     
-    .modal-head { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 20px; 
-    }
-    
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-head h3 { font-size: 18px; font-weight: 700; }
     .close-btn { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; font-weight: 700; }
 
-    /* Home Screen Quick Tiles & Reminders */
     .quick-tile { 
       background: rgba(255,255,255,0.03); 
       border: 1px solid var(--border); 
@@ -446,25 +405,20 @@
       flex-shrink: 0; 
     }
 
-    /* --- MOBILE RESPONSIVENESS (Fixes Mobile UI Issues) --- */
+    /* --- MOBILE RESPONSIVENESS (Fixes Overlapping UI) --- */
     @media (max-width: 850px) {
-      body { 
-        flex-direction: column; 
+      body { flex-direction: column; }
+      .sidebar { 
+        position: fixed; 
+        bottom: 0; 
+        width: 100%; 
+        height: 75px; 
+        flex-direction: row; 
+        padding: 0; 
+        border-right: none; 
+        border-top: 1px solid var(--border); 
       }
-      
-      .sidebar {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        height: 75px;
-        flex-direction: row;
-        padding: 0;
-        border-right: none;
-        border-top: 1px solid var(--border);
-      }
-      
       .brand-box { display: none; }
-      
       .nav-list { 
         flex-direction: row; 
         width: 100%; 
@@ -472,21 +426,19 @@
         padding: 0 10px; 
         align-items: center; 
         justify-content: flex-start; 
-        -ms-overflow-style: none;  
-        scrollbar-width: none;  
+        -ms-overflow-style: none; 
+        scrollbar-width: none; 
       }
       .nav-list::-webkit-scrollbar { display: none; }
-      
       .nav-item { 
         flex-direction: column; 
         font-size: 10px; 
         gap: 6px; 
         padding: 8px 14px; 
         white-space: nowrap; 
-        border: none;
-        border-radius: 8px;
+        border: none; 
+        border-radius: 8px; 
       }
-      
       .nav-item .nav-text { display: block; }
       .main { padding: 16px; padding-bottom: 90px; }
       .grid-2 { grid-template-columns: 1fr; }
@@ -542,19 +494,13 @@
         <p id="view-sub" style="color:var(--muted); font-size:13px; margin-top:4px;">Welcome and quick actions.</p>
       </div>
       <div style="display: flex; gap: 10px; align-items:center; flex-wrap:wrap;">
-        <button class="btn" id="sync-btn" onclick="forceSync()" style="border-color: var(--primary);">🔄 Sync Ledger</button>
+        <span class="badge primary" style="padding: 8px 12px; font-size:12px; border: 1px solid var(--primary);">OFFLINE MODE</span>
         <button class="btn" id="voice-top-btn" onclick="startVoiceAssistant()">🎙️ Voice Add</button>
         <button class="btn primary" onclick="openTxModal('DEBIT')">+ Add Expense</button>
       </div>
     </div>
     
-    <div id="view-container">
-      <!-- Loading indicator -->
-      <div style="text-align: center; padding: 40px; color: var(--muted);">
-        <h2>Syncing Ledger...</h2>
-        <p>Connecting to Google Sheets database.</p>
-      </div>
-    </div>
+    <div id="view-container"></div>
   </main>
 
   <!-- Transaction Modal (Add/Edit) -->
@@ -690,61 +636,29 @@
     </div>
   </div>
 
-  <!-- Add User Modal -->
-  <div id="user-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Add Family Member</h3>
-        <button class="close-btn" onclick="closeModal('user-modal')">×</button>
-      </div>
-      <form onsubmit="saveUser(event)">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="new-user-name" class="input-field" required>
-        </div>
-        <div class="form-group">
-          <label>Initial Password</label>
-          <input type="password" id="new-user-pass" class="input-field" required>
-        </div>
-        <div class="form-group">
-          <label>Role</label>
-          <select id="new-user-role" class="input-field">
-            <option value="Owner (Read/Write)">Owner (Read/Write)</option>
-            <option value="Guest (Read Only)">Guest (Read Only)</option>
-          </select>
-        </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Create User</button>
-      </form>
-    </div>
-  </div>
-
   <script>
-    // --- APP SCRIPT URL ---
-    // PASTE YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL HERE
-    const  = "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/"; 
-
-    // --- IDLE TIMEOUT (10 MINUTES) ---
+    // --- IDLE TIMEOUT ---
     let idleTime = 0;
     
     function resetTimer() { 
-      idleTime = 0; 
+        idleTime = 0; 
     }
     
-    window.onload = resetTimer;
-    document.onmousemove = resetTimer;
-    document.onkeypress = resetTimer;
-    document.onclick = resetTimer;
+    window.onload = resetTimer; 
+    document.onmousemove = resetTimer; 
+    document.onkeypress = resetTimer; 
+    document.onclick = resetTimer; 
     document.ontouchstart = resetTimer; 
     
-    setInterval(() => {
-      idleTime++;
-      if (idleTime >= 10) {
-        alert("Session expired due to 10 minutes of inactivity.");
-        window.location.href = '../index.html'; 
-      }
+    setInterval(() => { 
+        idleTime++; 
+        if (idleTime >= 10) { 
+            alert("Session expired due to inactivity."); 
+            window.location.href = '../index.html'; 
+        } 
     }, 60000); 
 
-    // --- GLOBAL LIVE CLOCK (MODERN) ---
+    // --- GLOBAL CLOCK ---
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -754,7 +668,7 @@
         let hours = now.getHours();
         const ampm = hours >= 12 ? 'pm' : 'am';
         
-        hours = hours % 12;
+        hours = hours % 12; 
         hours = hours ? hours : 12; 
         
         const mins = now.getMinutes().toString().padStart(2, '0');
@@ -762,44 +676,36 @@
         
         timeEl.innerHTML = `${hours.toString().padStart(2, '0')}:${mins}:${secs} <span>${ampm}</span>`;
         dateEl.innerText = now.toLocaleDateString('en-GB', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
         });
       }
     }, 1000);
 
-    // --- STATE & INITIALIZATION ---
+    // --- LOCAL OFFLINE STATE & INITIALIZATION ---
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
     const expCategories = [
-      'Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 
-      'Parking', 'Snacks', 'Credit Card Bill', 'Gold Loan', 'Loan', 'Home Maintenance',
-      'Saloon / Parlour', 'LIC Payment', 'Utility Bills', 'Other Expense'
+        'Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 
+        'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 
+        'Gold Loan', 'Loan', 'Home Maintenance', 'Saloon / Parlour', 
+        'LIC Payment', 'Utility Bills', 'Other Expense'
     ];
     
     const incCategories = [
-      'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
+        'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    // Core Data
-    let ledger = [];
+    // Load purely from local device storage (No API calls)
+    let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
     
-    let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || {
-      'Groceries': { type: 'Fixed', val: 15000 },
-      'Credit Card Bill': { type: 'Percentage', val: 15 }
+    let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
+        'Groceries': { type: 'Fixed', val: 15000 }, 
+        'Credit Card Bill': { type: 'Percentage', val: 15 } 
     };
-
-    let users = JSON.parse(localStorage.getItem('gf_users_list')) || [
-      { name: 'Gobinath', role: 'Owner (Read/Write)' },
-      { name: 'Avadaipriya K.', role: 'Owner (Read/Write)' }
-    ];
     
     let reminders = JSON.parse(localStorage.getItem('gf_reminders')) || [
-      { id: 'r1', date: '2026-09-15', title: 'HDFC Credit Card Bill', type: 'Bill Due', amount: 15400, status: 'Pending' },
-      { id: 'r2', date: '2026-10-05', title: 'Car Loan EMI', type: 'Scheduled Payment', amount: 8500, status: 'Pending' }
+      { id: 'r1', date: '2026-09-15', title: 'HDFC Credit Card Bill', type: 'Bill Due', amount: 15400, status: 'Pending' }
     ];
 
     let sortCol = 'date';
@@ -807,213 +713,158 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-// --- CLOUD SYNC ENGINE (BULLETPROOF VERSION) ---
-async function apiCall(action, data = {}) {
-  const token = localStorage.getItem('gf_token');
-  if (!token) throw new Error("No session token.");
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
-    throw new Error("API URL is missing.");
-  }
-
-  // 1. We use text/plain to completely bypass Google's strict CORS preflight blocks
-  // 2. We use redirect: 'follow' because Google Apps Script always responds with a 302 redirect
-  const res = await fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, token, data }),
-    redirect: 'follow'
-  });
-  
-  const rawText = await res.text();
-  
-  try {
-    const result = JSON.parse(rawText);
-    if (result.error) throw new Error(result.error);
-    return result;
-  } catch (e) {
-    // If Google returns an HTML login page or error instead of JSON, we catch it here
-    if (rawText.includes("<html")) {
-      throw new Error("Google Apps Script blocked the request. Ensure deployment access is set strictly to 'Anyone'.");
-    }
-    throw new Error(e.message + " | " + rawText);
-  }
-}
-
-async function bootApp() {
-  try {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
-        alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices.");
-        ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-        navigate('home');
-        return;
-    }
-
-    const data = await apiCall('getDashboard');
-    ledger = data.transactions || [];
-    localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-    navigate('home');
-  } catch (err) {
-    alert("Connection Error: " + err.message + "\n\nRedirecting to login to refresh your session token.");
-    localStorage.removeItem('gf_token'); // Clear the corrupted/expired token
-    window.location.href = '../index.html';
-  }
-}
-
-async function forceSync() {
-  const btn = document.getElementById('sync-btn');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '⏳ Syncing...';
-  btn.disabled = true;
-
-  try {
-    const data = await apiCall('getDashboard');
-    ledger = data.transactions || [];
-    localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-    
-    const activeNav = document.querySelector('.nav-item.active');
-    if (activeNav) {
-      const navText = activeNav.innerText;
-      if(navText.includes('Records')) navigate('records');
-      else if(navText.includes('Analyzer')) navigate('analyzer');
-      else if(navText.includes('Budget')) navigate('budget');
-      else navigate('home');
-    } else {
-      navigate('home');
-    }
-
-    alert('✅ Sync complete! Ledger updated directly from Google Sheets.');
-  } catch (err) {
-    alert('❌ Sync failed: ' + err.message);
-    if (err.message.includes("token")) {
-       localStorage.removeItem('gf_token');
-       window.location.href = '../index.html';
-    }
-  } finally {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-  }
-}
-
-    // Trigger boot on load
-    window.addEventListener('DOMContentLoaded', bootApp);
-
     // --- VOICE ASSISTANT ENGINE ---
     function startVoiceAssistant() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert("Voice recognition is not supported in this browser.");
-        return;
+      
+      if (!SpeechRecognition) { 
+          alert("Voice recognition is not supported in this browser."); 
+          return; 
       }
-
+      
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.lang = 'en-IN';
+      recognition.continuous = false; 
+      recognition.lang = 'en-IN'; 
       recognition.interimResults = false;
-
-      const topBtn = document.getElementById('voice-top-btn');
+      
+      const topBtn = document.getElementById('voice-top-btn'); 
       const modalBtn = document.getElementById('voice-modal-btn');
-
-      if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; }
-      if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; }
-
-      recognition.onerror = (e) => { alert("Could not catch speech. Please try again."); };
-
+      
+      if (topBtn) { 
+          topBtn.classList.add('voice-pulse'); 
+          topBtn.innerText = "🛑 Listening..."; 
+      }
+      if (modalBtn) { 
+          modalBtn.classList.add('voice-pulse'); 
+          modalBtn.innerText = "🛑 Listening..."; 
+      }
+      
+      recognition.onerror = (e) => { 
+          alert("Could not catch speech. Please try again."); 
+      };
+      
       recognition.onend = () => {
-        if (topBtn) { topBtn.classList.remove('voice-pulse'); topBtn.innerText = "🎙️ Voice Add"; }
-        if (modalBtn) { modalBtn.classList.remove('voice-pulse'); modalBtn.innerText = "🎙️ Speak"; }
+        if (topBtn) { 
+            topBtn.classList.remove('voice-pulse'); 
+            topBtn.innerText = "🎙️ Voice Add"; 
+        }
+        if (modalBtn) { 
+            modalBtn.classList.remove('voice-pulse'); 
+            modalBtn.innerText = "🎙️ Speak"; 
+        }
       };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        processVoiceCommand(transcript);
+      
+      recognition.onresult = (event) => { 
+          processVoiceCommand(event.results[0][0].transcript); 
       };
-
+      
       recognition.start();
     }
 
     function processVoiceCommand(text) {
       const lower = text.toLowerCase();
-      
       let type = 'DEBIT';
+      
       if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received') || lower.includes('refund') || lower.includes('bonus')) {
-        type = 'CREDIT';
+          type = 'CREDIT';
       }
-
-      let amount = '';
-      const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i);
+      
+      let amount = ''; 
+      const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i); 
       if (amtMatch) amount = parseFloat(amtMatch[1]);
-
-      let method = 'UPI';
-      if (lower.includes('credit card')) method = 'Credit Card';
-      else if (lower.includes('debit card')) method = 'Debit Card';
+      
+      let method = 'UPI'; 
+      if (lower.includes('credit card')) method = 'Credit Card'; 
+      else if (lower.includes('debit card')) method = 'Debit Card'; 
       else if (lower.includes('cash')) method = 'Cash';
       
       const availableCategories = type === 'DEBIT' ? expCategories : incCategories;
       let category = availableCategories[0]; 
       
-      const voiceCatMap = {
-        'grocery': 'Groceries', 'supermarket': 'Groceries',
-        'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid',
-        'electricity': 'Electricity (EB)', 'eb': 'Electricity (EB)',
-        'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol',
-        'dining': 'Dining Out', 'restaurant': 'Dining Out',
-        'parking': 'Parking', 'snack': 'Snacks',
-        'credit card': 'Credit Card Bill', 'loan': 'Loan', 'emi': 'Loan',
-        'saloon': 'Saloon / Parlour', 'lic': 'LIC Payment', 'utility': 'Utility Bills',
-        'salary': 'Salary Received', 'bonus': 'Bonus'
+      const voiceCatMap = { 
+          'grocery': 'Groceries', 'supermarket': 'Groceries', 
+          'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 
+          'electricity': 'Electricity (EB)', 'eb': 'Electricity (EB)', 
+          'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 
+          'dining': 'Dining Out', 'restaurant': 'Dining Out', 
+          'parking': 'Parking', 'snack': 'Snacks', 
+          'credit card': 'Credit Card Bill', 'loan': 'Loan', 'emi': 'Loan', 
+          'saloon': 'Saloon / Parlour', 'lic': 'LIC Payment', 
+          'utility': 'Utility Bills', 'salary': 'Salary Received', 'bonus': 'Bonus' 
       };
-
-      for (const [key, val] of Object.entries(voiceCatMap)) {
-        if (lower.includes(key) && availableCategories.includes(val)) {
-          category = val;
-          break;
-        }
+      
+      for (const [key, val] of Object.entries(voiceCatMap)) { 
+          if (lower.includes(key) && availableCategories.includes(val)) { 
+              category = val; 
+              break; 
+          } 
       }
-
+      
       openTxModal(type);
-      document.getElementById('tx-amount').value = amount || '';
-      document.getElementById('tx-category').value = category;
-      document.getElementById('tx-method').value = method;
-      document.getElementById('tx-desc').value = text;
+      document.getElementById('tx-amount').value = amount || ''; 
+      document.getElementById('tx-category').value = category; 
+      document.getElementById('tx-method').value = method; 
+      document.getElementById('tx-desc').value = text; 
       document.getElementById('tx-notes').value = "Added via Voice Assistant";
     }
 
     // --- VIEW ROUTER ---
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      else {
-        const activeBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick').includes(`navigate('${view}'`));
-        if (activeBtn) activeBtn.classList.add('active');
+      
+      if (btn) {
+          btn.classList.add('active');
+      } else { 
+          const activeBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick').includes(`navigate('${view}'`)); 
+          if (activeBtn) activeBtn.classList.add('active'); 
       }
-
+      
       const container = document.getElementById('view-container');
       const title = document.getElementById('view-title');
       const sub = document.getElementById('view-sub');
-
+      
       if (view === 'home') { 
-        title.innerText = 'Home'; sub.innerText = 'Welcome and quick actions.'; container.innerHTML = renderHome(); 
+          title.innerText = 'Home'; 
+          sub.innerText = 'Welcome and quick actions.'; 
+          container.innerHTML = renderHome(); 
       }
       else if (view === 'overview') { 
-        title.innerText = 'Overview Dashboard'; sub.innerText = 'Executive financial summary.'; container.innerHTML = renderOverview(); renderOverviewChart(); 
+          title.innerText = 'Overview Dashboard'; 
+          sub.innerText = 'Executive financial summary.'; 
+          container.innerHTML = renderOverview(); 
+          renderOverviewChart(); 
       }
       else if (view === 'records') { 
-        title.innerText = 'All Records'; sub.innerText = 'Search, sort, and manage ledger entries.'; container.innerHTML = renderAllRecords(); attachSearchLogic(); 
+          title.innerText = 'All Records'; 
+          sub.innerText = 'Search, sort, and manage ledger entries.'; 
+          container.innerHTML = renderAllRecords(); 
+          attachSearchLogic(); 
       }
       else if (view === 'analyzer') { 
-        title.innerText = 'Spend Analyzer'; sub.innerText = 'Deep dive into spending patterns.'; container.innerHTML = renderAnalyzer(); renderAnalyzerChart(); 
+          title.innerText = 'Spend Analyzer'; 
+          sub.innerText = 'Deep dive into spending patterns.'; 
+          container.innerHTML = renderAnalyzer(); 
+          renderAnalyzerChart(); 
       }
       else if (view === 'budget') { 
-        title.innerText = 'Budget Tracker'; sub.innerText = 'Set limits and monitor category spending.'; container.innerHTML = renderBudget(); 
+          title.innerText = 'Budget Tracker'; 
+          sub.innerText = 'Set limits and monitor category spending.'; 
+          container.innerHTML = renderBudget(); 
       }
       else if (view === 'reminders') { 
-        title.innerText = 'Reminders & Important Dates'; sub.innerText = 'Track upcoming bills, scheduled payments, and events.'; container.innerHTML = renderReminders(); 
+          title.innerText = 'Reminders & Important Dates'; 
+          sub.innerText = 'Track upcoming bills, scheduled payments, and events.'; 
+          container.innerHTML = renderReminders(); 
       }
       else if (view === 'statements') { 
-        title.innerText = 'Statements (Import / Export)'; sub.innerText = 'Import raw text or export your ledger to CSV.'; container.innerHTML = renderStatements(); 
+          title.innerText = 'Statements (Import / Export)'; 
+          sub.innerText = 'Import raw text or export your ledger to CSV.'; 
+          container.innerHTML = renderStatements(); 
       }
       else if (view === 'settings') { 
-        title.innerText = 'Settings, Users & Themes'; sub.innerText = 'Manage preferences and access control.'; container.innerHTML = renderSettings(); 
+          title.innerText = 'Settings, Users & Themes'; 
+          sub.innerText = 'Manage preferences and access control.'; 
+          container.innerHTML = renderSettings(); 
       }
     }
 
@@ -1029,21 +880,20 @@ async function forceSync() {
       
       if (pendingRems.length > 0) {
         remHtml = `
-          <div style="display:flex; gap:14px; overflow-x:auto; padding-bottom:8px;">
-            ${pendingRems.map(r => `
-              <div class="reminder-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                  <span class="badge ${r.type.includes('Date') ? 'primary' : 'warn'}">${r.type}</span>
-                  <span style="font-size:11px; color:var(--primary); font-weight:700;">${r.date}</span>
-                </div>
-                <div style="font-size:14px; font-weight:700; margin-bottom:4px;">${r.title}</div>
-                <div style="font-size:12px; color:var(--muted);">${r.amount ? 'Expected: ₹' + r.amount : 'No amount linked'}</div>
-              </div>
-            `).join('')}
-          </div>
-        `;
+            <div style="display:flex; gap:14px; overflow-x:auto; padding-bottom:8px;">
+                ${pendingRems.map(r => `
+                    <div class="reminder-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span class="badge ${r.type.includes('Date') ? 'primary' : 'warn'}">${r.type}</span>
+                            <span style="font-size:11px; color:var(--primary); font-weight:700;">${r.date}</span>
+                        </div>
+                        <div style="font-size:14px; font-weight:700; margin-bottom:4px;">${r.title}</div>
+                        <div style="font-size:12px; color:var(--muted);">${r.amount ? 'Expected: ₹' + r.amount : 'No amount linked'}</div>
+                    </div>
+                `).join('')}
+            </div>`;
       }
-
+      
       return `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; margin-bottom: 24px;">
           <div>
@@ -1055,11 +905,11 @@ async function forceSync() {
             <div id="live-date" class="modern-date">Loading date...</div>
           </div>
         </div>
-
+        
         <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:14px; font-weight:700;">🔔 Upcoming Reminders & Scheduled Payments</h3>
         ${remHtml}
         <br>
-
+        
         <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:14px; font-weight:700;">⚡ Quick Actions</h3>
         <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
           <div class="quick-tile" onclick="openTxModal('DEBIT')" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -1084,17 +934,14 @@ async function forceSync() {
 
     // --- VIEW 1: OVERVIEW ---
     function renderOverview() {
-      let inc = 0;
-      let exp = 0;
+      let inc = 0; 
+      let exp = 0; 
       
       ledger.forEach(t => { 
-        if (t.type === 'CREDIT') {
-          inc += t.amount; 
-        } else {
-          exp += t.amount; 
-        }
+          if (t.type === 'CREDIT') { inc += t.amount; } 
+          else { exp += t.amount; } 
       });
-
+      
       return `
         <div class="kpi-grid">
           <div class="panel" style="margin:0; padding:20px;">
@@ -1111,30 +958,34 @@ async function forceSync() {
           </div>
         </div>
         <div class="panel">
-          <div class="panel-head"><h3>Trend Overview</h3></div>
-          <div class="chart-container"><canvas id="overviewChart"></canvas></div>
+            <div class="panel-head"><h3>Trend Overview</h3></div>
+            <div class="chart-container"><canvas id="overviewChart"></canvas></div>
         </div>
         ${renderTableHTML(ledger.slice(0, 5), 'Recent 5 Transactions', false)}
       `;
     }
 
     function renderOverviewChart() {
-      const ctx = document.getElementById('overviewChart');
+      const ctx = document.getElementById('overviewChart'); 
       if (!ctx || typeof Chart === 'undefined') return;
       
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['August', 'September'],
-          datasets: [
-            { label: 'Income', data: [68000, 68000], backgroundColor: '#2ed573' },
-            { label: 'Expenses', data: [12500, 18660], backgroundColor: '#ff5263' }
-          ]
-        },
-        options: { 
-          responsive: true, 
-          maintainAspectRatio: false 
-        }
+      let m1 = 0, m1_e = 0, m2 = 0, m2_e = 0;
+      
+      ledger.forEach(t => { 
+          if (t.date.startsWith(selectedMonthA)) { t.type==='CREDIT' ? m1+=t.amount : m1_e+=t.amount; } 
+          if (t.date.startsWith(selectedMonthB)) { t.type==='CREDIT' ? m2+=t.amount : m2_e+=t.amount; } 
+      });
+      
+      new Chart(ctx, { 
+          type: 'bar', 
+          data: { 
+              labels: [selectedMonthA, selectedMonthB], 
+              datasets: [
+                  { label: 'Income', data: [m1, m2], backgroundColor: '#2ed573' }, 
+                  { label: 'Expenses', data: [m1_e, m2_e], backgroundColor: '#ff5263' }
+              ] 
+          }, 
+          options: { responsive: true, maintainAspectRatio: false } 
       });
     }
 
@@ -1142,67 +993,66 @@ async function forceSync() {
     function renderAllRecords(data = ledger) {
       return `
         <div class="panel">
-          <div class="table-controls">
-            <input type="text" id="search-input" class="input-field" placeholder="Search by description, category, or amount...">
-            <button class="btn primary" onclick="executeSearch()">Find</button>
-          </div>
-          <div id="records-table-container">${renderTableHTML(data, '', true)}</div>
-        </div>
-      `;
+            <div class="table-controls">
+                <input type="text" id="search-input" class="input-field" placeholder="Search by description, category, or amount...">
+                <button class="btn primary" onclick="executeSearch()">Find</button>
+            </div>
+            <div id="records-table-container">
+                ${renderTableHTML(data, '', true)}
+            </div>
+        </div>`;
     }
-
-    function executeSearch() {
-      const q = document.getElementById('search-input').value.toLowerCase();
-      const filtered = ledger.filter(t => 
-        t.desc.toLowerCase().includes(q) || t.category.toLowerCase().includes(q) || t.amount.toString().includes(q)
-      );
-      document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true);
+    
+    function executeSearch() { 
+        const q = document.getElementById('search-input').value.toLowerCase(); 
+        const filtered = ledger.filter(t => t.desc.toLowerCase().includes(q) || t.category.toLowerCase().includes(q) || t.amount.toString().includes(q)); 
+        document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
-
-    function attachSearchLogic() {
-      document.getElementById('search-input').addEventListener('keyup', (e) => { 
-        if(e.key === 'Enter') executeSearch(); 
-      });
+    
+    function attachSearchLogic() { 
+        document.getElementById('search-input').addEventListener('keyup', (e) => { 
+            if(e.key === 'Enter') executeSearch(); 
+        }); 
     }
-
-    function sortTable(col) {
-      sortAsc = (sortCol === col) ? !sortAsc : true;
-      sortCol = col;
-      
-      ledger.sort((a, b) => {
-        let valA = a[col];
-        let valB = b[col];
-        if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); }
-        return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1);
-      });
-      
-      document.getElementById('records-table-container').innerHTML = renderTableHTML(ledger, '', true);
+    
+    function sortTable(col) { 
+        sortAsc = (sortCol === col) ? !sortAsc : true; 
+        sortCol = col; 
+        
+        ledger.sort((a, b) => { 
+            let valA = a[col]; 
+            let valB = b[col]; 
+            if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); } 
+            return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1); 
+        }); 
+        
+        document.getElementById('records-table-container').innerHTML = renderTableHTML(ledger, '', true); 
     }
 
     // --- VIEW 3: SPEND ANALYZER ---
     function renderAnalyzer() {
-      const aggA = {};
+      const aggA = {}; 
       const aggB = {};
       
-      ledger.forEach(t => {
-        if (t.type === 'DEBIT') {
-          if (t.date.startsWith(selectedMonthA)) aggA[t.category] = (aggA[t.category] || 0) + t.amount;
-          if (t.date.startsWith(selectedMonthB)) aggB[t.category] = (aggB[t.category] || 0) + t.amount;
-        }
+      ledger.forEach(t => { 
+          if (t.type === 'DEBIT') { 
+              if (t.date.startsWith(selectedMonthA)) aggA[t.category] = (aggA[t.category] || 0) + t.amount; 
+              if (t.date.startsWith(selectedMonthB)) aggB[t.category] = (aggB[t.category] || 0) + t.amount; 
+          } 
       });
       
       const allCats = [...new Set([...Object.keys(aggA), ...Object.keys(aggB)])];
       
-      let compRows = allCats.map(c => {
-        const valA = aggA[c] || 0;
-        const valB = aggB[c] || 0;
-        const diff = valB - valA;
-        
-        let diffStr = `<span>₹0</span>`;
-        if (diff > 0) diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString()}</span>`;
-        else if (diff < 0) diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString()}</span>`;
-            
-        return `<tr><td>${c}</td><td>₹${valA.toLocaleString()}</td><td>₹${valB.toLocaleString()}</td><td>${diffStr}</td></tr>`;
+      let compRows = allCats.map(c => { 
+          const valA = aggA[c] || 0; 
+          const valB = aggB[c] || 0; 
+          const diff = valB - valA; 
+          let diffStr = `<span>₹0</span>`; 
+          
+          if (diff > 0) diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString()}</span>`; 
+          else if (diff < 0) diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString()}</span>`; 
+          
+          return `<tr><td>${c}</td><td>₹${valA.toLocaleString()}</td><td>₹${valB.toLocaleString()}</td><td>${diffStr}</td></tr>`; 
       }).join('');
 
       if (!compRows) compRows = `<tr><td colspan="4" style="text-align:center;">No data for selected months.</td></tr>`;
@@ -1231,52 +1081,53 @@ async function forceSync() {
         </div>
       `;
     }
-
-    function updateAnalyzerMonths() {
-      selectedMonthA = document.getElementById('cmp-month-a').value;
-      selectedMonthB = document.getElementById('cmp-month-b').value;
-      navigate('analyzer');
+    
+    function updateAnalyzerMonths() { 
+        selectedMonthA = document.getElementById('cmp-month-a').value; 
+        selectedMonthB = document.getElementById('cmp-month-b').value; 
+        navigate('analyzer'); 
     }
-
-    function renderAnalyzerChart() {
-      const ctx = document.getElementById('analyzerChart');
-      if (!ctx || typeof Chart === 'undefined') return;
-      
-      const agg = {};
-      ledger.filter(t => t.type === 'DEBIT' && t.date.startsWith(selectedMonthB)).forEach(t => {
-        agg[t.category] = (agg[t.category] || 0) + t.amount;
-      });
-
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(agg),
-          datasets: [{ 
-            data: Object.values(agg), 
-            backgroundColor: ['#4f6bf7', '#2ed573', '#ff5263', '#fbc531', '#a55eea', '#45aaf2'] 
-          }]
-        },
-        options: { 
-          responsive: true, 
-          maintainAspectRatio: false, 
-          plugins: { legend: { position: 'right' } } 
-        }
-      });
+    
+    function renderAnalyzerChart() { 
+        const ctx = document.getElementById('analyzerChart'); 
+        if (!ctx || typeof Chart === 'undefined') return; 
+        
+        const agg = {}; 
+        ledger.filter(t => t.type === 'DEBIT' && t.date.startsWith(selectedMonthB)).forEach(t => { 
+            agg[t.category] = (agg[t.category] || 0) + t.amount; 
+        }); 
+        
+        new Chart(ctx, { 
+            type: 'doughnut', 
+            data: { 
+                labels: Object.keys(agg), 
+                datasets: [{ 
+                    data: Object.values(agg), 
+                    backgroundColor: ['#4f6bf7', '#2ed573', '#ff5263', '#fbc531', '#a55eea', '#45aaf2'] 
+                }] 
+            }, 
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: { position: 'right' } } 
+            } 
+        }); 
     }
 
     // --- VIEW 4: BUDGET TRACKER ---
     function renderBudget() {
-      let totalIncome = ledger.filter(t => t.type === 'CREDIT' && t.date.startsWith('2026-09')).reduce((s, t) => s + t.amount, 0);
+      let totalIncome = ledger.filter(t => t.type === 'CREDIT' && t.date.startsWith('2026-09')).reduce((s, t) => s + t.amount, 0); 
       if(totalIncome === 0) totalIncome = 68000; 
-
+      
       let budgetHTML = Object.keys(budgets).map(cat => {
-        const b = budgets[cat];
-        const target = b.type === 'Percentage' ? (totalIncome * b.val / 100) : b.val;
+        const b = budgets[cat]; 
+        const target = b.type === 'Percentage' ? (totalIncome * b.val / 100) : b.val; 
         const spent = ledger.filter(t => t.type === 'DEBIT' && t.category === cat && t.date.startsWith('2026-09')).reduce((s,t) => s + t.amount, 0);
         
-        const pct = target > 0 ? Math.round((spent / target) * 100) : 0;
-        let color = 'var(--green)';
-        if (pct > 100) color = 'var(--red)';
+        const pct = target > 0 ? Math.round((spent / target) * 100) : 0; 
+        let color = 'var(--green)'; 
+        
+        if (pct > 100) color = 'var(--red)'; 
         else if (pct > 85) color = 'var(--warn)';
         
         const remains = target - spent;
@@ -1287,12 +1138,13 @@ async function forceSync() {
               <div><strong>${cat}</strong> <span style="color:var(--muted); font-size:11px; margin-left:6px;">${b.type}</span></div>
               <div>₹${spent.toLocaleString()} / ₹${target.toLocaleString()} <span style="color:${color}; font-weight:700;">${pct}%</span></div>
             </div>
-            <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct, 100)}%; background:${color};"></div></div>
+            <div class="bar-bg">
+                <div class="bar-fill" style="width:${Math.min(pct, 100)}%; background:${color};"></div>
+            </div>
             <div style="font-size:11px; color:var(--muted); margin-top:4px; text-align:right;">
               ${remains < 0 ? `<span style="color:var(--red)">Over budget by ₹${Math.abs(remains)}</span>` : `₹${remains} remaining`}
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
 
       return `
@@ -1302,31 +1154,31 @@ async function forceSync() {
             <button class="btn primary" onclick="openBudgetModal()">+ Edit / Add Budget</button>
           </div>
           ${budgetHTML || '<p style="color:var(--muted); font-size:13px;">No budgets configured yet.</p>'}
-        </div>
-      `;
+        </div>`;
     }
-
-    function openBudgetModal() {
-      const select = document.getElementById('budget-cat');
-      select.innerHTML = expCategories.map(c => `<option value="${c}">${c}</option>`).join('');
-      document.getElementById('budget-modal').style.display = 'grid';
+    
+    function openBudgetModal() { 
+        const select = document.getElementById('budget-cat'); 
+        select.innerHTML = expCategories.map(c => `<option value="${c}">${c}</option>`).join(''); 
+        document.getElementById('budget-modal').style.display = 'grid'; 
     }
-
-    function saveBudget(e) {
-      e.preventDefault();
-      const cat = document.getElementById('budget-cat').value;
-      const type = document.getElementById('budget-type').value;
-      const val = parseFloat(document.getElementById('budget-val').value);
-      
-      budgets[cat] = { type, val };
-      localStorage.setItem('gf_budgets', JSON.stringify(budgets));
-      closeModal('budget-modal');
-      navigate('budget');
+    
+    function saveBudget(e) { 
+        e.preventDefault(); 
+        const cat = document.getElementById('budget-cat').value; 
+        const type = document.getElementById('budget-type').value; 
+        const val = parseFloat(document.getElementById('budget-val').value); 
+        
+        budgets[cat] = { type, val }; 
+        localStorage.setItem('gf_budgets', JSON.stringify(budgets)); 
+        
+        closeModal('budget-modal'); 
+        navigate('budget'); 
     }
 
     // --- VIEW 5: REMINDERS ---
     function renderReminders() {
-      let pending = reminders.filter(r => r.status === 'Pending').sort((a,b) => new Date(a.date) - new Date(b.date));
+      let pending = reminders.filter(r => r.status === 'Pending').sort((a,b) => new Date(a.date) - new Date(b.date)); 
       let done = reminders.filter(r => r.status === 'Done').sort((a,b) => new Date(b.date) - new Date(a.date));
 
       const rowHtml = (r) => `
@@ -1340,8 +1192,7 @@ async function forceSync() {
             ${r.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Mark Done</button>` : ''}
             <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
           </td>
-        </tr>
-      `;
+        </tr>`;
 
       return `
         <div class="panel">
@@ -1368,31 +1219,52 @@ async function forceSync() {
               </tbody>
             </table>
           </div>
-        </div>
-      `;
+        </div>`;
     }
-
-    function openRemModal() {
-      document.getElementById('rem-id').value = '';
-      document.getElementById('rem-title').value = '';
-      document.getElementById('rem-date').valueAsDate = new Date();
-      document.getElementById('rem-amount').value = '';
-      document.getElementById('rem-modal').style.display = 'grid';
+    
+    function openRemModal() { 
+        document.getElementById('rem-id').value = ''; 
+        document.getElementById('rem-title').value = ''; 
+        document.getElementById('rem-date').valueAsDate = new Date(); 
+        document.getElementById('rem-amount').value = ''; 
+        document.getElementById('rem-modal').style.display = 'grid'; 
     }
-
-    function saveReminder(e) {
-      e.preventDefault();
-      const id = document.getElementById('rem-id').value || 'r' + Date.now();
-      const record = { id: id, date: document.getElementById('rem-date').value, title: document.getElementById('rem-title').value, type: document.getElementById('rem-type').value, amount: parseFloat(document.getElementById('rem-amount').value) || null, status: 'Pending' };
-      const idx = reminders.findIndex(x => x.id === id);
-      if (idx >= 0) reminders[idx] = record; else reminders.push(record);
-      localStorage.setItem('gf_reminders', JSON.stringify(reminders));
-      closeModal('rem-modal');
-      navigate('reminders');
+    
+    function saveReminder(e) { 
+        e.preventDefault(); 
+        const id = document.getElementById('rem-id').value || 'r' + Date.now(); 
+        const record = { 
+            id: id, 
+            date: document.getElementById('rem-date').value, 
+            title: document.getElementById('rem-title').value, 
+            type: document.getElementById('rem-type').value, 
+            amount: parseFloat(document.getElementById('rem-amount').value) || null, 
+            status: 'Pending' 
+        }; 
+        const idx = reminders.findIndex(x => x.id === id); 
+        
+        if (idx >= 0) reminders[idx] = record; 
+        else reminders.push(record); 
+        
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        closeModal('rem-modal'); 
+        navigate('reminders'); 
     }
-
-    function markRemDone(id) { const idx = reminders.findIndex(x => x.id === id); if (idx >= 0) reminders[idx].status = 'Done'; localStorage.setItem('gf_reminders', JSON.stringify(reminders)); navigate('reminders'); }
-    function deleteRem(id) { if(confirm('Delete this reminder?')) { reminders = reminders.filter(x => x.id !== id); localStorage.setItem('gf_reminders', JSON.stringify(reminders)); navigate('reminders'); } }
+    
+    function markRemDone(id) { 
+        const idx = reminders.findIndex(x => x.id === id); 
+        if (idx >= 0) reminders[idx].status = 'Done'; 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+    }
+    
+    function deleteRem(id) { 
+        if(confirm('Delete this reminder?')) { 
+            reminders = reminders.filter(x => x.id !== id); 
+            localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+            navigate('reminders'); 
+        } 
+    }
 
     // --- VIEW 6: STATEMENTS (IMPORT & EXPORT) ---
     function renderStatements() {
@@ -1411,14 +1283,14 @@ async function forceSync() {
               </select>
             </div>
             <div style="display:flex; align-items:flex-end;">
-              <button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download Statement</button>
+              <button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download CSV Backup</button>
             </div>
           </div>
         </div>
 
         <div class="panel">
           <div class="panel-head"><h3>Smart Statement Importer (Copy & Paste)</h3></div>
-          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Paste your bank or credit card statement text below. We will intelligently extract dates, amounts, and auto-categorize them. You can edit any mistakes in the All Records view.</p>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Paste your bank or credit card statement text below. We will intelligently extract dates, amounts, and auto-categorize them.</p>
           <textarea id="import-text" class="input-field" style="height: 120px; resize: vertical; margin-bottom: 12px; font-family: monospace;" placeholder="Paste raw statement lines here (e.g., 12/09/2026 Amazon Order 1450.00)"></textarea>
           <div class="grid-2">
             <div>
@@ -1430,148 +1302,136 @@ async function forceSync() {
               </select>
             </div>
             <div style="display:flex; align-items:flex-end;">
-              <button class="btn primary" style="width:100%; height:41px;" onclick="processImport()">Analyze & Import Transactions</button>
+              <button class="btn primary" style="width:100%; height:41px;" onclick="processImport()">Analyze & Import Locally</button>
             </div>
           </div>
         </div>
       `;
     }
-
+    
     function exportCSV() {
-      const period = document.getElementById('export-period').value;
-      let filtered = ledger;
+      const period = document.getElementById('export-period').value; 
+      let filtered = ledger; 
       const now = new Date();
-      if (period !== 'ALL') {
-        filtered = ledger.filter(t => {
-          const tDate = new Date(t.date);
-          if (period === 'CUR_MONTH') return t.date.startsWith('2026-09');
-          if (period === 'LAST_3_MONTHS') return (now - tDate) <= (90 * 24 * 60 * 60 * 1000);
-          if (period === 'LAST_6_MONTHS') return (now - tDate) <= (180 * 24 * 60 * 60 * 1000);
-          if (period === 'LAST_1_YEAR') return (now - tDate) <= (365 * 24 * 60 * 60 * 1000);
-          return true;
-        });
+      
+      if (period !== 'ALL') { 
+          filtered = ledger.filter(t => { 
+              const tDate = new Date(t.date); 
+              if (period === 'CUR_MONTH') return t.date.startsWith('2026-09'); 
+              if (period === 'LAST_3_MONTHS') return (now - tDate) <= (90 * 24 * 60 * 60 * 1000); 
+              if (period === 'LAST_6_MONTHS') return (now - tDate) <= (180 * 24 * 60 * 60 * 1000); 
+              if (period === 'LAST_1_YEAR') return (now - tDate) <= (365 * 24 * 60 * 60 * 1000); 
+              return true; 
+          }); 
       }
+      
       if (filtered.length === 0) return alert("No transactions available for this period.");
-      const headers = ['Date', 'Type', 'Category', 'Description', 'Method', 'Amount', 'User', 'Notes'];
+      
+      const headers = ['Date', 'Type', 'Category', 'Description', 'Method', 'Amount', 'User', 'Notes']; 
       const rows = filtered.map(t => [t.date, t.type, t.category, `"${t.desc}"`, t.method || '', t.amount, t.user, `"${t.notes || ''}"`]);
-      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `Gobinath_Statement_${period}.csv`;
-      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+      
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n'); 
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); 
+      const url = URL.createObjectURL(blob); 
+      const link = document.createElement("a"); 
+      
+      link.href = url; 
+      link.download = `Gobinath_Statement_${period}.csv`; 
+      document.body.appendChild(link); 
+      link.click(); 
+      document.body.removeChild(link);
     }
-
-    async function processImport() {
-      const text = document.getElementById('import-text').value;
-      const method = document.getElementById('import-method').value;
+    
+    function processImport() {
+      const text = document.getElementById('import-text').value; 
+      const method = document.getElementById('import-method').value; 
+      
       if (!text.trim()) return alert('Please paste some text to import.');
 
-      const lines = text.split('\n');
+      const lines = text.split('\n'); 
       let addedCount = 0;
-
-      const catMap = {
-        'zomato': 'Dining Out', 'swiggy': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out',
-        'amazon': 'Groceries', 'flipkart': 'Groceries', 'supermarket': 'Groceries', 'mart': 'Groceries',
-        'uber': 'Fuel / Petrol', 'ola': 'Fuel / Petrol', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol',
-        'airtel': 'Utility Bills', 'jio': 'Utility Bills', 'electricity': 'Electricity (EB)', 'tneb': 'Electricity (EB)',
-        'hospital': 'Medical / Pharmacy', 'pharmacy': 'Medical / Pharmacy', 'clinic': 'Medical / Pharmacy',
-        'lic': 'LIC Payment', 'insurance': 'LIC Payment',
-        'salon': 'Saloon / Parlour', 'parlour': 'Saloon / Parlour', 'hair': 'Saloon / Parlour',
-        'salary': 'Salary Received', 'payroll': 'Salary Received',
-        'emi': 'Loan', 'loan': 'Loan'
+      
+      const catMap = { 
+          'zomato': 'Dining Out', 'swiggy': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out', 
+          'amazon': 'Groceries', 'flipkart': 'Groceries', 'supermarket': 'Groceries', 'mart': 'Groceries', 
+          'uber': 'Fuel / Petrol', 'ola': 'Fuel / Petrol', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 
+          'airtel': 'Utility Bills', 'jio': 'Utility Bills', 'electricity': 'Electricity (EB)', 'tneb': 'Electricity (EB)', 
+          'hospital': 'Medical / Pharmacy', 'pharmacy': 'Medical / Pharmacy', 'clinic': 'Medical / Pharmacy', 
+          'lic': 'LIC Payment', 'insurance': 'LIC Payment', 
+          'salon': 'Saloon / Parlour', 'parlour': 'Saloon / Parlour', 'hair': 'Saloon / Parlour', 
+          'salary': 'Salary Received', 'payroll': 'Salary Received', 
+          'emi': 'Loan', 'loan': 'Loan' 
       };
-
-      const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}');
+      
+      const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}'); 
       const user = sessionData.name || 'Gobinath';
       
-      const parsedRecords = [];
-
       lines.forEach(line => {
         if (!line.trim()) return;
-        let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/);
+        
+        let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/); 
         let dateStr = new Date().toISOString().slice(0, 10);
-        if (dateMatch) {
-          let part1 = dateMatch[1], part2 = dateMatch[2], part3 = dateMatch[3];
-          if (part1.length === 4) { part3 = part1; part1 = dateMatch[3]; } else if (part3.length === 2) { part3 = '20' + part3; }
-          dateStr = `${part3}-${part2.padStart(2, '0')}-${part1.padStart(2, '0')}`;
+        
+        if (dateMatch) { 
+            let part1 = dateMatch[1], part2 = dateMatch[2], part3 = dateMatch[3]; 
+            if (part1.length === 4) { part3 = part1; part1 = dateMatch[3]; } 
+            else if (part3.length === 2) { part3 = '20' + part3; } 
+            dateStr = `${part3}-${part2.padStart(2, '0')}-${part1.padStart(2, '0')}`; 
         }
-        let amtMatch = line.match(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g);
-        let amount = 0;
+        
+        let amtMatch = line.match(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g); 
+        let amount = 0; 
         let isCredit = false;
-        if (amtMatch && amtMatch.length > 0) {
-          let lastAmt = amtMatch[amtMatch.length - 1];
-          if (lastAmt.toLowerCase().includes('cr')) isCredit = true;
-          amount = parseFloat(lastAmt.replace(/[^\d.]/g, ''));
+        
+        if (amtMatch && amtMatch.length > 0) { 
+            let lastAmt = amtMatch[amtMatch.length - 1]; 
+            if (lastAmt.toLowerCase().includes('cr')) isCredit = true; 
+            amount = parseFloat(lastAmt.replace(/[^\d.]/g, '')); 
         }
+        
         if (!amount || isNaN(amount)) return;
-        let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '').replace(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '').trim();
+        
+        let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '').replace(/(?:(?:Rs\.?|INR|₹)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '').trim(); 
         if (!desc) desc = 'Imported Transaction';
-
-        let category = isCredit ? 'Reimbursement' : 'Other Expense';
+        
+        let category = isCredit ? 'Reimbursement' : 'Other Expense'; 
         let lowerDesc = desc.toLowerCase();
-        for (const [key, val] of Object.entries(catMap)) {
-          if (lowerDesc.includes(key)) {
-            category = val;
-            if (incCategories.includes(val)) isCredit = true;
-            break;
-          }
+        
+        for (const [key, val] of Object.entries(catMap)) { 
+            if (lowerDesc.includes(key)) { 
+                category = val; 
+                if (incCategories.includes(val)) isCredit = true; 
+                break; 
+            } 
         }
+        
         if (!isCredit && category === 'Reimbursement') category = 'Other Expense';
-
-        parsedRecords.push({
-          id: 'tx_imp_' + Date.now() + Math.floor(Math.random()*1000),
-          date: dateStr,
-          type: isCredit ? 'CREDIT' : 'DEBIT',
-          category: category,
-          method: method,
-          desc: desc.substring(0, 50),
-          notes: 'Auto-Imported',
-          amount: amount,
-          user: user
+        
+        ledger.unshift({ 
+            id: 'tx_imp_' + Date.now() + Math.floor(Math.random()*1000), 
+            date: dateStr, 
+            type: isCredit ? 'CREDIT' : 'DEBIT', 
+            category: category, 
+            method: method, 
+            desc: desc.substring(0, 50), 
+            notes: 'Auto-Imported', 
+            amount: amount, 
+            user: user 
         });
+        addedCount++;
       });
-
-      if (parsedRecords.length > 0) {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
-          ledger = [...parsedRecords, ...ledger];
-          localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-          alert(`Successfully imported ${parsedRecords.length} transactions locally. Check the All Records tab.`);
-        } else {
-          // Send to API
-          const btn = document.querySelector('.btn.primary');
-          btn.innerText = "Syncing to Cloud...";
-          btn.disabled = true;
-          try {
-            for (const rec of parsedRecords) {
-              await apiCall('addTransaction', rec);
-            }
-            alert(`Successfully imported and synced ${parsedRecords.length} transactions to Google Sheets!`);
-            await forceSync(); // Pull latest
-          } catch(err) {
-            alert("Error syncing imports: " + err.message);
-          } finally {
-            btn.innerText = "Analyze & Import Transactions";
-            btn.disabled = false;
-          }
-        }
-        document.getElementById('import-text').value = '';
-      } else {
-        alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.');
+      
+      if (addedCount > 0) { 
+          localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+          alert(`Successfully imported ${addedCount} transactions locally. Check the All Records tab.`); 
+          document.getElementById('import-text').value = ''; 
+      } else { 
+          alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
     }
 
-    // --- VIEW 7: SETTINGS, USERS & THEMES ---
+    // --- VIEW 7: SETTINGS ---
     function renderSettings() {
-      let usersHtml = users.map(u => `
-        <tr>
-          <td>${u.name}</td>
-          <td><span class="badge ${u.role.includes('Owner') ? 'credit' : 'debit'}">${u.role}</span></td>
-          <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('${u.name}')">Reset Password</button></td>
-        </tr>
-      `).join('');
-
       return `
         <div class="panel">
           <div class="panel-head"><h3>Appearance Customization</h3></div>
@@ -1587,124 +1447,142 @@ async function forceSync() {
             </div>
           </div>
         </div>
-        
-        <div class="panel">
-          <div class="panel-head">
-            <h3>User Management</h3>
-            <button class="btn primary" onclick="document.getElementById('user-modal').style.display='grid'">+ Add New User</button>
-          </div>
-          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, reset passwords, and assign permissions.</p>
-          <div class="table-responsive">
-            <table style="margin-bottom:16px;">
-              ${usersHtml}
-            </table>
-          </div>
-        </div>
       `;
     }
-
-    function changeTheme(val) { currentTheme = val; document.documentElement.setAttribute('data-theme', val); localStorage.setItem('gf_theme', val); }
-    function resetMemberPassword(uid) { if(confirm(`Reset password for ${uid}? They will be forced to set a new password on their next login.`)) { alert(`Password cleared for ${uid}.`); } }
-    function saveUser(e) { e.preventDefault(); const name = document.getElementById('new-user-name').value; const role = document.getElementById('new-user-role').value; users.push({ name, role }); localStorage.setItem('gf_users_list', JSON.stringify(users)); closeModal('user-modal'); navigate('settings'); }
-
-    // --- TRANSACTION MODAL CONTROLS ---
-    function openTxModal(type) {
-      document.getElementById('tx-form').reset();
-      document.getElementById('tx-id').value = '';
-      document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income';
-      document.getElementById('tx-type').value = type;
-      document.getElementById('tx-date').valueAsDate = new Date();
-      document.getElementById('tx-save-btn').innerText = 'Save Transaction';
-      updateCatOptions();
-      document.getElementById('tx-modal').style.display = 'grid';
+    
+    function changeTheme(val) { 
+        currentTheme = val; 
+        document.documentElement.setAttribute('data-theme', val); 
+        localStorage.setItem('gf_theme', val); 
     }
 
-    function updateCatOptions() {
-      const type = document.getElementById('tx-type').value;
-      const catSelect = document.getElementById('tx-category');
-      const list = type === 'DEBIT' ? expCategories : incCategories;
-      catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
+    // --- LOCAL TRANSACTION CONTROLS ---
+    function openTxModal(type) { 
+        document.getElementById('tx-form').reset(); 
+        document.getElementById('tx-id').value = ''; 
+        document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; 
+        document.getElementById('tx-type').value = type; 
+        document.getElementById('tx-date').valueAsDate = new Date(); 
+        document.getElementById('tx-save-btn').innerText = 'Save Transaction'; 
+        updateCatOptions(); 
+        document.getElementById('tx-modal').style.display = 'grid'; 
     }
-
-    function editTx(id) {
-      const t = ledger.find(x => x.id === id);
-      if (!t) return;
-      document.getElementById('tx-id').value = t.id;
-      document.getElementById('tx-modal-title').innerText = 'Edit Transaction';
-      document.getElementById('tx-date').value = t.date;
-      document.getElementById('tx-type').value = t.type;
-      updateCatOptions();
-      document.getElementById('tx-category').value = t.category;
-      document.getElementById('tx-desc').value = t.desc;
-      document.getElementById('tx-amount').value = t.amount;
-      document.getElementById('tx-user').value = t.user;
-      document.getElementById('tx-method').value = t.method || 'UPI';
-      document.getElementById('tx-notes').value = t.notes || '';
-      document.getElementById('tx-save-btn').innerText = 'Update Transaction';
-      document.getElementById('tx-modal').style.display = 'grid';
+    
+    function updateCatOptions() { 
+        const type = document.getElementById('tx-type').value; 
+        const catSelect = document.getElementById('tx-category'); 
+        const list = type === 'DEBIT' ? expCategories : incCategories; 
+        catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); 
     }
-
-    async function deleteTx(id) {
-      if (!confirm('Delete this transaction permanently?')) return;
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
-        ledger = ledger.filter(x => x.id !== id);
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        const activeNav = document.querySelector('.nav-item.active').innerText;
-        if(activeNav.includes('Records')) navigate('records'); else navigate('overview');
-        return;
-      }
-      try {
-        await apiCall('deleteTransaction', { id });
-        await forceSync();
-      } catch (err) { alert(err.message); }
+    
+    function editTx(id) { 
+        const t = ledger.find(x => x.id === id); 
+        if (!t) return; 
+        
+        document.getElementById('tx-id').value = t.id; 
+        document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; 
+        document.getElementById('tx-date').value = t.date; 
+        document.getElementById('tx-type').value = t.type; 
+        
+        updateCatOptions(); 
+        
+        document.getElementById('tx-category').value = t.category; 
+        document.getElementById('tx-desc').value = t.desc; 
+        document.getElementById('tx-amount').value = t.amount; 
+        document.getElementById('tx-user').value = t.user; 
+        document.getElementById('tx-method').value = t.method || 'UPI'; 
+        document.getElementById('tx-notes').value = t.notes || ''; 
+        
+        document.getElementById('tx-save-btn').innerText = 'Update Transaction'; 
+        document.getElementById('tx-modal').style.display = 'grid'; 
     }
-
-    async function saveTx(e) {
-      e.preventDefault();
-      const btn = document.getElementById('tx-save-btn');
-      btn.disabled = true;
-      btn.innerText = 'Saving...';
+    
+    function deleteTx(id) { 
+        if (!confirm('Delete this transaction permanently?')) return; 
+        
+        ledger = ledger.filter(x => x.id !== id); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+        
+        const activeNav = document.querySelector('.nav-item.active').innerText; 
+        if(activeNav.includes('Records')) navigate('records'); 
+        else navigate('overview'); 
+    }
+    
+    function saveTx(e) {
+      e.preventDefault(); 
       const id = document.getElementById('tx-id').value || String(Date.now());
-      const record = { id: id, date: document.getElementById('tx-date').value, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value };
       
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
-        const idx = ledger.findIndex(x => x.id === id);
-        if (idx >= 0) ledger[idx] = record; else ledger.unshift(record);
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        closeModal('tx-modal');
-        btn.disabled = false;
-        const activeNav = document.querySelector('.nav-item.active').innerText;
-        if(activeNav.includes('Records')) navigate('records'); else navigate('overview');
-        return;
-      }
-
-      try {
-        const isEdit = document.getElementById('tx-id').value !== '';
-        await apiCall(isEdit ? 'editTransaction' : 'addTransaction', record);
-        closeModal('tx-modal');
-        await forceSync();
-      } catch (err) { alert(err.message); } finally { btn.disabled = false; btn.innerText = 'Save Transaction'; }
+      const record = { 
+          id: id, 
+          date: document.getElementById('tx-date').value, 
+          type: document.getElementById('tx-type').value, 
+          category: document.getElementById('tx-category').value, 
+          method: document.getElementById('tx-method').value, 
+          desc: document.getElementById('tx-desc').value, 
+          notes: document.getElementById('tx-notes').value, 
+          amount: parseFloat(document.getElementById('tx-amount').value), 
+          user: document.getElementById('tx-user').value 
+      };
+      
+      const idx = ledger.findIndex(x => x.id === id); 
+      if (idx >= 0) ledger[idx] = record; 
+      else ledger.unshift(record);
+      
+      localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+      closeModal('tx-modal');
+      
+      const activeNav = document.querySelector('.nav-item.active').innerText; 
+      if(activeNav.includes('Records')) navigate('records'); 
+      else navigate('overview');
     }
-
-    function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+    
+    function closeModal(modalId) { 
+        document.getElementById(modalId).style.display = 'none'; 
+    }
 
     // --- REUSABLE HTML GENERATORS ---
     function renderTableHTML(data, title, sortable) {
       const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
+      
       return `
         ${title ? `<div class="panel-head"><h3>${title}</h3></div>` : ''}
         <div class="table-responsive">
           <table>
-            <thead><tr>${th('Date','date')} ${th('Type','type')} ${th('Category','category')} ${th('Description','desc')} ${th('Amount','amount')} <th>Actions</th></tr></thead>
+            <thead>
+                <tr>
+                    ${th('Date','date')} 
+                    ${th('Type','type')} 
+                    ${th('Category','category')} 
+                    ${th('Description','desc')} 
+                    ${th('Amount','amount')} 
+                    <th>Actions</th>
+                </tr>
+            </thead>
             <tbody>
               ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
-              ${data.map(t => `<tr><td>${t.date}</td><td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td><td>${t.category}</td><td>${t.desc}</td><td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}</td><td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button></td></tr>`).join('')}
+              ${data.map(t => `
+                  <tr>
+                      <td>${t.date}</td>
+                      <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
+                      <td>${t.category}</td>
+                      <td>${t.desc}</td>
+                      <td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">
+                          ${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}
+                      </td>
+                      <td>
+                          <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> 
+                          <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
+                      </td>
+                  </tr>
+              `).join('')}
             </tbody>
           </table>
         </div>
       `;
     }
 
+    // Launch App Directly
+    navigate('home');
   </script>
 </body>
 </html>
