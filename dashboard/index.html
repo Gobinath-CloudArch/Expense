@@ -700,7 +700,6 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    // Load purely from local device storage (No API calls block the UI)
     let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
@@ -720,7 +719,7 @@
     // --- QUNTET CLOUD SYNC ENGINE (JSONP & TEXT/PLAIN POST) ---
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") return reject(new Error("Missing URL"));
+        if (!APPS_SCRIPT_URL) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) {
           delete window[callbackName];
@@ -746,13 +745,12 @@
 
     // --- BACKGROUND AUTO-SYNC LOGIC ---
     async function backgroundSync() {
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") return;
+      if (!APPS_SCRIPT_URL) return;
       try {
         const cloudData = await apiGetJSONP('getDashboard');
         const cloudTxs = cloudData.transactions || [];
         const cloudIds = new Set(cloudTxs.map(t => t.id));
         
-        // 1. Identify missing local entries (e.g. from JSON imports) and push them
         let localTxs = JSON.parse(localStorage.getItem('gf_ledger')) || [];
         const missingInCloud = localTxs.filter(t => !cloudIds.has(t.id));
 
@@ -760,18 +758,15 @@
            for (const tx of missingInCloud) {
               await apiPost('addTransaction', tx);
            }
-           // Fetch fresh cloud list after pushing
            const updatedCloudData = await apiGetJSONP('getDashboard');
            ledger = updatedCloudData.transactions || [];
         } else {
            ledger = cloudTxs;
         }
         
-        // 2. Sort and update local storage silently
         ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         
-        // 3. Refresh UI silently if applicable
         const activeNav = document.querySelector('.nav-item.active');
         if (activeNav) {
           const navText = activeNav.innerText;
@@ -787,12 +782,10 @@
 
     // --- OPTIMISTIC APP BOOT ---
     function bootApp() {
-      // 1. Load instantly using local data (Zero waiting time)
       ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
       navigate('home');
 
-      // 2. Automatically sync to cloud in background
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+      if (APPS_SCRIPT_URL) {
           backgroundSync();
       }
     }
@@ -1480,7 +1473,7 @@
             navigate('records');
             
             // Trigger auto-sync so the newly imported data pushes to Google Sheets
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") backgroundSync();
+            if (APPS_SCRIPT_URL) backgroundSync();
 
           } else {
             alert("Invalid backup file format.");
@@ -1609,7 +1602,7 @@
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
           alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
-          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") backgroundSync();
+          if (APPS_SCRIPT_URL) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1719,7 +1712,7 @@
         else navigate('overview'); 
         
         // 2. Background Sync Delete
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+        if (APPS_SCRIPT_URL) {
             try { 
                 await apiPost('deleteTransaction', { id }); 
             } catch (err) { 
@@ -1765,7 +1758,7 @@
       else navigate('overview');
 
       // 2. Background Sync Post
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+      if (APPS_SCRIPT_URL) {
           try {
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
           } catch (err) { 
