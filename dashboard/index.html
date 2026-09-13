@@ -699,6 +699,7 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
+    // Load purely from local device storage (No API calls)
     let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
@@ -718,7 +719,7 @@
     // --- QUNTET CLOUD SYNC ENGINE (JSONP & TEXT/PLAIN POST) ---
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") return reject(new Error("Missing URL"));
+        if (!APPS_SCRIPT_URL) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) {
           delete window[callbackName];
@@ -744,7 +745,7 @@
 
     async function bootApp() {
       try {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+        if (!APPS_SCRIPT_URL) {
             ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
             navigate('home');
             return;
@@ -1658,7 +1659,7 @@
     async function deleteTx(id) { 
         if (!confirm('Delete this transaction permanently?')) return; 
         
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+        if (!APPS_SCRIPT_URL) {
             ledger = ledger.filter(x => x.id !== id); 
             localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
             const activeNav = document.querySelector('.nav-item.active').innerText; 
@@ -1694,7 +1695,7 @@
           user: document.getElementById('tx-user').value 
       };
       
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+      if (!APPS_SCRIPT_URL) {
           const idx = ledger.findIndex(x => x.id === id); 
           if (idx >= 0) ledger[idx] = record; 
           else ledger.unshift(record);
