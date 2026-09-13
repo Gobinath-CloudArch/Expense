@@ -721,7 +721,7 @@
   <script>
     // --- APP SCRIPT URL ---
     // PASTE YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL HERE
-    const  = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec"; 
+    const  = "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/"; 
 
     // --- IDLE TIMEOUT (10 MINUTES) ---
     let idleTime = 0;
@@ -811,7 +811,7 @@
 async function apiCall(action, data = {}) {
   const token = localStorage.getItem('gf_token');
   if (!token) throw new Error("No session token.");
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
     throw new Error("API URL is missing.");
   }
 
@@ -841,7 +841,7 @@ async function apiCall(action, data = {}) {
 
 async function bootApp() {
   try {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
         alert("⚠️ Please paste your Apps Script URL into dashboard/index.html to sync transactions across devices.");
         ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
         navigate('home');
@@ -1534,7 +1534,7 @@ async function forceSync() {
       });
 
       if (parsedRecords.length > 0) {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
           ledger = [...parsedRecords, ...ledger];
           localStorage.setItem('gf_ledger', JSON.stringify(ledger));
           alert(`Successfully imported ${parsedRecords.length} transactions locally. Check the All Records tab.`);
@@ -1646,7 +1646,7 @@ async function forceSync() {
 
     async function deleteTx(id) {
       if (!confirm('Delete this transaction permanently?')) return;
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
         ledger = ledger.filter(x => x.id !== id);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         const activeNav = document.querySelector('.nav-item.active').innerText;
@@ -1667,7 +1667,7 @@ async function forceSync() {
       const id = document.getElementById('tx-id').value || String(Date.now());
       const record = { id: id, date: document.getElementById('tx-date').value, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value };
       
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
         const idx = ledger.findIndex(x => x.id === id);
         if (idx >= 0) ledger[idx] = record; else ledger.unshift(record);
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
