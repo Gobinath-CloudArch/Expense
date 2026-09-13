@@ -639,7 +639,7 @@
 
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
+    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // --- GLOBAL CLOCK ---
     setInterval(() => {
@@ -679,13 +679,14 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Loan Repayment'
     ];
 
-    // Load purely from local device storage initially
-    let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
+    let ledger = [];
+    
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
         'Groceries': { type: 'Fixed', val: 15000 }, 
         'Credit Card Bill': { type: 'Percentage', val: 15 } 
     };
-    let reminders = JSON.parse(localStorage.getItem('gf_reminders')) || [];
+    
+    let reminders = [];
 
     let sortCol = 'date';
     let sortAsc = false;
@@ -708,8 +709,8 @@
                 }
             }
             
-            // Create a unique signature to prevent duplicate bugs
-            const sig = `${tx.date}_${Number(tx.amount)}_${(tx.desc || '').trim().toLowerCase()}`;
+            // Strictly identify transactions by ID so edits sync safely
+            const sig = String(tx.id).trim();
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(tx);
@@ -730,7 +731,7 @@
                     r.date = r.date.split('T')[0];
                 }
             }
-            const sig = `${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`;
+            const sig = String(r.id).trim();
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(r);
@@ -757,7 +758,7 @@
       });
     }
 
-    // Standard POST without no-cors so we capture real completion and redirects
+    // Standard POST to capture completion directly to Apps Script
     async function apiPost(action, data) {
        try {
            await fetch(APPS_SCRIPT_URL, {
@@ -778,17 +779,31 @@
       try {
         const cloudData = await apiGetJSONP('getDashboard');
         
-        // 1. Process Transactions
+        // Google Sheets is the Master. Overwrite safely.
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
-        const cloudSignatures = new Set(cloudTxs.map(t => `${t.date}_${Number(t.amount)}_${(t.desc || '').trim().toLowerCase()}`));
+        const cloudIds = new Set(cloudTxs.map(t => String(t.id)));
         let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
-        const missingInCloud = localTxs.filter(t => !cloudSignatures.has(`${t.date}_${Number(t.amount)}_${(t.desc || '').trim().toLowerCase()}`));
+        
+        // Prevent deleted items from re-syncing by checking a strict 12-hour age limit
+        const now = Date.now();
+        const missingInCloud = localTxs.filter(t => {
+            if (cloudIds.has(String(t.id))) return false;
+            const tsMatch = String(t.id).match(/\d{13}/);
+            if (tsMatch && (now - parseInt(tsMatch[0]) < 12 * 3600 * 1000)) return true;
+            if (String(t.id).includes('imp')) return true; // Always push recent imports
+            return false;
+        });
 
-        // 2. Process Reminders
+        // Sync Reminders
         let cloudRems = deduplicateReminders(cloudData.reminders || []);
-        const cloudRemSigs = new Set(cloudRems.map(r => `${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`));
+        const cloudRemIds = new Set(cloudRems.map(r => String(r.id)));
         let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
-        const missingRems = localRems.filter(r => !cloudRemSigs.has(`${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`));
+        const missingRems = localRems.filter(r => {
+            if (cloudRemIds.has(String(r.id))) return false;
+            const tsMatch = String(r.id).match(/\d{13}/);
+            if (tsMatch && (now - parseInt(tsMatch[0]) < 12 * 3600 * 1000)) return true;
+            return false;
+        });
 
         let requiresRefresh = false;
 
@@ -814,10 +829,11 @@
            ledger = cloudTxs;
            if (cloudData.reminders) {
                reminders = cloudRems;
-               requiresRefresh = true;
            }
+           requiresRefresh = true;
         }
         
+        // Ensure Google Sheets definitively dictates the device state
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         if (requiresRefresh) {
             localStorage.setItem('gf_reminders', JSON.stringify(reminders));
@@ -837,13 +853,21 @@
       }
     }
 
+    async function triggerManualSync() {
+        const btn = document.getElementById('manual-sync-btn');
+        if(btn) { btn.disabled = true; btn.innerText = "Syncing..."; }
+        await backgroundSync();
+        if(btn) { btn.disabled = false; btn.innerText = "🔄 Force Master Sync"; }
+        alert("Sync complete. Dashboard is fully updated with Google Sheets.");
+    }
+
     // --- OPTIMISTIC APP BOOT ---
     async function bootApp() {
       const localData = localStorage.getItem('gf_ledger');
       const localRemData = localStorage.getItem('gf_reminders');
       
       // If new device or empty storage, ALWAYS await cloud fetch before showing UI
-      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           try {
               const cloudData = await apiGetJSONP('getDashboard');
               ledger = deduplicateLedger(cloudData.transactions || []);
@@ -862,7 +886,7 @@
       navigate('home');
 
       // Trigger standard background sync to upload/download any mis-matches silently
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           backgroundSync();
       }
     }
@@ -1353,9 +1377,11 @@
       let pending = reminders.filter(r => r.status === 'Pending').sort((a,b) => new Date(a.date) - new Date(b.date)); 
       let done = reminders.filter(r => r.status === 'Done').sort((a,b) => new Date(b.date) - new Date(a.date));
 
-      const rowHtml = (r) => `
+      const rowHtml = (r) => {
+        const displayDate = r.date ? r.date.split('T')[0] : '';
+        return `
         <tr>
-          <td>${r.date}</td>
+          <td>${displayDate}</td>
           <td><span class="badge ${r.status === 'Pending' ? 'warn' : 'credit'}">${r.status}</span></td>
           <td><span class="badge ${r.type.includes('Date') ? 'primary' : 'debit'}">${r.type}</span></td>
           <td style="font-weight:700;">${r.title}</td>
@@ -1365,6 +1391,7 @@
             <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
           </td>
         </tr>`;
+      };
 
       return `
         <div class="panel">
@@ -1409,7 +1436,7 @@
         
         const record = { 
             id: id, 
-            date: document.getElementById('rem-date').value, 
+            date: document.getElementById('rem-date').value.split('T')[0], 
             title: document.getElementById('rem-title').value, 
             type: document.getElementById('rem-type').value, 
             amount: parseFloat(document.getElementById('rem-amount').value) || null, 
@@ -1544,7 +1571,7 @@
             // Merge ledgers securely without duplicates
             importedData.ledger.forEach(t => {
               if (!existingIds.has(String(t.id))) {
-                if (t.date) t.date = t.date.split('T')[0];
+                if (t.date && t.date.includes('T')) t.date = t.date.split('T')[0];
                 ledger.push(t);
                 added++;
               }
@@ -1559,7 +1586,14 @@
               localStorage.setItem('gf_budgets', JSON.stringify(budgets));
             }
             if (importedData.reminders) {
-              reminders = deduplicateReminders(importedData.reminders);
+              const existingRemIds = new Set(reminders.map(r => String(r.id)));
+              importedData.reminders.forEach(r => {
+                  if (!existingRemIds.has(String(r.id))) {
+                      if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0];
+                      reminders.push(r);
+                  }
+              });
+              reminders = deduplicateReminders(reminders);
               localStorage.setItem('gf_reminders', JSON.stringify(reminders));
             }
             
@@ -1706,6 +1740,14 @@
     // --- VIEW 7: SETTINGS & SECURITY ---
     function renderSettings() {
       return `
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Cloud Sync Strategy</h3>
+          </div>
+          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Google Sheets is treated as the Master Storage. Your data syncs automatically in the background, but you can manually trigger a hard push/pull below.</p>
+          <button class="btn primary" id="manual-sync-btn" onclick="triggerManualSync()">🔄 Force Master Sync</button>
+        </div>
+
         <div class="panel">
           <div class="panel-head"><h3>Appearance Customization</h3></div>
           <div class="grid-2">
