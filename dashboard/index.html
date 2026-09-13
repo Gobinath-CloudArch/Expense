@@ -556,8 +556,7 @@
           <div class="form-group">
             <label>User</label>
             <select id="tx-user" class="input-field">
-              <option value="Gobinath">Gobinath</option>
-              <option value="Avadaipriya K.">Avadaipriya K.</option>
+              <!-- Dynamically populated -->
             </select>
           </div>
         </div>
@@ -680,12 +679,11 @@
     ];
 
     let ledger = [];
-    
+    let users = JSON.parse(localStorage.getItem('gf_users')) || ['Gobinath', 'Avadaipriya K.'];
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
         'Groceries': { type: 'Fixed', val: 15000 }, 
         'Credit Card Bill': { type: 'Percentage', val: 15 } 
     };
-    
     let reminders = [];
 
     let sortCol = 'date';
@@ -709,8 +707,8 @@
                 }
             }
             
-            // Strictly identify transactions by ID so edits sync safely
-            const sig = String(tx.id).trim();
+            // Create a unique signature to prevent duplicate bugs
+            const sig = `${tx.date}_${Number(tx.amount)}_${(tx.desc || '').trim().toLowerCase()}`;
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(tx);
@@ -731,7 +729,7 @@
                     r.date = r.date.split('T')[0];
                 }
             }
-            const sig = String(r.id).trim();
+            const sig = `${r.date}_${String(r.title).trim().toLowerCase()}_${Number(r.amount)}`;
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(r);
@@ -758,7 +756,7 @@
       });
     }
 
-    // Standard POST to capture completion directly to Apps Script
+    // Standard POST without no-cors so we capture real completion and redirects
     async function apiPost(action, data) {
        try {
            await fetch(APPS_SCRIPT_URL, {
@@ -779,35 +777,39 @@
       try {
         const cloudData = await apiGetJSONP('getDashboard');
         
-        // Google Sheets is the Master. Overwrite safely.
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
-        const cloudIds = new Set(cloudTxs.map(t => String(t.id)));
         let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
+        const cloudIds = new Set(cloudTxs.map(t => String(t.id)));
         
-        // Prevent deleted items from re-syncing by checking a strict 12-hour age limit
+        // Prevent deleted items from re-syncing by checking a strict 24-hour age limit
         const now = Date.now();
         const missingInCloud = localTxs.filter(t => {
             if (cloudIds.has(String(t.id))) return false;
             const tsMatch = String(t.id).match(/\d{13}/);
-            if (tsMatch && (now - parseInt(tsMatch[0]) < 12 * 3600 * 1000)) return true;
+            if (tsMatch && (now - parseInt(tsMatch[0]) < 24 * 3600 * 1000)) return true;
             if (String(t.id).includes('imp')) return true; // Always push recent imports
             return false;
         });
 
-        // Sync Reminders
         let cloudRems = deduplicateReminders(cloudData.reminders || []);
-        const cloudRemIds = new Set(cloudRems.map(r => String(r.id)));
         let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
+        const cloudRemIds = new Set(cloudRems.map(r => String(r.id)));
         const missingRems = localRems.filter(r => {
             if (cloudRemIds.has(String(r.id))) return false;
             const tsMatch = String(r.id).match(/\d{13}/);
-            if (tsMatch && (now - parseInt(tsMatch[0]) < 12 * 3600 * 1000)) return true;
+            if (tsMatch && (now - parseInt(tsMatch[0]) < 24 * 3600 * 1000)) return true;
             return false;
         });
 
+        // Pull immediately for UI speed
+        ledger = deduplicateLedger([...cloudTxs, ...missingInCloud]);
+        reminders = deduplicateReminders([...cloudRems, ...missingRems]);
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders));
+
         let requiresRefresh = false;
 
-        // Advanced Queueing: Push missing entries slowly
+        // Push missing entries slowly
         if (missingInCloud.length > 0 || missingRems.length > 0) {
            for (const tx of missingInCloud) {
               await apiPost('addTransaction', tx);
@@ -817,26 +819,12 @@
               await apiPost('addReminder', r);
               await new Promise(res => setTimeout(res, 400));
            }
-           
-           await new Promise(r => setTimeout(r, 1500));
-           const updatedCloudData = await apiGetJSONP('getDashboard');
-           ledger = deduplicateLedger(updatedCloudData.transactions || []);
-           if (updatedCloudData.reminders) {
-               reminders = deduplicateReminders(updatedCloudData.reminders);
-           }
            requiresRefresh = true;
         } else {
-           ledger = cloudTxs;
-           if (cloudData.reminders) {
-               reminders = cloudRems;
+           // If we just pulled down new entries from another device
+           if (cloudTxs.length > localTxs.length || cloudRems.length > localRems.length) {
+               requiresRefresh = true;
            }
-           requiresRefresh = true;
-        }
-        
-        // Ensure Google Sheets definitively dictates the device state
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        if (requiresRefresh) {
-            localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         }
         
         const activeNav = document.querySelector('.nav-item.active');
@@ -855,7 +843,7 @@
 
     async function triggerManualSync() {
         const btn = document.getElementById('manual-sync-btn');
-        if(btn) { btn.disabled = true; btn.innerText = "Syncing..."; }
+        if(btn) { btn.disabled = true; btn.innerText = "⏳ Syncing..."; }
         await backgroundSync();
         if(btn) { btn.disabled = false; btn.innerText = "🔄 Force Master Sync"; }
         alert("Sync complete. Dashboard is fully updated with Google Sheets.");
@@ -866,8 +854,13 @@
       const localData = localStorage.getItem('gf_ledger');
       const localRemData = localStorage.getItem('gf_reminders');
       
+      let isLocalEmpty = true;
+      if (localData && localData !== "[]") {
+          try { if (JSON.parse(localData).length > 0) isLocalEmpty = false; } catch(e){}
+      }
+      
       // If new device or empty storage, ALWAYS await cloud fetch before showing UI
-      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+      if (isLocalEmpty && APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           try {
               const cloudData = await apiGetJSONP('getDashboard');
               ledger = deduplicateLedger(cloudData.transactions || []);
@@ -891,11 +884,30 @@
       }
     }
 
-    // --- ACCOUNT LOGIC ---
+    // --- ACCOUNT & USER MANAGEMENT LOGIC ---
     function logout() {
         if(confirm("Are you sure you want to log out?")) {
             localStorage.removeItem('gf_user');
             window.location.href = '../index.html';
+        }
+    }
+
+    function addNewUser() {
+        const input = document.getElementById('new-username');
+        const name = input.value.trim();
+        if(name && !users.includes(name)) {
+            users.push(name);
+            localStorage.setItem('gf_users', JSON.stringify(users));
+            input.value = '';
+            navigate('settings');
+        }
+    }
+
+    function removeUser(name) {
+        if(confirm(`Remove user ${name}?`)) {
+            users = users.filter(u => u !== name);
+            localStorage.setItem('gf_users', JSON.stringify(users));
+            navigate('settings');
         }
     }
 
@@ -1542,7 +1554,8 @@
       const data = {
         ledger: ledger,
         budgets: budgets,
-        reminders: reminders
+        reminders: reminders,
+        users: users
       };
       
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
@@ -1595,6 +1608,10 @@
               });
               reminders = deduplicateReminders(reminders);
               localStorage.setItem('gf_reminders', JSON.stringify(reminders));
+            }
+            if (importedData.users) {
+              users = [...new Set([...users, ...importedData.users])];
+              localStorage.setItem('gf_users', JSON.stringify(users));
             }
             
             alert(`✅ Backup Restored: Merged ${added} new transactions. They will now sync to the cloud in the background.`);
@@ -1767,23 +1784,27 @@
           <div class="panel-head">
             <h3>User Management & Security</h3>
           </div>
-          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">For maximum security, passwords are saved strictly to this device's local memory, meaning you must set a password on each new phone or laptop you use. You can reset a local device password below.</p>
+          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, add new members, and reset device passwords.</p>
+          <div style="display:flex; gap:10px; margin-bottom: 16px;">
+            <input type="text" id="new-username" class="input-field" placeholder="Enter new family member name...">
+            <button class="btn primary" onclick="addNewUser()" style="white-space:nowrap;">+ Add User</button>
+          </div>
           <div class="table-responsive">
             <table style="margin-bottom:16px;">
               <thead>
                 <tr><th>User</th><th>Role</th><th>Actions</th></tr>
               </thead>
               <tbody>
+                ${users.map(u => `
                 <tr>
-                  <td>Gobinath</td>
+                  <td>${u}</td>
                   <td><span class="badge credit">Owner (Read/Write)</span></td>
-                  <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('gobinath')">Reset Password</button></td>
+                  <td style="display:flex; gap:8px;">
+                    <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('${u}')">Reset Password</button>
+                    <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="removeUser('${u}')">Remove</button>
+                  </td>
                 </tr>
-                <tr>
-                  <td>Avadaipriya K.</td>
-                  <td><span class="badge credit">Owner (Read/Write)</span></td>
-                  <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('avadaipriya')">Reset Password</button></td>
-                </tr>
+                `).join('')}
               </tbody>
             </table>
           </div>
@@ -1814,6 +1835,9 @@
         const catSelect = document.getElementById('tx-category'); 
         const list = type === 'DEBIT' ? expCategories : incCategories; 
         catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); 
+        
+        const userSelect = document.getElementById('tx-user');
+        if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join('');
     }
     
     function editTx(id) { 
