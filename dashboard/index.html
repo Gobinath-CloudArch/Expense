@@ -638,7 +638,7 @@
 
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
+    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // --- GLOBAL CLOCK ---
     setInterval(() => {
@@ -691,49 +691,39 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-    // --- ADVANCED DATA SANITIZATION & DEDUPLICATION WITH STRICT ID INDEXING ---
+    // --- ULTIMATE ENTERPRISE DEDUPLICATION (STRICT HASH MAP) ---
     function deduplicateLedger(txList) {
-        const unique = [];
-        const seen = new Set();
+        if (!txList || !Array.isArray(txList)) return [];
+        const map = new Map();
         
         for (const tx of txList) {
             if (!tx || !tx.id) continue;
-            
-            // Format Google's UTC timestamp to local device date instantly
+            // Clean Date T-Zone instantly
             if (tx.date && tx.date.includes('T')) tx.date = tx.date.split('T')[0];
-            
-            // Match STRICTLY by String ID to permanently destroy duplicates
-            const sig = String(tx.id).trim();
-            if (!seen.has(sig)) {
-                seen.add(sig);
-                unique.push(tx);
-            }
+            // Enforce Strict ID Match to completely destroy duplicates
+            map.set(String(tx.id).trim(), tx);
         }
-        return unique.sort((a,b) => new Date(b.date) - new Date(a.date));
+        return Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date));
     }
 
     function deduplicateReminders(remList) {
-        const unique = [];
-        const seen = new Set();
+        if (!remList || !Array.isArray(remList)) return [];
+        const map = new Map();
         
         for (const r of remList) {
             if (!r || !r.id) continue;
-            
             if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0];
-            
-            const sig = String(r.id).trim();
-            if (!seen.has(sig)) {
-                seen.add(sig);
-                unique.push(r);
-            }
+            map.set(String(r.id).trim(), r);
         }
-        return unique.sort((a,b) => new Date(a.date) - new Date(b.date));
+        return Array.from(map.values()).sort((a,b) => new Date(a.date) - new Date(b.date));
     }
 
     // --- QUNTET CLOUD SYNC ENGINE ---
+    let isSyncing = false; // Mutex lock
+
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return reject(new Error("Missing URL"));
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) {
           delete window[callbackName];
@@ -762,72 +752,87 @@
        }
     }
 
-    // --- ULTIMATE BACKGROUND AUTO-SYNC LOGIC ---
-    async function backgroundSync() {
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return;
+    // --- GLOBAL ENTERPRISE MASTER SYNC (PUSH + PULL) ---
+    async function backgroundSync(isBoot = false) {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return;
+      if (isSyncing) return; // Prevent overlapping loops
+      isSyncing = true;
+
       try {
+        if (isBoot) {
+            document.getElementById('view-container').innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:50vh; text-align:center;">
+                    <div style="width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+                    <h3 style="color:var(--primary); font-size:22px; margin-bottom:8px;">☁️ Enterprise Cloud Sync</h3>
+                    <p style="color:var(--muted); font-size:14px;">Establishing secure connection to Master Storage...</p>
+                    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                </div>`;
+        }
+
         const cloudData = await apiGetJSONP('getDashboard');
         
-        // 1. Process Transactions globally without time-locks
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
-        let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
-        const cloudIds = new Set(cloudTxs.map(t => String(t.id).trim()));
-        
-        const missingInCloud = localTxs.filter(t => !cloudIds.has(String(t.id).trim()));
-
-        // 2. Process Reminders globally without time-locks
         let cloudRems = deduplicateReminders(cloudData.reminders || []);
-        let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
+        
+        const cloudTxIds = new Set(cloudTxs.map(t => String(t.id).trim()));
         const cloudRemIds = new Set(cloudRems.map(r => String(r.id).trim()));
         
+        let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
+        let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
+
+        const missingInCloud = localTxs.filter(t => !cloudTxIds.has(String(t.id).trim()));
         const missingRems = localRems.filter(r => !cloudRemIds.has(String(r.id).trim()));
 
         let requiresRefresh = false;
 
-        // Sequential Queuing to completely prevent Google Sheet Rate Limit duplication bugs
+        // Sequential Queue Push to bypass Rate Limits
         if (missingInCloud.length > 0 || missingRems.length > 0) {
-           for (const tx of missingInCloud) {
-              await apiPost('addTransaction', tx);
-           }
-           for (const r of missingRems) {
-              await apiPost('addReminder', r);
-           }
+           for (const tx of missingInCloud) await apiPost('addTransaction', tx);
+           for (const r of missingRems) await apiPost('addReminder', r);
            
-           const updatedCloudData = await apiGetJSONP('getDashboard');
-           ledger = deduplicateLedger(updatedCloudData.transactions || []);
-           if (updatedCloudData.reminders) {
-               reminders = deduplicateReminders(updatedCloudData.reminders);
-           }
+           // Fetch absolute truth after push
+           const finalCloudData = await apiGetJSONP('getDashboard');
+           ledger = deduplicateLedger(finalCloudData.transactions || []);
+           reminders = deduplicateReminders(finalCloudData.reminders || []);
            requiresRefresh = true;
         } else {
+           // Google Sheet is Truth. Overwrite local mirror
+           if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length) {
+               requiresRefresh = true;
+           }
            ledger = cloudTxs;
            reminders = cloudRems;
-           requiresRefresh = true;
         }
         
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
-        if (requiresRefresh) {
+        // Silent UI Refresh
+        if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
-              const navText = activeNav.innerText;
-              if(navText.includes('Records')) navigate('records');
-              else if(navText.includes('Analyzer')) navigate('analyzer');
-              else if(navText.includes('Budget')) navigate('budget');
-              else if(navText.includes('Reminders')) navigate('reminders');
-              else if(navText.includes('Home')) navigate('home');
+              const navText = activeNav.innerText.trim();
+              if(navText.includes('Records')) navigate('records', activeNav);
+              else if(navText.includes('Analyzer')) navigate('analyzer', activeNav);
+              else if(navText.includes('Budget')) navigate('budget', activeNav);
+              else if(navText.includes('Reminders')) navigate('reminders', activeNav);
+              else navigate('home');
+            } else {
+                navigate('home');
             }
         }
       } catch(e) {
         console.warn("Background auto-sync silently skipped due to network.", e);
+        if (isBoot) navigate('home'); // Rescue boot
+      } finally {
+          isSyncing = false;
       }
     }
 
     async function triggerManualSync() {
         const btn = document.getElementById('manual-sync-btn');
         if(btn) { btn.disabled = true; btn.innerText = "⏳ Syncing..."; }
-        await backgroundSync();
+        await backgroundSync(false);
         if(btn) { btn.disabled = false; btn.innerText = "🔄 Force Master Sync"; }
         alert("Sync complete. Dashboard is fully updated with Google Sheets.");
     }
@@ -837,28 +842,26 @@
       const localData = localStorage.getItem('gf_ledger');
       const localRemData = localStorage.getItem('gf_reminders');
       
-      let isLocalEmpty = true;
-      if (localData && localData !== "[]") {
-          try { if (JSON.parse(localData).length > 0) isLocalEmpty = false; } catch(e){}
-      }
+      let isLocalEmpty = (!localData || JSON.parse(localData).length === 0);
       
-      // If new device or empty storage, ALWAYS await cloud fetch before rendering to prevent blank UI
-      if (isLocalEmpty && APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
-          document.getElementById('view-container').innerHTML = `
-              <div style="padding: 80px 20px; text-align: center;">
-                  <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
-                  <p style="color:var(--muted); font-size:15px;">Syncing Enterprise Master Database...</p>
-              </div>`;
-          await backgroundSync();
-          navigate('home');
-      } else {
-          ledger = deduplicateLedger(JSON.parse(localData) || []);
+      // Load local variables safely
+      if (!isLocalEmpty) {
+          ledger = deduplicateLedger(JSON.parse(localData));
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
-          navigate('home');
-          
-          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
-              backgroundSync();
+      }
+
+      if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
+          // Await Cloud if empty, otherwise boot instant and sync background
+          if (isLocalEmpty) {
+              await backgroundSync(true);
+          } else {
+              navigate('home');
+              backgroundSync(false);
           }
+          // Enable perpetual 15-second heartbeat poll for all devices
+          setInterval(() => backgroundSync(false), 15000);
+      } else {
+          navigate('home');
       }
     }
 
@@ -1432,7 +1435,7 @@
             amount: parseFloat(document.getElementById('rem-amount').value) || null, 
             status: 'Pending' 
         }; 
-        const idx = reminders.findIndex(x => x.id === id); 
+        const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
         
         if (idx >= 0) reminders[idx] = record; 
         else reminders.push(record); 
@@ -1442,18 +1445,18 @@
         closeModal('rem-modal'); 
         navigate('reminders'); 
         
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+        if (APPS_SCRIPT_URL) {
             try { await apiPost(isEdit ? 'editReminder' : 'addReminder', record); } catch(err) { console.error(err); }
         }
     }
     
     async function markRemDone(id) { 
-        const idx = reminders.findIndex(x => x.id === id); 
+        const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
         if (idx >= 0) {
             reminders[idx].status = 'Done'; 
             localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
             navigate('reminders'); 
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+            if (APPS_SCRIPT_URL) {
                 try { await apiPost('editReminder', reminders[idx]); } catch(err) {}
             }
         }
@@ -1461,10 +1464,10 @@
     
     async function deleteRem(id) { 
         if(confirm('Delete this reminder?')) { 
-            reminders = reminders.filter(x => x.id !== id); 
+            reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
             localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
             navigate('reminders'); 
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+            if (APPS_SCRIPT_URL) {
                 try { await apiPost('deleteReminder', { id }); } catch(err) {}
             }
         } 
@@ -1596,7 +1599,7 @@
             navigate('records');
             
             // Trigger auto-sync so the newly imported data pushes to Google Sheets
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
+            if (APPS_SCRIPT_URL) backgroundSync();
 
           } else {
             alert("Invalid backup file format.");
@@ -1726,7 +1729,7 @@
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
           alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
-          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
+          if (APPS_SCRIPT_URL) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1851,7 +1854,7 @@
         else navigate('overview'); 
         
         // 2. Background Sync Delete
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+        if (APPS_SCRIPT_URL) {
             try { 
                 await apiPost('deleteTransaction', { id }); 
             } catch (err) { 
@@ -1899,7 +1902,7 @@
       else navigate('overview');
 
       // 2. Background Sync Post
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+      if (APPS_SCRIPT_URL) {
           try {
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
           } catch (err) { 
