@@ -494,7 +494,6 @@
         <p id="view-sub" style="color:var(--muted); font-size:13px; margin-top:4px;">Welcome and quick actions.</p>
       </div>
       <div style="display: flex; gap: 10px; align-items:center; flex-wrap:wrap;">
-        <span class="badge primary" style="padding: 8px 12px; font-size:12px; border: 1px solid var(--primary);">OFFLINE MODE</span>
         <button class="btn" id="voice-top-btn" onclick="startVoiceAssistant()">🎙️ Voice Add</button>
         <button class="btn primary" onclick="openTxModal('DEBIT')">+ Add Expense</button>
       </div>
@@ -858,12 +857,12 @@
       }
       else if (view === 'statements') { 
           title.innerText = 'Statements (Import / Export)'; 
-          sub.innerText = 'Import raw text or export your ledger to CSV.'; 
+          sub.innerText = 'Move your data across devices or download CSV reports.'; 
           container.innerHTML = renderStatements(); 
       }
       else if (view === 'settings') { 
-          title.innerText = 'Settings, Users & Themes'; 
-          sub.innerText = 'Manage preferences and access control.'; 
+          title.innerText = 'Settings & Themes'; 
+          sub.innerText = 'Manage preferences and visual appearance.'; 
           container.innerHTML = renderSettings(); 
       }
     }
@@ -1266,9 +1265,23 @@
         } 
     }
 
-    // --- VIEW 6: STATEMENTS (IMPORT & EXPORT) ---
+    // --- VIEW 6: STATEMENTS & SYNC (IMPORT & EXPORT) ---
     function renderStatements() {
       return `
+        <div class="panel">
+          <div class="panel-head"><h3>Device Sync (Backup & Restore)</h3></div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Move your data safely to another device. Export a complete database backup here, then import it on your phone or laptop. Importing securely merges records without creating duplicates.</p>
+          <div class="grid-2">
+            <div>
+              <button class="btn" style="width:100%; height:41px;" onclick="exportFullBackup()">⬇️ Download Full Backup</button>
+            </div>
+            <div>
+              <input type="file" id="import-backup-file" accept=".json" style="display:none" onchange="importFullBackup(event)">
+              <button class="btn primary" style="width:100%; height:41px;" onclick="document.getElementById('import-backup-file').click()">⬆️ Restore / Import Backup</button>
+            </div>
+          </div>
+        </div>
+      
         <div class="panel">
           <div class="panel-head"><h3>Export Ledger to CSV</h3></div>
           <div class="grid-2">
@@ -1283,7 +1296,7 @@
               </select>
             </div>
             <div style="display:flex; align-items:flex-end;">
-              <button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download CSV Backup</button>
+              <button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download CSV Report</button>
             </div>
           </div>
         </div>
@@ -1307,6 +1320,71 @@
           </div>
         </div>
       `;
+    }
+
+    // New Function: Export full JSON Backup for device syncing
+    function exportFullBackup() {
+      const data = {
+        ledger: ledger,
+        budgets: budgets,
+        reminders: reminders
+      };
+      
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `Gobinath_Finance_Backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(dlAnchorElem);
+      dlAnchorElem.click();
+      document.body.removeChild(dlAnchorElem);
+    }
+
+    // New Function: Import and Merge JSON Backup from another device
+    function importFullBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          
+          if (importedData.ledger) {
+            const existingIds = new Set(ledger.map(t => t.id));
+            let added = 0;
+            
+            // Merge ledgers securely without duplicates
+            importedData.ledger.forEach(t => {
+              if (!existingIds.has(t.id)) {
+                ledger.push(t);
+                added++;
+              }
+            });
+            
+            // Re-sort correctly
+            ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
+            localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+            
+            if (importedData.budgets) {
+              budgets = importedData.budgets;
+              localStorage.setItem('gf_budgets', JSON.stringify(budgets));
+            }
+            if (importedData.reminders) {
+              reminders = importedData.reminders;
+              localStorage.setItem('gf_reminders', JSON.stringify(reminders));
+            }
+            
+            alert(`✅ Sync Complete: Successfully merged ${added} new transactions and updated your settings!`);
+            navigate('records');
+          } else {
+            alert("Invalid backup file format.");
+          }
+        } catch (err) {
+          alert("Error reading backup file: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = ''; // Reset input
     }
     
     function exportCSV() {
