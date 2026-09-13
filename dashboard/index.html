@@ -679,10 +679,7 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    // Load purely from local device storage initially
-    let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-    // Ensure all local dates are cleanly formatted on load
-    ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
+    let ledger = [];
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
         'Groceries': { type: 'Fixed', val: 15000 }, 
@@ -698,10 +695,30 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
+    // --- ADVANCED DATA SANITIZATION & DEDUPLICATION ---
+    function deduplicateLedger(txList) {
+        const unique = [];
+        const seen = new Set();
+        
+        for (const tx of txList) {
+            // Instantly resolve the ISO Timestamp format issue across the entire app
+            if (tx.date) tx.date = tx.date.split('T')[0];
+            
+            // Create a unique signature to prevent Google Sheets Scientific Notation duplicate bugs
+            const sig = `${tx.date}_${tx.amount}_${(tx.desc || '').trim().toLowerCase()}`;
+            if (!seen.has(sig)) {
+                seen.add(sig);
+                unique.push(tx);
+            }
+        }
+        // Always enforce strict descending date sort
+        return unique.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }
+
     // --- QUNTET CLOUD SYNC ENGINE (JSONP & NO-CORS POST) ---
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
-        if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) return reject(new Error("Missing URL"));
+        if (!APPS_SCRIPT_URL) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) {
           delete window[callbackName];
@@ -733,18 +750,22 @@
 
     // --- BACKGROUND AUTO-SYNC LOGIC ---
     async function backgroundSync() {
-      if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) return;
+      if (!APPS_SCRIPT_URL) return;
       try {
         const cloudData = await apiGetJSONP('getDashboard');
-        const cloudTxs = cloudData.transactions || [];
+        let cloudTxs = cloudData.transactions || [];
         
-        // Strip timestamps from cloud dates instantly
-        cloudTxs.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
+        // Google Sheets is MASTER. Deduplicate and clean incoming cloud data.
+        cloudTxs = deduplicateLedger(cloudTxs);
         
-        const cloudIds = new Set(cloudTxs.map(t => String(t.id)));
+        // Use exact signatures to check for missing entries, bypassing ID formatting issues
+        const cloudSignatures = new Set(cloudTxs.map(t => `${t.date}_${t.amount}_${(t.desc || '').trim().toLowerCase()}`));
         
         let localTxs = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-        const missingInCloud = localTxs.filter(t => !cloudIds.has(String(t.id)));
+        localTxs = deduplicateLedger(localTxs);
+        
+        // Find local transactions that are completely missing in the cloud
+        const missingInCloud = localTxs.filter(t => !cloudSignatures.has(`${t.date}_${t.amount}_${(t.desc || '').trim().toLowerCase()}`));
 
         // Advanced Queueing: Push missing entries slowly to avoid Google Rate Limits
         if (missingInCloud.length > 0) {
@@ -752,16 +773,15 @@
               await apiPost('addTransaction', tx);
               await new Promise(r => setTimeout(r, 400)); // 400ms delay protects against HTTP 429 Errors
            }
+           
            // Fetch fresh cloud list after pushing is complete
            await new Promise(r => setTimeout(r, 1500));
            const updatedCloudData = await apiGetJSONP('getDashboard');
-           ledger = updatedCloudData.transactions || [];
-           ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
+           ledger = deduplicateLedger(updatedCloudData.transactions || []);
         } else {
-           ledger = cloudTxs;
+           ledger = cloudTxs; // Total synchronization achieved
         }
         
-        ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         
         // Refresh UI silently if applicable
@@ -782,24 +802,21 @@
     async function bootApp() {
       const localData = localStorage.getItem('gf_ledger');
       
-      // If new device/empty storage, await cloud fetch before loading UI
-      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+      // If new device or empty storage, ALWAYS await cloud fetch before showing UI
+      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL) {
           try {
               const cloudData = await apiGetJSONP('getDashboard');
-              ledger = cloudData.transactions || [];
-              ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
-              ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
+              ledger = deduplicateLedger(cloudData.transactions || []);
               localStorage.setItem('gf_ledger', JSON.stringify(ledger));
           } catch(e) { console.error("Initial load failed", e); }
       } else {
-          ledger = JSON.parse(localData) || [];
-          ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
+          ledger = deduplicateLedger(JSON.parse(localData) || []);
       }
       
       navigate('home');
 
-      // Trigger standard background sync to upload/download any mis-matches
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+      // Trigger standard background sync to upload/download any mis-matches silently
+      if (APPS_SCRIPT_URL) {
           backgroundSync();
       }
     }
@@ -1488,7 +1505,7 @@
             navigate('records');
             
             // Trigger auto-sync so the newly imported data pushes to Google Sheets
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
+            if (APPS_SCRIPT_URL) backgroundSync();
 
           } else {
             alert("Invalid backup file format.");
@@ -1617,7 +1634,7 @@
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
           alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
-          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
+          if (APPS_SCRIPT_URL) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1645,7 +1662,7 @@
           <div class="panel-head">
             <h3>User Management & Security</h3>
           </div>
-          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts and reset device passwords. If a password is reset, the user will be prompted to create a new one on their next login.</p>
+          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">For maximum security, passwords are saved strictly to this device's local memory, meaning you must set a password on each new phone or laptop you use. You can reset a local device password below.</p>
           <div class="table-responsive">
             <table style="margin-bottom:16px;">
               <thead>
@@ -1727,7 +1744,7 @@
         else navigate('overview'); 
         
         // 2. Background Sync Delete
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+        if (APPS_SCRIPT_URL) {
             try { 
                 await apiPost('deleteTransaction', { id }); 
             } catch (err) { 
@@ -1742,7 +1759,7 @@
       btn.disabled = true; 
       btn.innerText = 'Saving...';
       
-      const id = document.getElementById('tx-id').value || String(Date.now());
+      const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now());
       const isEdit = document.getElementById('tx-id').value !== '';
       const rawDate = document.getElementById('tx-date').value;
       
@@ -1763,7 +1780,7 @@
       if (idx >= 0) ledger[idx] = record; 
       else ledger.unshift(record);
       
-      ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
+      ledger = deduplicateLedger(ledger); // Clean logic before saving
       localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
       closeModal('tx-modal');
       
@@ -1775,7 +1792,7 @@
       else navigate('overview');
 
       // 2. Background Sync Post
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+      if (APPS_SCRIPT_URL) {
           try {
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
           } catch (err) { 
@@ -1809,7 +1826,6 @@
             <tbody>
               ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
               ${data.map(t => {
-                  // Final safety catch for visual date rendering
                   const displayDate = t.date ? t.date.split('T')[0] : '';
                   return `
                   <tr>
