@@ -639,28 +639,7 @@
 
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
-    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
-
-    // --- IDLE TIMEOUT ---
-    let idleTime = 0;
-    
-    function resetTimer() { 
-        idleTime = 0; 
-    }
-    
-    window.onload = resetTimer; 
-    document.onmousemove = resetTimer; 
-    document.onkeypress = resetTimer; 
-    document.onclick = resetTimer; 
-    document.ontouchstart = resetTimer; 
-    
-    setInterval(() => { 
-        idleTime++; 
-        if (idleTime >= 10) { 
-            alert("Session expired due to inactivity."); 
-            window.location.href = '../index.html'; 
-        } 
-    }, 60000); 
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
 
     // --- GLOBAL CLOCK ---
     setInterval(() => {
@@ -700,7 +679,10 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    let ledger = [];
+    // Load purely from local device storage initially
+    let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
+    // Ensure all local dates are cleanly formatted on load
+    ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
         'Groceries': { type: 'Fixed', val: 15000 }, 
@@ -719,7 +701,7 @@
     // --- QUNTET CLOUD SYNC ENGINE (JSONP & NO-CORS POST) ---
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return reject(new Error("Missing URL"));
+        if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) {
           delete window[callbackName];
@@ -751,23 +733,30 @@
 
     // --- BACKGROUND AUTO-SYNC LOGIC ---
     async function backgroundSync() {
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return;
+      if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) return;
       try {
         const cloudData = await apiGetJSONP('getDashboard');
         const cloudTxs = cloudData.transactions || [];
-        const cloudIds = new Set(cloudTxs.map(t => t.id));
+        
+        // Strip timestamps from cloud dates instantly
+        cloudTxs.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
+        
+        const cloudIds = new Set(cloudTxs.map(t => String(t.id)));
         
         let localTxs = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-        const missingInCloud = localTxs.filter(t => !cloudIds.has(t.id));
+        const missingInCloud = localTxs.filter(t => !cloudIds.has(String(t.id)));
 
+        // Advanced Queueing: Push missing entries slowly to avoid Google Rate Limits
         if (missingInCloud.length > 0) {
            for (const tx of missingInCloud) {
               await apiPost('addTransaction', tx);
+              await new Promise(r => setTimeout(r, 400)); // 400ms delay protects against HTTP 429 Errors
            }
-           // Give Google Sheets a moment to process the writes
+           // Fetch fresh cloud list after pushing is complete
            await new Promise(r => setTimeout(r, 1500));
            const updatedCloudData = await apiGetJSONP('getDashboard');
            ledger = updatedCloudData.transactions || [];
+           ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
         } else {
            ledger = cloudTxs;
         }
@@ -775,6 +764,7 @@
         ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         
+        // Refresh UI silently if applicable
         const activeNav = document.querySelector('.nav-item.active');
         if (activeNav) {
           const navText = activeNav.innerText;
@@ -793,21 +783,23 @@
       const localData = localStorage.getItem('gf_ledger');
       
       // If new device/empty storage, await cloud fetch before loading UI
-      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           try {
               const cloudData = await apiGetJSONP('getDashboard');
               ledger = cloudData.transactions || [];
+              ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
               ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
               localStorage.setItem('gf_ledger', JSON.stringify(ledger));
           } catch(e) { console.error("Initial load failed", e); }
       } else {
           ledger = JSON.parse(localData) || [];
+          ledger.forEach(t => { if(t.date) t.date = t.date.split('T')[0]; });
       }
       
       navigate('home');
 
       // Trigger standard background sync to upload/download any mis-matches
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           backgroundSync();
       }
     }
@@ -1467,12 +1459,13 @@
           const importedData = JSON.parse(e.target.result);
           
           if (importedData.ledger) {
-            const existingIds = new Set(ledger.map(t => t.id));
+            const existingIds = new Set(ledger.map(t => String(t.id)));
             let added = 0;
             
             // Merge ledgers securely without duplicates
             importedData.ledger.forEach(t => {
-              if (!existingIds.has(t.id)) {
+              if (!existingIds.has(String(t.id))) {
+                if (t.date) t.date = t.date.split('T')[0];
                 ledger.push(t);
                 added++;
               }
@@ -1495,7 +1488,7 @@
             navigate('records');
             
             // Trigger auto-sync so the newly imported data pushes to Google Sheets
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") backgroundSync();
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
 
           } else {
             alert("Invalid backup file format.");
@@ -1624,7 +1617,7 @@
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
           alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
-          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") backgroundSync();
+          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1734,7 +1727,7 @@
         else navigate('overview'); 
         
         // 2. Background Sync Delete
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
             try { 
                 await apiPost('deleteTransaction', { id }); 
             } catch (err) { 
@@ -1751,9 +1744,11 @@
       
       const id = document.getElementById('tx-id').value || String(Date.now());
       const isEdit = document.getElementById('tx-id').value !== '';
+      const rawDate = document.getElementById('tx-date').value;
+      
       const record = { 
           id: id, 
-          date: document.getElementById('tx-date').value, 
+          date: rawDate.split('T')[0], // Ensure local safety 
           type: document.getElementById('tx-type').value, 
           category: document.getElementById('tx-category').value, 
           method: document.getElementById('tx-method').value, 
@@ -1780,7 +1775,7 @@
       else navigate('overview');
 
       // 2. Background Sync Post
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           try {
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
           } catch (err) { 
@@ -1813,9 +1808,12 @@
             </thead>
             <tbody>
               ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
-              ${data.map(t => `
+              ${data.map(t => {
+                  // Final safety catch for visual date rendering
+                  const displayDate = t.date ? t.date.split('T')[0] : '';
+                  return `
                   <tr>
-                      <td>${t.date}</td>
+                      <td>${displayDate}</td>
                       <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
                       <td>${t.category}</td>
                       <td>${t.desc}</td>
@@ -1826,8 +1824,8 @@
                           <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> 
                           <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
                       </td>
-                  </tr>
-              `).join('')}
+                  </tr>`
+              }).join('')}
             </tbody>
           </table>
         </div>
