@@ -494,7 +494,6 @@
         <p id="view-sub" style="color:var(--muted); font-size:13px; margin-top:4px;">Welcome and quick actions.</p>
       </div>
       <div style="display: flex; gap: 10px; align-items:center; flex-wrap:wrap;">
-        <button class="btn" id="sync-btn" onclick="forceSync()" style="border-color: var(--primary);">🔄 Sync Ledger</button>
         <button class="btn" id="voice-top-btn" onclick="startVoiceAssistant()">🎙️ Voice Add</button>
         <button class="btn primary" onclick="openTxModal('DEBIT')">+ Add Expense</button>
       </div>
@@ -638,7 +637,7 @@
 
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
+    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // --- IDLE TIMEOUT ---
     let idleTime = 0;
@@ -699,7 +698,6 @@
         'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
     ];
 
-    // Load purely from local device storage (No API calls)
     let ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
     
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 
@@ -743,53 +741,56 @@
        return await res.json();
     }
 
-    async function bootApp() {
+    // --- BACKGROUND AUTO-SYNC LOGIC ---
+    async function backgroundSync() {
+      if (!APPS_SCRIPT_URL) return;
       try {
-        if (!APPS_SCRIPT_URL) {
-            ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-            navigate('home');
-            return;
+        const cloudData = await apiGetJSONP('getDashboard');
+        const cloudTxs = cloudData.transactions || [];
+        const cloudIds = new Set(cloudTxs.map(t => t.id));
+        
+        // 1. Identify missing local entries (e.g. from JSON imports) and push them
+        let localTxs = JSON.parse(localStorage.getItem('gf_ledger')) || [];
+        const missingInCloud = localTxs.filter(t => !cloudIds.has(t.id));
+
+        if (missingInCloud.length > 0) {
+           for (const tx of missingInCloud) {
+              await apiPost('addTransaction', tx);
+           }
+           // Fetch fresh cloud list after pushing
+           const updatedCloudData = await apiGetJSONP('getDashboard');
+           ledger = updatedCloudData.transactions || [];
+        } else {
+           ledger = cloudTxs;
         }
-        const data = await apiGetJSONP('getDashboard');
-        ledger = data.transactions || [];
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
-        navigate('home');
-      } catch (err) {
-        console.warn("Session expired or network error. Loading local data.", err);
-        ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-        navigate('home');
-      }
-    }
-
-    async function forceSync() {
-      const btn = document.getElementById('sync-btn');
-      if (!btn) return;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '⏳ Syncing...';
-      btn.disabled = true;
-
-      try {
-        const data = await apiGetJSONP('getDashboard');
-        ledger = data.transactions || [];
+        
+        // 2. Sort and update local storage silently
+        ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         
+        // 3. Refresh UI silently if applicable
         const activeNav = document.querySelector('.nav-item.active');
         if (activeNav) {
           const navText = activeNav.innerText;
           if(navText.includes('Records')) navigate('records');
           else if(navText.includes('Analyzer')) navigate('analyzer');
           else if(navText.includes('Budget')) navigate('budget');
-          else navigate('home');
-        } else {
-          navigate('home');
+          else if(navText.includes('Home')) navigate('home');
         }
+      } catch(e) {
+        console.warn("Background auto-sync silently skipped due to network.", e);
+      }
+    }
 
-        alert('✅ Sync complete! Ledger updated from Google Sheets.');
-      } catch (err) {
-        alert('❌ Sync failed: ' + err.message);
-      } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+    // --- OPTIMISTIC APP BOOT ---
+    function bootApp() {
+      // 1. Load instantly using local data (Zero waiting time)
+      ledger = JSON.parse(localStorage.getItem('gf_ledger')) || [];
+      navigate('home');
+
+      // 2. Automatically sync to cloud in background
+      if (APPS_SCRIPT_URL) {
+          backgroundSync();
       }
     }
 
@@ -1455,8 +1456,12 @@
               localStorage.setItem('gf_reminders', JSON.stringify(reminders));
             }
             
-            alert(`✅ Sync Complete: Successfully merged ${added} new transactions and updated your settings!`);
+            alert(`✅ Backup Restored: Merged ${added} new transactions. They will now sync to the cloud in the background.`);
             navigate('records');
+            
+            // Trigger auto-sync so the newly imported data pushes to Google Sheets
+            if (APPS_SCRIPT_URL) backgroundSync();
+
           } else {
             alert("Invalid backup file format.");
           }
@@ -1582,8 +1587,9 @@
       
       if (addedCount > 0) { 
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
-          alert(`Successfully imported ${addedCount} transactions locally. Check the All Records tab.`); 
+          alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
+          if (APPS_SCRIPT_URL) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1615,7 +1621,7 @@
         localStorage.setItem('gf_theme', val); 
     }
 
-    // --- LOCAL TRANSACTION CONTROLS ---
+    // --- LOCAL & CLOUD TRANSACTION CONTROLS ---
     function openTxModal(type) { 
         document.getElementById('tx-form').reset(); 
         document.getElementById('tx-id').value = ''; 
@@ -1659,20 +1665,20 @@
     async function deleteTx(id) { 
         if (!confirm('Delete this transaction permanently?')) return; 
         
-        if (!APPS_SCRIPT_URL) {
-            ledger = ledger.filter(x => x.id !== id); 
-            localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
-            const activeNav = document.querySelector('.nav-item.active').innerText; 
-            if(activeNav.includes('Records')) navigate('records'); 
-            else navigate('overview'); 
-            return;
-        }
-
-        try { 
-            await apiPost('deleteTransaction', { id }); 
-            await forceSync(); 
-        } catch (err) { 
-            alert(err.message); 
+        // 1. Instant Local Delete (Optimistic UI)
+        ledger = ledger.filter(x => x.id !== id); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+        const activeNav = document.querySelector('.nav-item.active').innerText; 
+        if(activeNav.includes('Records')) navigate('records'); 
+        else navigate('overview'); 
+        
+        // 2. Background Sync Delete
+        if (APPS_SCRIPT_URL) {
+            try { 
+                await apiPost('deleteTransaction', { id }); 
+            } catch (err) { 
+                console.error("Background sync deletion failed:", err); 
+            }
         }
     }
     
@@ -1683,6 +1689,7 @@
       btn.innerText = 'Saving...';
       
       const id = document.getElementById('tx-id').value || String(Date.now());
+      const isEdit = document.getElementById('tx-id').value !== '';
       const record = { 
           id: id, 
           date: document.getElementById('tx-date').value, 
@@ -1695,33 +1702,29 @@
           user: document.getElementById('tx-user').value 
       };
       
-      if (!APPS_SCRIPT_URL) {
-          const idx = ledger.findIndex(x => x.id === id); 
-          if (idx >= 0) ledger[idx] = record; 
-          else ledger.unshift(record);
-          
-          localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
-          closeModal('tx-modal');
-          
-          btn.disabled = false;
-          btn.innerText = 'Save Transaction';
-          
-          const activeNav = document.querySelector('.nav-item.active').innerText; 
-          if(activeNav.includes('Records')) navigate('records'); 
-          else navigate('overview');
-          return;
-      }
+      // 1. Instant Local Save (Optimistic UI)
+      const idx = ledger.findIndex(x => x.id === id); 
+      if (idx >= 0) ledger[idx] = record; 
+      else ledger.unshift(record);
+      
+      ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
+      localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+      closeModal('tx-modal');
+      
+      btn.disabled = false;
+      btn.innerText = 'Save Transaction';
+      
+      const activeNav = document.querySelector('.nav-item.active').innerText; 
+      if(activeNav.includes('Records')) navigate('records'); 
+      else navigate('overview');
 
-      try {
-        const isEdit = document.getElementById('tx-id').value !== '';
-        await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
-        closeModal('tx-modal'); 
-        await forceSync();
-      } catch (err) { 
-        alert(err.message); 
-      } finally { 
-        btn.disabled = false; 
-        btn.innerText = 'Save Transaction'; 
+      // 2. Background Sync Post
+      if (APPS_SCRIPT_URL) {
+          try {
+              await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
+          } catch (err) { 
+              console.error("Background sync save failed:", err); 
+          }
       }
     }
     
@@ -1770,7 +1773,7 @@
       `;
     }
 
-    // Launch App Directly
+    // Launch App Directly with Optimistic UI
     window.addEventListener('DOMContentLoaded', bootApp);
   </script>
 </body>
