@@ -336,7 +336,7 @@
 
   <script>
     // --- PASTE YOUR NEW WEB APP URL HERE ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
+    const APPS_SCRIPT_URL = "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws";
 
     setInterval(() => {
       const clockEl = document.getElementById('corner-clock');
@@ -382,7 +382,7 @@
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec") {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws") {
         return showToast("SYSTEM ERROR: Please add your Web App URL in index.html to sync devices.", true);
       }
 
