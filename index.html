@@ -7,264 +7,57 @@
   <title>Gobinath Family Expense — Secure Gateway</title>
   <style>
     :root {
-      --primary: #4f6bf7;
-      --primary-hover: #3d58e3;
-      --primary-glow: rgba(79, 107, 247, 0.45);
-      --text: #f3f7fd;
-      --muted: #a0b2d2;
-      --input-bg: rgba(7, 13, 26, 0.6);
-      --card-bg: rgba(14, 21, 38, 0.65);
-      --border: rgba(255, 255, 255, 0.1);
+      --primary: #4f6bf7; --primary-hover: #3d58e3; --primary-glow: rgba(79, 107, 247, 0.45);
+      --text: #f3f7fd; --muted: #a0b2d2; --input-bg: rgba(7, 13, 26, 0.6);
+      --card-bg: rgba(14, 21, 38, 0.65); --border: rgba(255, 255, 255, 0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
     body {
       background-image: linear-gradient(to right, rgba(4, 9, 20, 0.95) 0%, rgba(4, 9, 20, 0.75) 50%, rgba(4, 9, 20, 0.4) 100%), url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-size: cover; background-position: center; background-attachment: fixed;
+      color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center;
     }
 
     .corner-clock {
-      position: fixed;
-      top: 24px;
-      right: 32px;
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.8);
-      background: rgba(0, 0, 0, 0.4);
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 100;
-      letter-spacing: 0.5px;
+      position: fixed; top: 24px; right: 32px; font-size: 14px; font-weight: 600;
+      color: rgba(255, 255, 255, 0.8); background: rgba(0, 0, 0, 0.4);
+      padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100;
     }
 
-    .layout-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px;
-      gap: 60px;
-      align-items: center;
-    }
+    .layout-wrapper { display: flex; flex-wrap: wrap; width: 100%; max-width: 1100px; margin: 0 auto; padding: 20px; gap: 60px; align-items: center; }
+    .info-section { flex: 1; min-width: 300px; padding: 20px; }
+    .info-section h1 { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #a0b2d2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .family-quote { font-size: 16px; font-style: italic; color: #7b96ff; margin-bottom: 32px; border-left: 3px solid var(--primary); padding-left: 14px; }
+    .feature-list { display: flex; flex-direction: column; gap: 18px; }
+    .feature-item { display: flex; align-items: flex-start; gap: 14px; }
+    .feature-icon { font-size: 20px; background: rgba(79, 107, 247, 0.15); border: 1px solid rgba(79, 107, 247, 0.3); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; }
+    .feature-text h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+    .feature-text p { font-size: 13px; color: var(--muted); line-height: 1.4; }
 
-    .info-section {
-      flex: 1;
-      min-width: 300px;
-      padding: 20px;
-    }
-
-    .info-section h1 {
-      font-size: 42px;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #ffffff, #a0b2d2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .family-quote {
-      font-size: 16px;
-      font-style: italic;
-      color: #7b96ff;
-      margin-bottom: 32px;
-      border-left: 3px solid var(--primary);
-      padding-left: 14px;
-    }
-
-    .feature-list {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .feature-icon {
-      font-size: 20px;
-      background: rgba(79, 107, 247, 0.15);
-      border: 1px solid rgba(79, 107, 247, 0.3);
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      flex-shrink: 0;
-    }
-
-    .feature-text h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #fff;
-    }
-
-    .feature-text p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .login-section {
-      flex: 0 1 420px;
-      width: 100%;
-    }
-
-    .login-card {
-      width: 100%;
-      background: var(--card-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 40px 32px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      text-align: center;
-    }
-
-    .brand-icon-wrap {
-      width: 68px;
-      height: 68px;
-      margin: 0 auto 18px;
-      background: linear-gradient(135deg, #4d72fe, #1f47dd);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 800;
-      color: #fff;
-      box-shadow: 0 10px 25px var(--primary-glow);
-    }
-
+    .login-section { flex: 0 1 420px; width: 100%; }
+    .login-card { width: 100%; background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 24px; padding: 40px 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08); text-align: center; }
+    .brand-icon-wrap { width: 68px; height: 68px; margin: 0 auto 18px; background: linear-gradient(135deg, #4d72fe, #1f47dd); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #fff; box-shadow: 0 10px 25px var(--primary-glow); }
     .login-card h2 { font-size: 23px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
     .sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
-
-    .user-toggle {
-      display: flex;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 5px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      margin-bottom: 22px;
-    }
-
-    .user-btn {
-      flex: 1;
-      padding: 9px;
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .user-btn.active {
-      background: rgba(79, 107, 247, 0.25);
-      color: #fff;
-      border: 1px solid rgba(79, 107, 247, 0.4);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    .input-box {
-      text-align: left;
-      margin-bottom: 18px;
-    }
-
-    .input-box label {
-      display: block;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
-    }
-
-    .input-field {
-      width: 100%;
-      height: 48px;
-      padding: 0 16px;
-      background: var(--input-bg);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 14.5px;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .input-field:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 107, 247, 0.2);
-      background: rgba(0,0,0,0.5);
-    }
-
-    .btn-submit {
-      width: 100%;
-      height: 50px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 22px;
-      box-shadow: 0 10px 22px var(--primary-glow);
-      transition: all 0.2s;
-    }
-
+    .user-toggle { display: flex; gap: 8px; background: rgba(0, 0, 0, 0.3); padding: 5px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 22px; }
+    .user-btn { flex: 1; padding: 9px; background: transparent; border: none; color: var(--muted); font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .user-btn.active { background: rgba(79, 107, 247, 0.25); color: #fff; border: 1px solid rgba(79, 107, 247, 0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    .input-box { text-align: left; margin-bottom: 18px; }
+    .input-box label { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .input-field { width: 100%; height: 48px; padding: 0 16px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: var(--text); font-size: 14.5px; outline: none; transition: all 0.2s; }
+    .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 107, 247, 0.2); background: rgba(0,0,0,0.5); }
+    .btn-submit { width: 100%; height: 50px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; box-shadow: 0 10px 22px var(--primary-glow); transition: all 0.2s; }
     .btn-submit:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      display: none;
-      z-index: 1000;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .toast.err { background: #321217; color: #ff8591; border: 1px solid #73222a; }
     .toast.suc { background: #0f2c1f; color: #43ebb3; border: 1px solid #165b3f; }
 
-    @media (max-width: 900px) {
-      .layout-wrapper { flex-direction: column; gap: 40px; padding-top: 60px; }
-      .info-section { text-align: center; }
-      .family-quote { border-left: none; border-bottom: 2px solid var(--primary); padding-left: 0; padding-bottom: 10px; display: inline-block; }
-      .feature-item { text-align: left; }
-    }
+    @media (max-width: 900px) { .layout-wrapper { flex-direction: column; gap: 40px; padding-top: 60px; } .info-section { text-align: center; } .family-quote { border-left: none; border-bottom: 2px solid var(--primary); padding-left: 0; padding-bottom: 10px; display: inline-block; } .feature-item { text-align: left; } }
   </style>
 </head>
 <body>
@@ -335,9 +128,29 @@
   </div>
 
   <script>
-    // --- PASTE YOUR NEW WEB APP URL HERE ---
-    const APPS_SCRIPT_URL = "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/";
+    // --- DYNAMIC URL LOADER ---
+    let APPS_SCRIPT_URL = "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/"; 
+    
+    // Check if URL is saved in local storage (Overrides hardcoded value)
+    const savedUrl = localStorage.getItem('gf_api_url');
+    if (savedUrl && savedUrl.startsWith("http")) {
+        APPS_SCRIPT_URL = savedUrl;
+    }
 
+    function requireValidUrl() {
+        if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) {
+            const userInput = prompt("SYSTEM ALERT:\n\nWe could not detect your database connection URL. Please paste your Google Apps Script URL (or AWS API URL) below to connect:");
+            if (userInput && userInput.startsWith("http")) {
+                APPS_SCRIPT_URL = userInput.trim();
+                localStorage.setItem('gf_api_url', APPS_SCRIPT_URL); // Save it so you never have to paste it again
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // Clock Logic
     setInterval(() => {
       const clockEl = document.getElementById('corner-clock');
       if (clockEl) {
@@ -356,7 +169,7 @@
       t.textContent = msg;
       t.className = 'toast ' + (isErr ? 'err' : 'suc');
       t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3500);
+      setTimeout(() => { t.style.display = 'none'; }, 4000);
     }
 
     function switchUser(id, name, btn) {
@@ -364,13 +177,10 @@
       selectedName = name;
       document.getElementById('account-id').value = id;
       document.getElementById('display-user').value = id;
-      
       document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      
       document.getElementById('pass-input').value = '';
       document.getElementById('confirm-input').value = '';
-      
       isSetupMode = false;
       document.getElementById('confirm-box').style.display = 'none';
       document.getElementById('confirm-input').required = false;
@@ -379,11 +189,13 @@
       document.getElementById('btn-text').textContent = 'Sign In to Ledger';
     }
 
+    // Authenticaton Logic (Upgraded with Plain Text Parsing for CORS)
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://j5idtgcety527ulzwbnulu7hmy0ypjvn.lambda-url.us-east-1.on.aws/") {
-        return showToast("SYSTEM ERROR: Please add your Web App URL in index.html to sync devices.", true);
+      // Force user to provide URL if missing
+      if (!requireValidUrl()) {
+        return showToast("Login Blocked: Valid Web App URL is required.", true);
       }
 
       const pass = document.getElementById('pass-input').value;
@@ -400,17 +212,25 @@
       try {
         const response = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: isSetupMode ? 'setupPassword' : 'auth',
             data: { username: selectedUser, password: pass }
-          })
+          }),
+          redirect: 'follow'
         });
 
-        const data = await response.json();
-
-        if (data.error) {
-          throw new Error(data.error);
+        const rawText = await response.text();
+        
+        let data;
+        try {
+            data = JSON.parse(rawText);
+        } catch (parseErr) {
+            if (rawText.includes('<html')) throw new Error("Google blocked the request. Apps Script deployment must be set to 'Anyone'.");
+            throw new Error("Invalid response from server.");
         }
+
+        if (data.error) throw new Error(data.error);
 
         if (data.requiresSetup) {
           isSetupMode = true;
