@@ -639,7 +639,7 @@
 
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwE0DIzMJvbdUDrDvLyzvQNrcDBMzW7LjW8I-svuEuzqobANEBXgTfzA3xc1MgJdNDT5w/exec";
+    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // --- GLOBAL CLOCK ---
     setInterval(() => {
@@ -672,11 +672,11 @@
         'Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 
         'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 
         'Gold Loan', 'Loan', 'Home Maintenance', 'Saloon / Parlour', 
-        'LIC Payment', 'Utility Bills', 'Other Expense'
+        'LIC Payment', 'Utility Bills', 'Shopping', 'Other Expense'
     ];
     
     const incCategories = [
-        'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement'
+        'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Loan Repayment'
     ];
 
     let ledger = [];
@@ -686,9 +686,7 @@
         'Credit Card Bill': { type: 'Percentage', val: 15 } 
     };
     
-    let reminders = JSON.parse(localStorage.getItem('gf_reminders')) || [
-      { id: 'r1', date: '2026-09-15', title: 'HDFC Credit Card Bill', type: 'Bill Due', amount: 15400, status: 'Pending' }
-    ];
+    let reminders = [];
 
     let sortCol = 'date';
     let sortAsc = false;
@@ -701,24 +699,34 @@
         const seen = new Set();
         
         for (const tx of txList) {
-            // Instantly resolve the ISO Timestamp format issue across the entire app
-            if (tx.date) tx.date = tx.date.split('T')[0];
-            
-            // Create a unique signature to prevent Google Sheets Scientific Notation duplicate bugs
+            if (tx.date && tx.date.includes('T')) tx.date = tx.date.split('T')[0];
             const sig = `${tx.date}_${tx.amount}_${(tx.desc || '').trim().toLowerCase()}`;
             if (!seen.has(sig)) {
                 seen.add(sig);
                 unique.push(tx);
             }
         }
-        // Always enforce strict descending date sort
         return unique.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }
+
+    function deduplicateReminders(remList) {
+        const unique = [];
+        const seen = new Set();
+        for (const r of remList) {
+            if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0];
+            const sig = `${r.date}_${r.title}_${r.amount}`;
+            if (!seen.has(sig)) {
+                seen.add(sig);
+                unique.push(r);
+            }
+        }
+        return unique.sort((a,b) => new Date(a.date) - new Date(b.date));
     }
 
     // --- QUNTET CLOUD SYNC ENGINE (JSONP & NO-CORS POST) ---
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
-        if (!APPS_SCRIPT_URL) return reject(new Error("Missing URL"));
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) {
           delete window[callbackName];
@@ -750,47 +758,60 @@
 
     // --- BACKGROUND AUTO-SYNC LOGIC ---
     async function backgroundSync() {
-      if (!APPS_SCRIPT_URL) return;
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") return;
       try {
         const cloudData = await apiGetJSONP('getDashboard');
-        let cloudTxs = cloudData.transactions || [];
         
-        // Google Sheets is MASTER. Deduplicate and clean incoming cloud data.
-        cloudTxs = deduplicateLedger(cloudTxs);
-        
-        // Use exact signatures to check for missing entries, bypassing ID formatting issues
+        // 1. Process Transactions
+        let cloudTxs = deduplicateLedger(cloudData.transactions || []);
         const cloudSignatures = new Set(cloudTxs.map(t => `${t.date}_${t.amount}_${(t.desc || '').trim().toLowerCase()}`));
-        
-        let localTxs = JSON.parse(localStorage.getItem('gf_ledger')) || [];
-        localTxs = deduplicateLedger(localTxs);
-        
-        // Find local transactions that are completely missing in the cloud
+        let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
         const missingInCloud = localTxs.filter(t => !cloudSignatures.has(`${t.date}_${t.amount}_${(t.desc || '').trim().toLowerCase()}`));
 
-        // Advanced Queueing: Push missing entries slowly to avoid Google Rate Limits
-        if (missingInCloud.length > 0) {
+        // 2. Process Reminders
+        let cloudRems = deduplicateReminders(cloudData.reminders || []);
+        const cloudRemSigs = new Set(cloudRems.map(r => `${r.date}_${r.title}_${r.amount}`));
+        let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
+        const missingRems = localRems.filter(r => !cloudRemSigs.has(`${r.date}_${r.title}_${r.amount}`));
+
+        let requiresRefresh = false;
+
+        // Advanced Queueing: Push missing entries slowly
+        if (missingInCloud.length > 0 || missingRems.length > 0) {
            for (const tx of missingInCloud) {
               await apiPost('addTransaction', tx);
-              await new Promise(r => setTimeout(r, 400)); // 400ms delay protects against HTTP 429 Errors
+              await new Promise(r => setTimeout(r, 400)); 
+           }
+           for (const r of missingRems) {
+              await apiPost('addReminder', r);
+              await new Promise(res => setTimeout(res, 400));
            }
            
-           // Fetch fresh cloud list after pushing is complete
            await new Promise(r => setTimeout(r, 1500));
            const updatedCloudData = await apiGetJSONP('getDashboard');
            ledger = deduplicateLedger(updatedCloudData.transactions || []);
+           reminders = deduplicateReminders(updatedCloudData.reminders || []);
+           requiresRefresh = true;
         } else {
-           ledger = cloudTxs; // Total synchronization achieved
+           ledger = cloudTxs;
+           if (cloudData.reminders) {
+               reminders = cloudRems;
+               requiresRefresh = true;
+           }
         }
         
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        if (requiresRefresh) {
+            localStorage.setItem('gf_reminders', JSON.stringify(reminders));
+        }
         
-        // Refresh UI silently if applicable
         const activeNav = document.querySelector('.nav-item.active');
-        if (activeNav) {
+        if (activeNav && requiresRefresh) {
           const navText = activeNav.innerText;
           if(navText.includes('Records')) navigate('records');
           else if(navText.includes('Analyzer')) navigate('analyzer');
           else if(navText.includes('Budget')) navigate('budget');
+          else if(navText.includes('Reminders')) navigate('reminders');
           else if(navText.includes('Home')) navigate('home');
         }
       } catch(e) {
@@ -801,22 +822,27 @@
     // --- OPTIMISTIC APP BOOT ---
     async function bootApp() {
       const localData = localStorage.getItem('gf_ledger');
+      const localRemData = localStorage.getItem('gf_reminders');
       
-      // If new device or empty storage, ALWAYS await cloud fetch before showing UI
-      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL) {
+      if ((!localData || JSON.parse(localData).length === 0) && APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
           try {
               const cloudData = await apiGetJSONP('getDashboard');
               ledger = deduplicateLedger(cloudData.transactions || []);
               localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+              
+              if (cloudData.reminders) {
+                  reminders = deduplicateReminders(cloudData.reminders);
+                  localStorage.setItem('gf_reminders', JSON.stringify(reminders));
+              }
           } catch(e) { console.error("Initial load failed", e); }
       } else {
           ledger = deduplicateLedger(JSON.parse(localData) || []);
+          if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
       }
       
       navigate('home');
 
-      // Trigger standard background sync to upload/download any mis-matches silently
-      if (APPS_SCRIPT_URL) {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
           backgroundSync();
       }
     }
@@ -1355,9 +1381,11 @@
         document.getElementById('rem-modal').style.display = 'grid'; 
     }
     
-    function saveReminder(e) { 
+    async function saveReminder(e) { 
         e.preventDefault(); 
-        const id = document.getElementById('rem-id').value || 'r' + Date.now(); 
+        const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
+        const isEdit = document.getElementById('rem-id').value !== '';
+        
         const record = { 
             id: id, 
             date: document.getElementById('rem-date').value, 
@@ -1371,23 +1399,36 @@
         if (idx >= 0) reminders[idx] = record; 
         else reminders.push(record); 
         
+        reminders = deduplicateReminders(reminders);
         localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
         closeModal('rem-modal'); 
         navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+            try { await apiPost(isEdit ? 'editReminder' : 'addReminder', record); } catch(err) { console.error(err); }
+        }
     }
     
-    function markRemDone(id) { 
+    async function markRemDone(id) { 
         const idx = reminders.findIndex(x => x.id === id); 
-        if (idx >= 0) reminders[idx].status = 'Done'; 
-        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-        navigate('reminders'); 
+        if (idx >= 0) {
+            reminders[idx].status = 'Done'; 
+            localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+            navigate('reminders'); 
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+                try { await apiPost('editReminder', reminders[idx]); } catch(err) {}
+            }
+        }
     }
     
-    function deleteRem(id) { 
+    async function deleteRem(id) { 
         if(confirm('Delete this reminder?')) { 
             reminders = reminders.filter(x => x.id !== id); 
             localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
             navigate('reminders'); 
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+                try { await apiPost('deleteReminder', { id }); } catch(err) {}
+            }
         } 
     }
 
@@ -1489,7 +1530,7 @@
             });
             
             // Re-sort correctly
-            ledger.sort((a,b) => new Date(b.date) - new Date(a.date));
+            ledger = deduplicateLedger(ledger);
             localStorage.setItem('gf_ledger', JSON.stringify(ledger));
             
             if (importedData.budgets) {
@@ -1497,7 +1538,7 @@
               localStorage.setItem('gf_budgets', JSON.stringify(budgets));
             }
             if (importedData.reminders) {
-              reminders = importedData.reminders;
+              reminders = deduplicateReminders(importedData.reminders);
               localStorage.setItem('gf_reminders', JSON.stringify(reminders));
             }
             
@@ -1505,7 +1546,7 @@
             navigate('records');
             
             // Trigger auto-sync so the newly imported data pushes to Google Sheets
-            if (APPS_SCRIPT_URL) backgroundSync();
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
 
           } else {
             alert("Invalid backup file format.");
@@ -1631,10 +1672,11 @@
       });
       
       if (addedCount > 0) { 
+          ledger = deduplicateLedger(ledger);
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
           alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
-          if (APPS_SCRIPT_URL) backgroundSync();
+          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1744,7 +1786,7 @@
         else navigate('overview'); 
         
         // 2. Background Sync Delete
-        if (APPS_SCRIPT_URL) {
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
             try { 
                 await apiPost('deleteTransaction', { id }); 
             } catch (err) { 
@@ -1792,7 +1834,7 @@
       else navigate('overview');
 
       // 2. Background Sync Post
-      if (APPS_SCRIPT_URL) {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           try {
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
           } catch (err) { 
