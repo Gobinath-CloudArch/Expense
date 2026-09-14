@@ -691,15 +691,23 @@
     let selectedMonthA = '2026-08';
     let selectedMonthB = '2026-09';
 
-    // --- ULTIMATE ENTERPRISE DEDUPLICATION (STRICT HASH MAP) ---
+    // --- ADVANCED DATA SANITIZATION & DEDUPLICATION WITH UTC TIMEZONE FIX ---
     function deduplicateLedger(txList) {
         if (!txList || !Array.isArray(txList)) return [];
         const map = new Map();
         
         for (const tx of txList) {
             if (!tx || !tx.id) continue;
-            // Clean Date T-Zone instantly
-            if (tx.date && tx.date.includes('T')) tx.date = tx.date.split('T')[0];
+            // Correctly parse Google's UTC timestamp to local device date safely
+            if (tx.date && tx.date.includes('T')) {
+                const d = new Date(tx.date);
+                if (!isNaN(d.getTime())) {
+                    tx.date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                } else {
+                    tx.date = tx.date.split('T')[0];
+                }
+            }
+            
             // Enforce Strict ID Match to completely destroy duplicates
             map.set(String(tx.id).trim(), tx);
         }
@@ -712,7 +720,14 @@
         
         for (const r of remList) {
             if (!r || !r.id) continue;
-            if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0];
+            if (r.date && r.date.includes('T')) {
+                const d = new Date(r.date);
+                if (!isNaN(d.getTime())) {
+                    r.date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                } else {
+                    r.date = r.date.split('T')[0];
+                }
+            }
             map.set(String(r.id).trim(), r);
         }
         return Array.from(map.values()).sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -771,44 +786,47 @@
 
         const cloudData = await apiGetJSONP('getDashboard');
         
+        // 1. Process Transactions globally without time-locks
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
-        let cloudRems = deduplicateReminders(cloudData.reminders || []);
+        let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
+        const cloudIds = new Set(cloudTxs.map(t => String(t.id).trim()));
         
-        const cloudTxIds = new Set(cloudTxs.map(t => String(t.id).trim()));
+        const missingInCloud = localTxs.filter(t => !cloudIds.has(String(t.id).trim()));
+
+        // 2. Process Reminders globally without time-locks
+        let cloudRems = deduplicateReminders(cloudData.reminders || []);
+        let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
         const cloudRemIds = new Set(cloudRems.map(r => String(r.id).trim()));
         
-        let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
-        let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
-
-        const missingInCloud = localTxs.filter(t => !cloudTxIds.has(String(t.id).trim()));
         const missingRems = localRems.filter(r => !cloudRemIds.has(String(r.id).trim()));
 
         let requiresRefresh = false;
 
-        // Sequential Queue Push to bypass Rate Limits
+        // Sequential Queuing to completely prevent Google Sheet Rate Limit duplication bugs
         if (missingInCloud.length > 0 || missingRems.length > 0) {
-           for (const tx of missingInCloud) await apiPost('addTransaction', tx);
-           for (const r of missingRems) await apiPost('addReminder', r);
+           for (const tx of missingInCloud) {
+              await apiPost('addTransaction', tx);
+           }
+           for (const r of missingRems) {
+              await apiPost('addReminder', r);
+           }
            
-           // Fetch absolute truth after push
-           const finalCloudData = await apiGetJSONP('getDashboard');
-           ledger = deduplicateLedger(finalCloudData.transactions || []);
-           reminders = deduplicateReminders(finalCloudData.reminders || []);
+           const updatedCloudData = await apiGetJSONP('getDashboard');
+           ledger = deduplicateLedger(updatedCloudData.transactions || []);
+           if (updatedCloudData.reminders) {
+               reminders = deduplicateReminders(updatedCloudData.reminders);
+           }
            requiresRefresh = true;
         } else {
-           // Google Sheet is Truth. Overwrite local mirror
-           if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length) {
-               requiresRefresh = true;
-           }
            ledger = cloudTxs;
            reminders = cloudRems;
+           requiresRefresh = true;
         }
         
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
-        // Silent UI Refresh
-        if (requiresRefresh || isBoot) {
+        if (requiresRefresh) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
               const navText = activeNav.innerText.trim();
@@ -817,13 +835,11 @@
               else if(navText.includes('Budget')) navigate('budget', activeNav);
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
               else navigate('home');
-            } else {
-                navigate('home');
             }
         }
       } catch(e) {
         console.warn("Background auto-sync silently skipped due to network.", e);
-        if (isBoot) navigate('home'); // Rescue boot
+        if (isBoot) navigate('home'); 
       } finally {
           isSyncing = false;
       }
@@ -842,26 +858,33 @@
       const localData = localStorage.getItem('gf_ledger');
       const localRemData = localStorage.getItem('gf_reminders');
       
-      let isLocalEmpty = (!localData || JSON.parse(localData).length === 0);
-      
-      // Load local variables safely
-      if (!isLocalEmpty) {
-          ledger = deduplicateLedger(JSON.parse(localData));
-          if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
+      let isLocalEmpty = true;
+      if (localData && localData !== "[]") {
+          try { if (JSON.parse(localData).length > 0) isLocalEmpty = false; } catch(e){}
       }
-
-      if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
-          // Await Cloud if empty, otherwise boot instant and sync background
-          if (isLocalEmpty) {
-              await backgroundSync(true);
-          } else {
-              navigate('home');
+      
+      // If new device or empty storage, ALWAYS await cloud fetch before showing UI
+      if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
+          document.getElementById('view-container').innerHTML = `
+              <div style="padding: 80px 20px; text-align: center;">
+                  <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
+                  <p style="color:var(--muted); font-size:15px;">Syncing Enterprise Master Database...</p>
+              </div>`;
+          await backgroundSync(true);
+          navigate('home');
+      } else {
+          ledger = deduplicateLedger(JSON.parse(localData) || []);
+          if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
+          navigate('home');
+          
+          if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
               backgroundSync(false);
           }
-          // Enable perpetual 15-second heartbeat poll for all devices
+      }
+
+      // Enable perpetual 15-second heartbeat poll for all devices
+      if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
           setInterval(() => backgroundSync(false), 15000);
-      } else {
-          navigate('home');
       }
     }
 
@@ -1417,7 +1440,10 @@
     function openRemModal() { 
         document.getElementById('rem-id').value = ''; 
         document.getElementById('rem-title').value = ''; 
-        document.getElementById('rem-date').valueAsDate = new Date(); 
+        
+        const remNow = new Date();
+        document.getElementById('rem-date').value = remNow.getFullYear() + '-' + String(remNow.getMonth() + 1).padStart(2, '0') + '-' + String(remNow.getDate()).padStart(2, '0');
+        
         document.getElementById('rem-amount').value = ''; 
         document.getElementById('rem-modal').style.display = 'grid'; 
     }
@@ -1445,7 +1471,7 @@
         closeModal('rem-modal'); 
         navigate('reminders'); 
         
-        if (APPS_SCRIPT_URL) {
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
             try { await apiPost(isEdit ? 'editReminder' : 'addReminder', record); } catch(err) { console.error(err); }
         }
     }
@@ -1456,7 +1482,7 @@
             reminders[idx].status = 'Done'; 
             localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
             navigate('reminders'); 
-            if (APPS_SCRIPT_URL) {
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
                 try { await apiPost('editReminder', reminders[idx]); } catch(err) {}
             }
         }
@@ -1467,7 +1493,7 @@
             reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
             localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
             navigate('reminders'); 
-            if (APPS_SCRIPT_URL) {
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
                 try { await apiPost('deleteReminder', { id }); } catch(err) {}
             }
         } 
@@ -1542,7 +1568,9 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
       const dlAnchorElem = document.createElement('a');
       dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", `Gobinath_Finance_Backup_${new Date().toISOString().slice(0,10)}.json`);
+      const bkNow = new Date();
+      const bkDate = bkNow.getFullYear() + '-' + String(bkNow.getMonth() + 1).padStart(2, '0') + '-' + String(bkNow.getDate()).padStart(2, '0');
+      dlAnchorElem.setAttribute("download", `Gobinath_Finance_Backup_${bkDate}.json`);
       document.body.appendChild(dlAnchorElem);
       dlAnchorElem.click();
       document.body.removeChild(dlAnchorElem);
@@ -1599,7 +1627,7 @@
             navigate('records');
             
             // Trigger auto-sync so the newly imported data pushes to Google Sheets
-            if (APPS_SCRIPT_URL) backgroundSync();
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
 
           } else {
             alert("Invalid backup file format.");
@@ -1673,7 +1701,9 @@
         if (!line.trim()) return;
         
         let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/); 
-        let dateStr = new Date().toISOString().slice(0, 10);
+        
+        const impNow = new Date(); 
+        let dateStr = impNow.getFullYear() + '-' + String(impNow.getMonth() + 1).padStart(2, '0') + '-' + String(impNow.getDate()).padStart(2, '0'); 
         
         if (dateMatch) { 
             let part1 = dateMatch[1], part2 = dateMatch[2], part3 = dateMatch[3]; 
@@ -1729,7 +1759,7 @@
           localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
           alert(`Successfully imported ${addedCount} transactions locally. They will now sync to the cloud in the background.`); 
           document.getElementById('import-text').value = ''; 
-          if (APPS_SCRIPT_URL) backgroundSync();
+          if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync();
       } else { 
           alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       }
@@ -1805,7 +1835,10 @@
         document.getElementById('tx-id').value = ''; 
         document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; 
         document.getElementById('tx-type').value = type; 
-        document.getElementById('tx-date').valueAsDate = new Date(); 
+        
+        const txNow = new Date(); 
+        document.getElementById('tx-date').value = txNow.getFullYear() + '-' + String(txNow.getMonth() + 1).padStart(2, '0') + '-' + String(txNow.getDate()).padStart(2, '0'); 
+        
         document.getElementById('tx-save-btn').innerText = 'Save Transaction'; 
         updateCatOptions(); 
         document.getElementById('tx-modal').style.display = 'grid'; 
@@ -1854,7 +1887,7 @@
         else navigate('overview'); 
         
         // 2. Background Sync Delete
-        if (APPS_SCRIPT_URL) {
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
             try { 
                 await apiPost('deleteTransaction', { id }); 
             } catch (err) { 
@@ -1902,7 +1935,7 @@
       else navigate('overview');
 
       // 2. Background Sync Post
-      if (APPS_SCRIPT_URL) {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
           try {
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
           } catch (err) { 
