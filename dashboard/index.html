@@ -474,6 +474,9 @@
       <button class="nav-item" onclick="navigate('budget', this)">
         <span class="nav-icon">🎯</span><span class="nav-text">Budget</span>
       </button>
+      <button class="nav-item" onclick="navigate('vehicle', this)">
+        <span class="nav-icon">🚗</span><span class="nav-text">Vehicle</span>
+      </button>
       <button class="nav-item" onclick="navigate('reminders', this)">
         <span class="nav-icon">🔔</span><span class="nav-text">Reminders</span>
       </button>
@@ -555,9 +558,7 @@
           </div>
           <div class="form-group">
             <label>User</label>
-            <select id="tx-user" class="input-field">
-              <!-- Dynamically populated -->
-            </select>
+            <select id="tx-user" class="input-field"></select>
           </div>
         </div>
         <div class="form-group">
@@ -636,6 +637,71 @@
     </div>
   </div>
 
+  <!-- Fuel Add Modal -->
+  <div id="fuel-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Add Fuel Entry</h3>
+        <button class="close-btn" onclick="closeModal('fuel-modal')">×</button>
+      </div>
+      <form onsubmit="saveFuelEntry(event)">
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="fuel-date" class="input-field" required>
+          </div>
+          <div class="form-group">
+            <label>Vehicle Name</label>
+            <input type="text" id="fuel-vehicle" class="input-field" required placeholder="e.g. Honda City">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Current Odometer (KM)</label>
+            <input type="number" id="fuel-odo" class="input-field" required>
+          </div>
+          <div class="form-group">
+            <label>Is Tank at Reserve?</label>
+            <select id="fuel-reserve" class="input-field">
+              <option value="Yes">Yes (Hit Reserve)</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Fuel Amount (₹)</label>
+            <input type="number" id="fuel-amount" step="0.01" class="input-field" required oninput="calcFuelLiters()">
+          </div>
+          <div class="form-group">
+            <label>Current Petrol Price (₹/L)</label>
+            <input type="number" id="fuel-price" step="0.01" class="input-field" value="102.63" required oninput="calcFuelLiters()">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Liters Added (Auto-Calc)</label>
+            <input type="number" id="fuel-liters" step="0.01" class="input-field" required readonly style="background:rgba(255,255,255,0.05); color:var(--primary); font-weight:bold;">
+          </div>
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select id="fuel-method" class="input-field">
+              <option value="UPI">UPI / NetBanking</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="Cash">Cash</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+            <label>User</label>
+            <select id="fuel-user" class="input-field"></select>
+        </div>
+        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Save Fuel Entry</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     // --- GOOGLE APPS SCRIPT URL ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzftzHXI09njZM-1BHrjHdmN2jS9kOFn4BxBt1tmoky4qnYqwqj657RBa1o3-YtzNBw7w/exec";
@@ -671,11 +737,11 @@
         'Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 
         'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 
         'Gold Loan', 'Loan', 'Home Maintenance', 'Saloon / Parlour', 
-        'LIC Payment', 'Utility Bills', 'Shopping', 'Other Expense'
+        'LIC Payment', 'Utility Bills', 'Shopping', 'Travel', 'Other Expense'
     ];
     
     const incCategories = [
-        'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Loan Repayment'
+        'Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Received Loan', 'Loan Repayment'
     ];
 
     let ledger = [];
@@ -786,14 +852,12 @@
 
         const cloudData = await apiGetJSONP('getDashboard');
         
-        // 1. Process Transactions globally without time-locks
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
         let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
-        const cloudIds = new Set(cloudTxs.map(t => String(t.id).trim()));
+        const cloudTxIds = new Set(cloudTxs.map(t => String(t.id).trim()));
         
-        const missingInCloud = localTxs.filter(t => !cloudIds.has(String(t.id).trim()));
+        const missingInCloud = localTxs.filter(t => !cloudTxIds.has(String(t.id).trim()));
 
-        // 2. Process Reminders globally without time-locks
         let cloudRems = deduplicateReminders(cloudData.reminders || []);
         let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
         const cloudRemIds = new Set(cloudRems.map(r => String(r.id).trim()));
@@ -802,14 +866,9 @@
 
         let requiresRefresh = false;
 
-        // Sequential Queuing to completely prevent Google Sheet Rate Limit duplication bugs
         if (missingInCloud.length > 0 || missingRems.length > 0) {
-           for (const tx of missingInCloud) {
-              await apiPost('addTransaction', tx);
-           }
-           for (const r of missingRems) {
-              await apiPost('addReminder', r);
-           }
+           for (const tx of missingInCloud) await apiPost('addTransaction', tx);
+           for (const r of missingRems) await apiPost('addReminder', r);
            
            const updatedCloudData = await apiGetJSONP('getDashboard');
            ledger = deduplicateLedger(updatedCloudData.transactions || []);
@@ -818,23 +877,28 @@
            }
            requiresRefresh = true;
         } else {
+           if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length) {
+               requiresRefresh = true;
+           }
            ledger = cloudTxs;
            reminders = cloudRems;
-           requiresRefresh = true;
         }
         
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
-        if (requiresRefresh) {
+        if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
               const navText = activeNav.innerText.trim();
               if(navText.includes('Records')) navigate('records', activeNav);
               else if(navText.includes('Analyzer')) navigate('analyzer', activeNav);
               else if(navText.includes('Budget')) navigate('budget', activeNav);
+              else if(navText.includes('Vehicle')) navigate('vehicle', activeNav);
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
               else navigate('home');
+            } else {
+                navigate('home');
             }
         }
       } catch(e) {
@@ -863,7 +927,6 @@
           try { if (JSON.parse(localData).length > 0) isLocalEmpty = false; } catch(e){}
       }
       
-      // If new device or empty storage, ALWAYS await cloud fetch before showing UI
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
@@ -871,7 +934,6 @@
                   <p style="color:var(--muted); font-size:15px;">Syncing Enterprise Master Database...</p>
               </div>`;
           await backgroundSync(true);
-          navigate('home');
       } else {
           ledger = deduplicateLedger(JSON.parse(localData) || []);
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
@@ -882,7 +944,6 @@
           }
       }
 
-      // Enable perpetual 15-second heartbeat poll for all devices
       if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
           setInterval(() => backgroundSync(false), 15000);
       }
@@ -1002,8 +1063,9 @@
           'credit card': 'Credit Card Bill', 'loan': 'Loan', 'emi': 'Loan', 'repayment': 'Loan Repayment',
           'saloon': 'Saloon / Parlour', 'lic': 'LIC Payment', 
           'utility': 'Utility Bills', 'salary': 'Salary Received', 'bonus': 'Bonus',
-          'shopping': 'Shopping', 'amazon': 'Shopping', 'flipkart': 'Shopping', 'clothes': 'Shopping'
-          };
+          'shopping': 'Shopping', 'amazon': 'Shopping', 'flipkart': 'Shopping', 'clothes': 'Shopping',
+          'travel': 'Travel', 'train': 'Travel', 'flight': 'Travel', 'bus': 'Travel'
+      };
       
       for (const [key, val] of Object.entries(voiceCatMap)) { 
           if (lower.includes(key) && availableCategories.includes(val)) { 
@@ -1062,6 +1124,11 @@
           title.innerText = 'Budget Tracker'; 
           sub.innerText = 'Set limits and monitor category spending.'; 
           container.innerHTML = renderBudget(); 
+      }
+      else if (view === 'vehicle') { 
+          title.innerText = 'Vehicle Dashboard'; 
+          sub.innerText = 'Fuel consumption & Reserve-to-Reserve mileage calculator.'; 
+          container.innerHTML = renderVehicle(); 
       }
       else if (view === 'reminders') { 
           title.innerText = 'Reminders & Important Dates'; 
@@ -1148,14 +1215,20 @@
     function renderOverview() {
       let inc = 0; 
       let exp = 0; 
+      let ccSpent = 0;
       
       ledger.forEach(t => { 
           if (t.type === 'CREDIT') { inc += t.amount; } 
-          else { exp += t.amount; } 
+          else { 
+              exp += t.amount; 
+              if (t.method === 'Credit Card' || t.category === 'Credit Card Bill') {
+                  ccSpent += t.amount;
+              }
+          } 
       });
       
       return `
-        <div class="kpi-grid">
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
           <div class="panel" style="margin:0; padding:20px;">
             <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">NET BALANCE</div>
             <div class="kpi-val">₹${(inc-exp).toLocaleString('en-IN')}</div>
@@ -1167,6 +1240,10 @@
           <div class="panel" style="margin:0; padding:20px;">
             <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">TOTAL EXPENSES</div>
             <div class="kpi-val" style="color:var(--red);">₹${exp.toLocaleString('en-IN')}</div>
+          </div>
+          <div class="panel" style="margin:0; padding:20px;">
+            <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">CREDIT CARD SPENT</div>
+            <div class="kpi-val" style="color:var(--warn);">₹${ccSpent.toLocaleString('en-IN')}</div>
           </div>
         </div>
         <div class="panel">
@@ -1261,10 +1338,10 @@
           const diff = valB - valA; 
           let diffStr = `<span>₹0</span>`; 
           
-          if (diff > 0) diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString()}</span>`; 
-          else if (diff < 0) diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString()}</span>`; 
+          if (diff > 0) diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString('en-IN')}</span>`; 
+          else if (diff < 0) diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString('en-IN')}</span>`; 
           
-          return `<tr><td>${c}</td><td>₹${valA.toLocaleString()}</td><td>₹${valB.toLocaleString()}</td><td>${diffStr}</td></tr>`; 
+          return `<tr><td>${c}</td><td>₹${valA.toLocaleString('en-IN')}</td><td>₹${valB.toLocaleString('en-IN')}</td><td>${diffStr}</td></tr>`; 
       }).join('');
 
       if (!compRows) compRows = `<tr><td colspan="4" style="text-align:center;">No data for selected months.</td></tr>`;
@@ -1348,7 +1425,7 @@
           <div class="budget-row">
             <div class="budget-info">
               <div><strong>${cat}</strong> <span style="color:var(--muted); font-size:11px; margin-left:6px;">${b.type}</span></div>
-              <div>₹${spent.toLocaleString()} / ₹${target.toLocaleString()} <span style="color:${color}; font-weight:700;">${pct}%</span></div>
+              <div>₹${spent.toLocaleString('en-IN')} / ₹${target.toLocaleString('en-IN')} <span style="color:${color}; font-weight:700;">${pct}%</span></div>
             </div>
             <div class="bar-bg">
                 <div class="bar-fill" style="width:${Math.min(pct, 100)}%; background:${color};"></div>
@@ -1388,6 +1465,155 @@
         navigate('budget'); 
     }
 
+    // --- VIEW: VEHICLE DASHBOARD ---
+    function calcFuelLiters() {
+        const amt = parseFloat(document.getElementById('fuel-amount').value) || 0;
+        const price = parseFloat(document.getElementById('fuel-price').value) || 1;
+        document.getElementById('fuel-liters').value = (amt / price).toFixed(2);
+    }
+    
+    function openFuelModal() {
+        document.getElementById('fuel-date').valueAsDate = new Date();
+        document.getElementById('fuel-vehicle').value = '';
+        document.getElementById('fuel-odo').value = '';
+        document.getElementById('fuel-amount').value = '';
+        document.getElementById('fuel-liters').value = '';
+        
+        const userSelect = document.getElementById('fuel-user');
+        if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join('');
+        
+        document.getElementById('fuel-modal').style.display = 'grid';
+    }
+    
+    async function saveFuelEntry(e) {
+        e.preventDefault();
+        
+        const btn = e.submitter;
+        btn.disabled = true;
+        btn.innerText = 'Saving...';
+        
+        const rawDate = document.getElementById('fuel-date').value;
+        const vehicleName = document.getElementById('fuel-vehicle').value.trim();
+        const amount = parseFloat(document.getElementById('fuel-amount').value);
+        
+        const notesObj = {
+            vehicle: vehicleName,
+            odo: parseFloat(document.getElementById('fuel-odo').value),
+            liters: parseFloat(document.getElementById('fuel-liters').value),
+            price: parseFloat(document.getElementById('fuel-price').value),
+            isReserve: document.getElementById('fuel-reserve').value === 'Yes'
+        };
+        
+        const record = { 
+            id: 'tx_fuel_' + Date.now(), 
+            date: rawDate.split('T')[0], 
+            type: 'DEBIT', 
+            category: 'Fuel / Petrol', 
+            method: document.getElementById('fuel-method').value, 
+            desc: 'Fuel Entry - ' + vehicleName, 
+            notes: JSON.stringify(notesObj), 
+            amount: amount, 
+            user: document.getElementById('fuel-user').value 
+        };
+        
+        ledger.unshift(record);
+        ledger = deduplicateLedger(ledger);
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        
+        closeModal('fuel-modal');
+        navigate('vehicle');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+            try { await apiPost('addTransaction', record); } catch (err) { console.error(err); }
+        }
+    }
+
+    function renderVehicle() {
+        const fuelTxs = ledger.filter(t => t.category === 'Fuel / Petrol').sort((a,b) => new Date(a.date) - new Date(b.date));
+        
+        // Group by Vehicle
+        const vMap = {};
+        let totalFuelSpent = 0;
+        
+        fuelTxs.forEach(t => {
+            totalFuelSpent += t.amount;
+            try {
+                const data = JSON.parse(t.notes);
+                if (data && data.vehicle && data.odo) {
+                    if (!vMap[data.vehicle]) vMap[data.vehicle] = { entries: [], lastReserveOdo: null, accumulatedLiters: 0, mileage: 0, count: 0 };
+                    vMap[data.vehicle].entries.push({ date: t.date, odo: data.odo, liters: data.liters, price: data.price, isReserve: data.isReserve, amount: t.amount });
+                }
+            } catch(e) {}
+        });
+
+        let vehicleCards = '';
+        for (const vName in vMap) {
+            const vData = vMap[vName];
+            
+            // Calculate Reserve-to-Reserve Mileage
+            vData.entries.forEach(entry => {
+                if (entry.isReserve) {
+                    if (vData.lastReserveOdo !== null && vData.accumulatedLiters > 0) {
+                        const distance = entry.odo - vData.lastReserveOdo;
+                        const localMileage = distance / vData.accumulatedLiters;
+                        vData.mileage = ((vData.mileage * vData.count) + localMileage) / (vData.count + 1);
+                        vData.count++;
+                    }
+                    vData.lastReserveOdo = entry.odo;
+                    vData.accumulatedLiters = entry.liters; // Start new leg with this fuel
+                } else {
+                    if (vData.lastReserveOdo !== null) {
+                        vData.accumulatedLiters += entry.liters;
+                    }
+                }
+            });
+
+            vehicleCards += `
+                <div class="panel" style="background: rgba(255,255,255,0.02);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                        <h4 style="font-size:16px; color:var(--primary); font-weight:700;">🚗 ${vName}</h4>
+                        <span class="badge warn">Avg Mileage: ${vData.count > 0 ? vData.mileage.toFixed(2) + ' km/l' : 'Need more Reserve entries'}</span>
+                    </div>
+                    <div class="table-responsive">
+                      <table>
+                        <thead><tr><th>Date</th><th>Odo (KM)</th><th>Liters</th><th>Price/L</th><th>Reserve Hit?</th><th>Cost</th></tr></thead>
+                        <tbody>
+                            ${vData.entries.slice().reverse().map(e => `
+                                <tr>
+                                    <td>${e.date}</td>
+                                    <td>${e.odo}</td>
+                                    <td>${e.liters} L</td>
+                                    <td>₹${e.price || '-'}</td>
+                                    <td><span class="badge ${e.isReserve ? 'primary' : ''}">${e.isReserve ? 'Yes' : 'No'}</span></td>
+                                    <td style="color:var(--red); font-weight:bold;">- ₹${e.amount}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="kpi-grid">
+              <div class="panel" style="margin:0; padding:20px;">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">TOTAL FUEL SPENT</div>
+                <div class="kpi-val" style="color:var(--red);">₹${totalFuelSpent.toLocaleString('en-IN')}</div>
+              </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-head">
+                    <h3>Vehicle Log & Mileage Calculator</h3>
+                    <button class="btn primary" onclick="openFuelModal()">+ Add Fuel Entry</button>
+                </div>
+                <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">To calculate accurate mileage, ensure you check "Reserve Hit" when the fuel indicator drops to reserve. The system calculates mileage between these reserve points.</p>
+                ${vehicleCards || '<p style="text-align:center; color:var(--muted); padding:20px;">No vehicle fuel entries found.</p>'}
+            </div>
+        `;
+    }
+
     // --- VIEW 5: REMINDERS ---
     function renderReminders() {
       let pending = reminders.filter(r => r.status === 'Pending').sort((a,b) => new Date(a.date) - new Date(b.date)); 
@@ -1401,7 +1627,7 @@
           <td><span class="badge ${r.status === 'Pending' ? 'warn' : 'credit'}">${r.status}</span></td>
           <td><span class="badge ${r.type.includes('Date') ? 'primary' : 'debit'}">${r.type}</span></td>
           <td style="font-weight:700;">${r.title}</td>
-          <td>${r.amount ? '₹' + r.amount.toLocaleString() : '-'}</td>
+          <td>${r.amount ? '₹' + r.amount.toLocaleString('en-IN') : '-'}</td>
           <td>
             ${r.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Mark Done</button>` : ''}
             <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
@@ -1648,7 +1874,7 @@
       if (period !== 'ALL') { 
           filtered = ledger.filter(t => { 
               const tDate = new Date(t.date); 
-              if (period === 'CUR_MONTH') return t.date.startsWith('2026-09'); 
+              if (period === 'CUR_MONTH') return t.date.startsWith(now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0')); 
               if (period === 'LAST_3_MONTHS') return (now - tDate) <= (90 * 24 * 60 * 60 * 1000); 
               if (period === 'LAST_6_MONTHS') return (now - tDate) <= (180 * 24 * 60 * 60 * 1000); 
               if (period === 'LAST_1_YEAR') return (now - tDate) <= (365 * 24 * 60 * 60 * 1000); 
@@ -1691,7 +1917,7 @@
           'lic': 'LIC Payment', 'insurance': 'LIC Payment', 
           'salon': 'Saloon / Parlour', 'parlour': 'Saloon / Parlour', 'hair': 'Saloon / Parlour', 
           'salary': 'Salary Received', 'payroll': 'Salary Received', 
-          'emi': 'Loan', 'loan': 'Loan' 
+          'emi': 'Loan', 'loan': 'Loan', 'travel': 'Travel' 
       };
       
       const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}'); 
