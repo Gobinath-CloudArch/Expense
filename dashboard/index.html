@@ -675,7 +675,7 @@
           </div>
           <div class="form-group">
             <label>Current Petrol Price (₹/L)</label>
-            <input type="number" id="fuel-price" step="0.01" class="input-field" value="102.63" required oninput="calcFuelLiters()">
+            <input type="number" id="fuel-price" step="0.01" class="input-field" value="107.77" required oninput="calcFuelLiters()">
           </div>
         </div>
         <div class="grid-2">
@@ -866,6 +866,7 @@
 
         let requiresRefresh = false;
 
+        // Sequential Queue Push to bypass Rate Limits
         if (missingInCloud.length > 0 || missingRems.length > 0) {
            for (const tx of missingInCloud) await apiPost('addTransaction', tx);
            for (const r of missingRems) await apiPost('addReminder', r);
@@ -927,6 +928,7 @@
           try { if (JSON.parse(localData).length > 0) isLocalEmpty = false; } catch(e){}
       }
       
+      // If new device or empty storage, ALWAYS await cloud fetch before showing UI
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
@@ -1473,11 +1475,14 @@
     }
     
     function openFuelModal() {
-        document.getElementById('fuel-date').valueAsDate = new Date();
+        const fNow = new Date();
+        document.getElementById('fuel-date').value = fNow.getFullYear() + '-' + String(fNow.getMonth() + 1).padStart(2, '0') + '-' + String(fNow.getDate()).padStart(2, '0');
+        
         document.getElementById('fuel-vehicle').value = '';
         document.getElementById('fuel-odo').value = '';
         document.getElementById('fuel-amount').value = '';
         document.getElementById('fuel-liters').value = '';
+        document.getElementById('fuel-price').value = localStorage.getItem('gf_fuel_price') || '107.77';
         
         const userSelect = document.getElementById('fuel-user');
         if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join('');
@@ -1495,12 +1500,15 @@
         const rawDate = document.getElementById('fuel-date').value;
         const vehicleName = document.getElementById('fuel-vehicle').value.trim();
         const amount = parseFloat(document.getElementById('fuel-amount').value);
+        const currentPrice = document.getElementById('fuel-price').value;
+        
+        localStorage.setItem('gf_fuel_price', currentPrice);
         
         const notesObj = {
             vehicle: vehicleName,
             odo: parseFloat(document.getElementById('fuel-odo').value),
             liters: parseFloat(document.getElementById('fuel-liters').value),
-            price: parseFloat(document.getElementById('fuel-price').value),
+            price: parseFloat(currentPrice),
             isReserve: document.getElementById('fuel-reserve').value === 'Yes'
         };
         
