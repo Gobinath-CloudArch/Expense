@@ -652,7 +652,10 @@
           </div>
           <div class="form-group">
             <label>Vehicle Name</label>
-            <input type="text" id="fuel-vehicle" class="input-field" required placeholder="e.g. Honda City">
+            <select id="fuel-vehicle" class="input-field" required onchange="updateFuelPrice()">
+              <option value="Jupiter 125">Jupiter 125</option>
+              <option value="Other">Other Vehicle</option>
+            </select>
           </div>
         </div>
         <div class="grid-2">
@@ -675,7 +678,7 @@
           </div>
           <div class="form-group">
             <label>Current Petrol Price (₹/L)</label>
-            <input type="number" id="fuel-price" step="0.01" class="input-field" value="107.77" required oninput="calcFuelLiters()">
+            <input type="number" id="fuel-price" step="0.01" class="input-field" required oninput="calcFuelLiters()">
           </div>
         </div>
         <div class="grid-2">
@@ -852,12 +855,14 @@
 
         const cloudData = await apiGetJSONP('getDashboard');
         
+        // 1. Process Transactions globally without time-locks
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
         let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
         const cloudTxIds = new Set(cloudTxs.map(t => String(t.id).trim()));
         
         const missingInCloud = localTxs.filter(t => !cloudTxIds.has(String(t.id).trim()));
 
+        // 2. Process Reminders globally without time-locks
         let cloudRems = deduplicateReminders(cloudData.reminders || []);
         let localRems = deduplicateReminders(JSON.parse(localStorage.getItem('gf_reminders')) || []);
         const cloudRemIds = new Set(cloudRems.map(r => String(r.id).trim()));
@@ -1474,15 +1479,24 @@
         document.getElementById('fuel-liters').value = (amt / price).toFixed(2);
     }
     
+    function updateFuelPrice() {
+        const v = document.getElementById('fuel-vehicle').value;
+        const pInput = document.getElementById('fuel-price');
+        if (v === 'Jupiter 125') { pInput.value = '107.77'; } else { pInput.value = '108.60'; }
+        calcFuelLiters();
+    }
+    
     function openFuelModal() {
         const fNow = new Date();
         document.getElementById('fuel-date').value = fNow.getFullYear() + '-' + String(fNow.getMonth() + 1).padStart(2, '0') + '-' + String(fNow.getDate()).padStart(2, '0');
         
-        document.getElementById('fuel-vehicle').value = '';
+        document.getElementById('fuel-vehicle').value = 'Jupiter 125';
         document.getElementById('fuel-odo').value = '';
         document.getElementById('fuel-amount').value = '';
         document.getElementById('fuel-liters').value = '';
-        document.getElementById('fuel-price').value = localStorage.getItem('gf_fuel_price') || '107.77';
+        
+        // Force the price to strictly pull from logic, ignoring any old local cache
+        document.getElementById('fuel-price').value = '107.77';
         
         const userSelect = document.getElementById('fuel-user');
         if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join('');
@@ -1501,8 +1515,6 @@
         const vehicleName = document.getElementById('fuel-vehicle').value.trim();
         const amount = parseFloat(document.getElementById('fuel-amount').value);
         const currentPrice = document.getElementById('fuel-price').value;
-        
-        localStorage.setItem('gf_fuel_price', currentPrice);
         
         const notesObj = {
             vehicle: vehicleName,
