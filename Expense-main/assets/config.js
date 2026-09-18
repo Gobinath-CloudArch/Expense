@@ -1,1 +1,0 @@
-const CONFIG_API_URL = "https://script.google.com/macros/s/AKfycbwKFk7CfOfJ6kr2tOczkmqZtZvphj2GfAJWl3C-c-Qred37TxlvYV_owLZBSiSTuxVncg/exec";
