@@ -1,0 +1,78 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Assemble Web Assets
+        run: |
+          mkdir -p www assets
+          
+          # Use Mobile files as App defaults
+          cp mobile-index.html www/index.html
+          cp mobile-dashboard.html www/mobile-dashboard.html
+          
+          # Use the directly uploaded logo.png
+          cp logo.png www/logo.png || true
+          cp logo.png assets/icon.png || true
+          cp logo.png assets/splash.png || true
+          
+          cp -r dashboard assets www/ 2>/dev/null || true
+
+      - name: Install Capacitor Dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm install @capacitor-community/speech-recognition@6 --legacy-peer-deps
+          npm install @capacitor/assets@3 --save-dev --legacy-peer-deps
+
+      - name: Configure Android Project
+        run: |
+          npx cap add android || true
+          npx cap sync android
+
+      - name: Generate Native Android Icons
+        run: npx capacitor-assets generate --android || true
+
+      - name: Safely Add Voice Permissions
+        run: |
+          node -e "
+          const fs = require('fs');
+          const file = 'android/app/src/main/AndroidManifest.xml';
+          let data = fs.readFileSync(file, 'utf8');
+          if(!data.includes('RECORD_AUDIO')) {
+            data = data.replace('</manifest>', '    <uses-permission android:name=\"android.permission.INTERNET\" />\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n</manifest>');
+            fs.writeFileSync(file, data);
+          }
+          "
+
+      - name: Build APK via Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: My-Family-Expenser-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
