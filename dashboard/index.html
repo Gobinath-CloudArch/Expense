@@ -11,409 +11,76 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* --- Dynamic Enterprise Theming System --- */
-    :root[data-theme="dark"] { 
-      --bg-color: #070b14; 
-      --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(9, 15, 29, 0.7); 
-      --panel: rgba(14, 21, 38, 0.75); 
-      --border: rgba(30, 46, 78, 0.8); 
-      --text: #f3f7fd; 
-      --muted: #8598b8; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="light"] { 
-      --bg-color: #f4f7f9; 
-      --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(255, 255, 255, 0.6); 
-      --panel: rgba(255, 255, 255, 0.7); 
-      --border: rgba(225, 229, 235, 0.8); 
-      --text: #1a202c; 
-      --muted: #718096; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="neo-glass"] { 
-      --bg-color: #0f172a; 
-      --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); 
-      --sidebar: rgba(15, 23, 42, 0.4); 
-      --panel: rgba(17, 24, 39, 0.5); 
-      --border: rgba(255, 255, 255, 0.1); 
-      --text: #ffffff; 
-      --muted: #94a3b8; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root { 
-      --green: #2ed573; 
-      --red: #ff5263; 
-      --warn: #fbc531; 
-    }
+    :root[data-theme="dark"] { --bg-color: #070b14; --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); --sidebar: rgba(9, 15, 29, 0.7); --panel: rgba(14, 21, 38, 0.75); --border: rgba(30, 46, 78, 0.8); --text: #f3f7fd; --muted: #8598b8; --glass-blur: 16px; --primary: #4f6bf7; --primary-hover: #3d58e3; }
+    :root[data-theme="light"] { --bg-color: #f4f7f9; --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); --sidebar: rgba(255, 255, 255, 0.6); --panel: rgba(255, 255, 255, 0.7); --border: rgba(225, 229, 235, 0.8); --text: #1a202c; --muted: #718096; --glass-blur: 16px; --primary: #4f6bf7; --primary-hover: #3d58e3; }
+    :root[data-theme="neo-glass"] { --bg-color: #0f172a; --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); --sidebar: rgba(15, 23, 42, 0.4); --panel: rgba(17, 24, 39, 0.5); --border: rgba(255, 255, 255, 0.1); --text: #ffffff; --muted: #94a3b8; --glass-blur: 16px; --primary: #4f6bf7; --primary-hover: #3d58e3; }
+    :root[data-theme="love"] { --bg-color: #1a050a; --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop'); --sidebar: rgba(40, 10, 20, 0.5); --panel: rgba(60, 15, 30, 0.6); --border: rgba(255, 77, 109, 0.25); --text: #ffe0e6; --muted: #ffb3c6; --glass-blur: 16px; --primary: #ff4d6d; --primary-hover: #c9184a; }
+    :root[data-theme="cyberpunk"] { --bg-color: #0d0221; --bg-img: linear-gradient(rgba(13, 2, 33, 0.9), rgba(13, 2, 33, 0.9)), url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000'); --sidebar: rgba(13, 2, 33, 0.8); --panel: rgba(26, 9, 51, 0.8); --border: #00ffcc; --text: #00ffcc; --muted: #ff007f; --glass-blur: 10px; --primary: #ff007f; --primary-hover: #e60073; --green: #00ffcc; --red: #ff007f; --warn: #fbc531; }
+    :root[data-theme="ocean"] { --bg-color: #001f3f; --bg-img: linear-gradient(rgba(0, 31, 63, 0.9), rgba(0, 31, 63, 0.9)), url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000'); --sidebar: rgba(0, 31, 63, 0.7); --panel: rgba(0, 43, 86, 0.8); --border: rgba(0, 116, 217, 0.5); --text: #7fdbff; --muted: #39cccc; --glass-blur: 12px; --primary: #0074d9; --primary-hover: #0056b3; --green: #2ecc40; --red: #ff4136; --warn: #ff851b; }
+    :root { --green: #2ed573; --red: #ff5263; --warn: #fbc531; }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-    }
-    
-    body { 
-      background-color: var(--bg-color); 
-      background-image: var(--bg-img); 
-      background-attachment: fixed; 
-      background-size: cover; 
-      background-position: center; 
-      color: var(--text); 
-      display: flex; 
-      min-height: 100vh; 
-      overflow-x: hidden; 
-      transition: background 0.3s, color 0.3s; 
-    }
-
-    /* --- LAYOUT & CONTAINERS --- */
-    .sidebar { 
-      width: 260px; 
-      background: var(--sidebar); 
-      border-right: 1px solid var(--border); 
-      display: flex; 
-      flex-direction: column; 
-      padding: 24px 16px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur)); 
-      transition: 0.3s; 
-      z-index: 1000; 
-    }
-    
-    .main { 
-      flex: 1; 
-      padding: 28px 32px; 
-      overflow-y: auto; 
-    }
-    
-    .panel { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      padding: 22px; 
-      margin-bottom: 24px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur)); 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
-    }
-
-    /* --- BRANDING --- */
-    .brand-box { 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
-      padding: 0 8px 24px; 
-      border-bottom: 1px solid var(--border); 
-      margin-bottom: 20px; 
-    }
-    
-    .brand-icon { 
-      width: 42px; 
-      height: 42px; 
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover)); 
-      border-radius: 10px; 
-      display: grid; 
-      place-items: center; 
-      font-weight: 800; 
-      font-size: 18px; 
-      color: #fff; 
-      overflow: hidden;
-      padding: 2px;
-    }
-
-    .brand-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-    
-    .brand-title { 
-      font-size: 15px; 
-      font-weight: 700; 
-      line-height: 1.2; 
-    }
-    
-    /* --- NAVIGATION --- */
-    .nav-list { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 6px; 
-      flex: 1; 
-      overflow-y: auto;
-    }
-    
-    .nav-item { 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
-      padding: 12px 14px; 
-      border-radius: 12px; 
-      color: var(--muted); 
-      font-size: 13.5px; 
-      font-weight: 600; 
-      background: transparent; 
-      border: 1px solid transparent; 
-      cursor: pointer; 
-      text-align: left; 
-      transition: 0.2s; 
-    }
-    
-    .nav-item:hover { 
-      color: var(--text); 
-      background: rgba(255,255,255,0.08); 
-    }
-    
-    .nav-item.active { 
-      background: rgba(255,255,255,0.1); 
-      color: var(--primary); 
-      border-color: var(--border); 
-    }
-
-    /* --- BUTTONS & CONTROLS --- */
-    .panel-head { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 18px; 
-    }
-    
-    .btn { 
-      padding: 10px 18px; 
-      border-radius: 10px; 
-      font-weight: 600; 
-      font-size: 13.5px; 
-      border: 1px solid var(--border); 
-      background: rgba(0,0,0,0.2); 
-      color: var(--text); 
-      cursor: pointer; 
-      transition: 0.2s; 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 6px; 
-    }
-    
-    .btn.primary { 
-      background: var(--primary); 
-      border: none; 
-      color: white; 
-    }
-    
-    .btn:hover:not(:disabled) { 
-      filter: brightness(1.15); 
-    }
-    
-    .btn.voice-pulse { 
-      background: var(--red) !important; 
-      color: white !important; 
-      border-color: var(--red) !important; 
-      animation: pulseAnim 1.2s infinite; 
-    }
-    
-    @keyframes pulseAnim { 
-      0% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0.7); } 
-      70% { box-shadow: 0 0 0 10px rgba(255, 82, 99, 0); } 
-      100% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0); } 
-    }
-
-    .table-controls { 
-      display: flex; 
-      gap: 12px; 
-      margin-bottom: 16px; 
-    }
-    
-    .input-field { 
-      width: 100%; 
-      padding: 10px 14px; 
-      border-radius: 10px; 
-      border: 1px solid var(--border); 
-      background: rgba(0,0,0,0.3); 
-      color: var(--text); 
-      outline: none; 
-      font-size: 14px; 
-      backdrop-filter: blur(4px); 
-    }
-    
-    .input-field:focus { 
-      border-color: var(--primary); 
-    }
-    
-    select.input-field option { 
-      background-color: #0f172a; 
-      color: #fff; 
-    }
-    
-    /* --- TABLES --- */
-    .table-responsive { 
-      overflow-x: auto; 
-      width: 100%; 
-    }
-    
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      text-align: left; 
-      font-size: 13px; 
-      min-width: 600px; 
-    }
-    
-    th { 
-      color: var(--muted); 
-      padding: 12px 10px; 
-      border-bottom: 1px solid var(--border); 
-      font-size: 11px; 
-      text-transform: uppercase; 
-      cursor: pointer; 
-      user-select: none; 
-    }
-    
-    td { 
-      padding: 14px 10px; 
-      border-bottom: 1px solid var(--border); 
-    }
-    
-    .badge { 
-      padding: 4px 8px; 
-      border-radius: 6px; 
-      font-size: 10.5px; 
-      font-weight: 700; 
-      white-space: nowrap; 
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-color); background-image: var(--bg-img); background-attachment: fixed; background-size: cover; background-position: center; color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+    .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur)); transition: 0.3s; z-index: 1000; }
+    .main { flex: 1; padding: 28px 32px; overflow-y: auto; height: 100vh; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 22px; margin-bottom: 24px; backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur)); box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+    .brand-box { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+    .brand-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: #fff; overflow: hidden; padding: 2px;}
+    .brand-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+    .brand-title { font-size: 14px; font-weight: 700; line-height: 1.2; }
+    .nav-list { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; color: var(--muted); font-size: 13.5px; font-weight: 600; background: transparent; border: 1px solid transparent; cursor: pointer; text-align: left; transition: 0.2s; }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+    .nav-item.active { background: rgba(255,255,255,0.1); color: var(--primary); border-color: var(--border); }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 13.5px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text); cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn.primary { background: var(--primary); border: none; color: white; }
+    .btn:hover:not(:disabled) { filter: brightness(1.15); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn.voice-pulse { background: var(--red) !important; color: white !important; border-color: var(--red) !important; animation: pulseAnim 1.2s infinite; }
+    @keyframes pulseAnim { 0% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 82, 99, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0); } }
+    .table-controls { display: flex; gap: 12px; margin-bottom: 16px; }
+    .input-field { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: var(--text); outline: none; font-size: 14px; backdrop-filter: blur(4px); }
+    .input-field:focus { border-color: var(--primary); }
+    select.input-field option { background-color: #0f172a; color: #fff; }
+    .table-responsive { overflow-x: auto; width: 100%; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 600px; }
+    th { color: var(--muted); padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; cursor: pointer; user-select: none; }
+    td { padding: 14px 10px; border-bottom: 1px solid var(--border); }
+    .badge { padding: 4px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
     .badge.debit { background: rgba(255,82,99,0.15); color: var(--red); }
     .badge.credit { background: rgba(46,213,115,0.15); color: var(--green); }
     .badge.warn { background: rgba(251,197,49,0.15); color: var(--warn); }
     .badge.primary { background: rgba(79, 107, 247, 0.15); color: var(--primary); }
-
-    /* --- CHARTS & COMPONENTS --- */
-    .chart-container { 
-      height: 300px; 
-      width: 100%; 
-      margin-bottom: 20px; 
-    }
-    
-    .modern-clock-box { 
-      border: 1px solid var(--primary); 
-      border-radius: 16px; 
-      padding: 16px 28px; 
-      text-align: right; 
-      background: rgba(0, 0, 0, 0.35); 
-      backdrop-filter: blur(8px); 
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
-    }
-    
-    .modern-time { 
-      font-size: 46px; 
-      font-weight: 800; 
-      letter-spacing: 2px; 
-      font-variant-numeric: tabular-nums; 
-      color: var(--text); 
-      line-height: 1; 
-      margin-bottom: 6px; 
-    }
-    
-    .modern-time span { 
-      font-size: 24px; 
-      font-weight: 700; 
-    }
-    
-    .modern-date { 
-      color: var(--primary); 
-      font-weight: 700; 
-      font-size: 14.5px; 
-      letter-spacing: 0.5px; 
-    }
-    
+    .chart-container { height: 300px; width: 100%; margin-bottom: 20px; }
+    .modern-clock-box { border: 1px solid var(--primary); border-radius: 16px; padding: 16px 28px; text-align: right; background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(8px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .modern-time { font-size: 46px; font-weight: 800; letter-spacing: 2px; font-variant-numeric: tabular-nums; color: var(--text); line-height: 1; margin-bottom: 6px; }
+    .modern-time span { font-size: 24px; font-weight: 700; text-transform: lowercase; }
+    .modern-date { color: var(--primary); font-weight: 700; font-size: 14.5px; letter-spacing: 0.5px; }
     .budget-row { margin-bottom: 16px; }
     .budget-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
     .bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
-    
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .kpi-val { font-size: 26px; font-weight: 800; }
-
-    /* --- MODALS --- */
-    .modal-overlay { 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(0,0,0,0.7); 
-      backdrop-filter: blur(8px); 
-      display: none; 
-      place-items: center; 
-      z-index: 2000; 
-    }
-    
-    .modal { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      width: 100%; 
-      max-width: 550px; 
-      padding: 24px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      max-height: 90vh; 
-      overflow-y: auto; 
-    }
-    
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; place-items: center; z-index: 2000; }
+    .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 550px; padding: 24px; backdrop-filter: blur(var(--glass-blur)); max-height: 90vh; overflow-y: auto; }
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-head h3 { font-size: 18px; font-weight: 700; }
     .close-btn { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; font-weight: 700; }
-
-    .quick-tile { 
-      background: rgba(255,255,255,0.03); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      padding: 30px 20px; 
-      text-align: center; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      backdrop-filter: blur(var(--glass-blur)); 
-    }
+    .quick-tile { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(var(--glass-blur)); }
+    .quick-tile:hover { transform: translateY(-3px); background: rgba(255,255,255,0.08); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .reminder-card { background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 14px; min-width: 220px; flex-shrink: 0; }
     
-    .quick-tile:hover { 
-      transform: translateY(-3px); 
-      background: rgba(255,255,255,0.08); 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-    }
-    
-    .reminder-card { 
-      background: rgba(0,0,0,0.25); 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      padding: 14px; 
-      min-width: 220px; 
-      flex-shrink: 0; 
-    }
-    
-    /* New Encrypted Doc Vault UI */
-    .doc-card { 
-        background: rgba(0,0,0,0.25); 
-        border: 1px solid var(--border); 
-        border-radius: 12px; 
-        overflow: hidden; 
-        position: relative; 
-    }
-    .doc-card img { 
-        width: 100%; 
-        height: 180px; 
-        object-fit: cover; 
-    }
-    .doc-card-info { 
-        padding: 12px; 
-    }
+    /* New Encrypted Doc & Pass Vault UI */
+    .doc-card { background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; }
+    .doc-card img { width: 100%; height: 180px; object-fit: cover; }
+    .doc-card-info { padding: 12px; }
+    .pass-card { background: rgba(0,0,0,0.3); border: 1px solid var(--primary); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .pass-val { background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; font-family: monospace; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
 
     /* Responsive Web Adjustments */
     @media (max-width: 850px) {
@@ -454,6 +121,7 @@
       <button class="nav-item" onclick="navigate('vehicle', this)"><span class="nav-icon">🚗</span><span class="nav-text">Vehicle</span></button>
       <button class="nav-item" onclick="navigate('reminders', this)"><span class="nav-icon">🔔</span><span class="nav-text">Reminders</span></button>
       <button class="nav-item" onclick="navigate('vault', this)"><span class="nav-icon">📁</span><span class="nav-text">Doc Vault</span></button>
+      <button class="nav-item" onclick="navigate('passwords', this)"><span class="nav-icon">🔑</span><span class="nav-text">Pass Vault</span></button>
       <button class="nav-item" onclick="navigate('statements', this)"><span class="nav-icon">📥</span><span class="nav-text">Import/Export</span></button>
       <button class="nav-item" onclick="navigate('settings', this)"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></button>
     </nav>
@@ -489,7 +157,7 @@
       <form id="tx-form" onsubmit="saveTx(event)">
         <input type="hidden" id="tx-id">
         <div class="grid-2">
-          <!-- UPGRADED TO DATETIME-LOCAL -->
+          <!-- DATETIME INJECTION FOR PERFECT TIMESTAMPING -->
           <div class="form-group"><label>Date & Time</label><input type="datetime-local" id="tx-date" class="input-field" required></div>
           <div class="form-group"><label>Type</label><select id="tx-type" class="input-field" onchange="updateCatOptions()"><option value="DEBIT">Expense (Debit)</option><option value="CREDIT">Income (Credit)</option></select></div>
         </div>
@@ -508,7 +176,6 @@
     </div>
   </div>
 
-  <!-- Budget Edit Modal -->
   <div id="budget-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head"><h3>Configure Budget</h3><button class="close-btn" onclick="closeModal('budget-modal')">×</button></div>
@@ -523,7 +190,6 @@
     </div>
   </div>
 
-  <!-- Reminder Add Modal -->
   <div id="rem-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head"><h3>Add Reminder</h3><button class="close-btn" onclick="closeModal('rem-modal')">×</button></div>
@@ -600,9 +266,24 @@
       </form>
     </div>
   </div>
+  
+  <!-- Password Manager Modal -->
+  <div id="pass-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head"><h3>Add Encrypted Password</h3><button class="close-btn" onclick="closeModal('pass-modal')">×</button></div>
+      <form onsubmit="savePass(event)">
+        <div class="form-group"><label>Service / App Name</label><input type="text" id="pass-service" class="input-field" required placeholder="e.g. Netflix, NetBanking"></div>
+        <div class="form-group"><label>URL (Optional)</label><input type="url" id="pass-url" class="input-field" placeholder="https://..."></div>
+        <div class="form-group"><label>Username / Email / User ID</label><input type="text" id="pass-username" class="input-field" required></div>
+        <div class="form-group"><label>Secret Password</label><input type="password" id="pass-secret" class="input-field" required></div>
+        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Encrypt & Save</button>
+      </form>
+    </div>
+  </div>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLibLg2wfU8bIi8XNYu82c1XIXT_JjQCk23V1v91BlfM044YTjqNCNBmVV4i3nMtBf8w/exec";
+    // --- UPDATED GOOGLE APPS SCRIPT URL ---
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSNLQxCRPZKdqSkbRxHpAu06xG-V4nqoSziQYwBmm5vTqXZXeXEjRkFhEpNVof-Wx71g/exec";
 
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
@@ -620,13 +301,15 @@
       }
     }, 1000);
 
-    // --- TIMEZONE FIXER ---
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
-    // --- 10-MINUTE SECURE INACTIVITY TIMEOUT ---
+    // --- ENCRYPTION ENGINE FOR PASSWORDS ---
+    function encryptData(text) { return btoa(encodeURIComponent(text)); }
+    function decryptData(text) { try { return decodeURIComponent(atob(text)); } catch(e){ return "Encryption Error"; } }
+
     let inactivityTimer;
     const TIMEOUT_MS = 10 * 60 * 1000;
 
@@ -662,7 +345,6 @@
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
-    // --- UPDATED ADVANCED CATEGORIES ---
     const expCategories = ['Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 'Credit Card Proxy Spend', 'Given Loan (Asset)', 'Gold Loan Paid', 'Personal Loan Paid', 'Vehicle Service', 'Vehicle Insurance', 'Home Maintenance', 'Saloon / Parlour', 'LIC Payment', 'Utility Bills', 'Shopping', 'Travel', 'Other Expense'];
     const incCategories = ['Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Credit Card Proxy Refund', 'Received Loan Repayment', 'Gold Loan Received', 'Personal Loan Received', 'Received Individual Loan'];
 
@@ -671,38 +353,33 @@
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 'Groceries': { type: 'Fixed', val: 15000 }, 'Credit Card Bill': { type: 'Percentage', val: 15 } };
     let reminders = [];
     let docs = JSON.parse(localStorage.getItem('gf_docs')) || [];
+    let passwords = JSON.parse(localStorage.getItem('gf_passwords')) || [];
 
-    let sortCol = 'date';
-    let sortAsc = false;
-    let selectedMonthA = '2026-08';
-    let selectedMonthB = '2026-09';
+    let sortCol = 'date'; let sortAsc = false; let selectedMonthA = '2026-08'; let selectedMonthB = '2026-09';
 
-    // Maintains absolute data integrity using ID Set matching
     function deduplicateLedger(txList) {
         if (!txList || !Array.isArray(txList)) return [];
         const map = new Map();
-        for (const tx of txList) {
-            if (!tx || !tx.id) continue;
-            map.set(String(tx.id).trim(), tx);
-        }
+        for (const tx of txList) { if (tx && tx.id) map.set(String(tx.id).trim(), tx); }
         return Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date));
     }
-
     function deduplicateReminders(remList) {
         if (!remList || !Array.isArray(remList)) return [];
         const map = new Map();
-        for (const r of remList) {
-            if (!r || !r.id) continue;
-            map.set(String(r.id).trim(), r);
-        }
+        for (const r of remList) { if (r && r.id) map.set(String(r.id).trim(), r); }
         return Array.from(map.values()).sort((a,b) => new Date(a.date) - new Date(b.date));
     }
-
     function deduplicateDocs(docList) {
         if (!docList || !Array.isArray(docList)) return [];
         const map = new Map();
         for (const d of docList) { if(d && d.id) map.set(String(d.id).trim(), d); }
         return Array.from(map.values()).sort((a,b) => b.id.localeCompare(a.id));
+    }
+    function deduplicatePasswords(passList) {
+        if (!passList || !Array.isArray(passList)) return [];
+        const map = new Map();
+        for (const p of passList) { if(p && p.id) map.set(String(p.id).trim(), p); }
+        return Array.from(map.values()).sort((a,b) => a.service.localeCompare(b.service));
     }
 
     let isSyncing = false; 
@@ -711,51 +388,27 @@
       return new Promise((resolve, reject) => {
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
-        window[callbackName] = function(data) {
-          delete window[callbackName];
-          document.body.removeChild(script);
-          if (data.error) reject(new Error(data.error));
-          else resolve(data);
-        };
-        const script = document.createElement('script');
-        script.src = `${APPS_SCRIPT_URL}?action=${action}&callback=${callbackName}`;
-        script.onerror = () => reject(new Error("Network Error"));
-        document.body.appendChild(script);
+        window[callbackName] = function(data) { delete window[callbackName]; document.body.removeChild(script); if (data.error) reject(new Error(data.error)); else resolve(data); };
+        const script = document.createElement('script'); script.src = `${APPS_SCRIPT_URL}?action=${action}&callback=${callbackName}`; script.onerror = () => reject(new Error("Network Error")); document.body.appendChild(script);
       });
     }
 
     async function apiPost(action, data) {
-       try {
-           await fetch(APPS_SCRIPT_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-              body: JSON.stringify({ action, data })
-           });
-           return { ok: true };
-       } catch (err) {
-           return { ok: false };
-       }
+       try { await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, data }) }); return { ok: true }; } 
+       catch (err) { return { ok: false }; }
     }
 
     async function backgroundSync(isBoot = false) {
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return;
-      if (isSyncing) return; 
-      isSyncing = true;
+      if (isSyncing) return; isSyncing = true;
 
       try {
         if (isBoot) {
-            document.getElementById('view-container').innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:50vh; text-align:center;">
-                    <div style="width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
-                    <h3 style="color:var(--primary); font-size:22px; margin-bottom:8px;">☁️ Enterprise Cloud Sync</h3>
-                    <p style="color:var(--muted); font-size:14px;">Establishing secure connection to Master Storage...</p>
-                    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
-                </div>`;
+            document.getElementById('view-container').innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:50vh; text-align:center;"><div style="width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div><h3 style="color:var(--primary); font-size:22px; margin-bottom:8px;">☁️ Enterprise Cloud Sync</h3><p style="color:var(--muted); font-size:14px;">Establishing secure connection to Master Storage...</p><style>@keyframes spin { 100% { transform: rotate(360deg); } }</style></div>`;
         }
 
         const cloudData = await apiGetJSONP('getDashboard');
         
-        // Match existing data against cloud Data
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
         let localTxs = deduplicateLedger(JSON.parse(localStorage.getItem('gf_ledger')) || []);
         const cloudTxIds = new Set(cloudTxs.map(t => String(t.id).trim()));
@@ -769,37 +422,39 @@
         let cloudDocs = deduplicateDocs(cloudData.docs || []);
         const cloudDocIds = new Set(cloudDocs.map(d => String(d.id).trim()));
         const missingDocs = docs.filter(d => !cloudDocIds.has(String(d.id).trim()));
+        
+        let cloudPass = deduplicatePasswords(cloudData.passwords || []);
+        const cloudPassIds = new Set(cloudPass.map(p => String(p.id).trim()));
+        const missingPass = passwords.filter(p => !cloudPassIds.has(String(p.id).trim()));
 
         let requiresRefresh = false;
 
-        // Push sequentially to bypass cloud rate limits
-        if (missingInCloud.length > 0 || missingRems.length > 0 || missingDocs.length > 0) {
+        if (missingInCloud.length > 0 || missingRems.length > 0 || missingDocs.length > 0 || missingPass.length > 0) {
            for (const tx of missingInCloud) { await apiPost('addTransaction', tx); }
            for (const r of missingRems) { await apiPost('addReminder', r); }
            for (const d of missingDocs) { try { await apiPost('addDoc', d); } catch(e){} }
+           for (const p of missingPass) { try { await apiPost('addPassword', p); } catch(e){} }
            
-           // Fetch absolute latest state after pushing
            const updatedCloudData = await apiGetJSONP('getDashboard');
            ledger = deduplicateLedger(updatedCloudData.transactions || []);
            if (updatedCloudData.reminders) { reminders = deduplicateReminders(updatedCloudData.reminders); }
            if (updatedCloudData.docs) { docs = deduplicateDocs(updatedCloudData.docs); localStorage.setItem('gf_docs', JSON.stringify(docs)); }
+           if (updatedCloudData.passwords) { passwords = deduplicatePasswords(updatedCloudData.passwords); localStorage.setItem('gf_passwords', JSON.stringify(passwords)); }
            if (updatedCloudData.users) { users = updatedCloudData.users; localStorage.setItem('gf_users', JSON.stringify(users)); }
            if (updatedCloudData.budgets) { budgets = updatedCloudData.budgets; localStorage.setItem('gf_budgets', JSON.stringify(budgets)); }
            requiresRefresh = true;
         } else {
-           if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length) { requiresRefresh = true; }
-           ledger = cloudTxs;
-           reminders = cloudRems;
+           if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length || cloudPass.length !== passwords.length) { requiresRefresh = true; }
+           ledger = cloudTxs; reminders = cloudRems;
            if (cloudData.docs) { docs = deduplicateDocs(cloudData.docs); localStorage.setItem('gf_docs', JSON.stringify(docs)); }
+           if (cloudData.passwords) { passwords = deduplicatePasswords(cloudData.passwords); localStorage.setItem('gf_passwords', JSON.stringify(passwords)); }
            if (cloudData.users && cloudData.users.length > 0) { users = cloudData.users; localStorage.setItem('gf_users', JSON.stringify(users)); requiresRefresh = true; }
            if (cloudData.budgets && Object.keys(cloudData.budgets).length > 0) { budgets = cloudData.budgets; localStorage.setItem('gf_budgets', JSON.stringify(budgets)); requiresRefresh = true; }
         }
         
-        // Hard write to SSD
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
-        // UI Soft-Refresh
         if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
@@ -810,15 +465,12 @@
               else if(navText.includes('Vehicle')) navigate('vehicle', activeNav);
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
               else if(navText.includes('Loans')) navigate('loans', activeNav);
-              else if(navText.includes('Doc Vault')) navigate('vault', activeNav);
+              else if(navText.includes('Vault')) navigate('vault', activeNav);
+              else if(navText.includes('Pass')) navigate('passwords', activeNav);
               else navigate('home');
             } else { navigate('home'); }
         }
-      } catch(e) {
-        if (isBoot) navigate('home'); 
-      } finally {
-          isSyncing = false;
-      }
+      } catch(e) { if (isBoot) navigate('home'); } finally { isSyncing = false; }
     }
 
     async function triggerManualSync() {
@@ -836,11 +488,7 @@
       if (localData && localData !== "[]") { try { if (JSON.parse(localData).length > 0) isLocalEmpty = false; } catch(e){} }
       
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
-          document.getElementById('view-container').innerHTML = `
-              <div style="padding: 80px 20px; text-align: center;">
-                  <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
-                  <p style="color:var(--muted); font-size:15px;">Syncing Enterprise Master Database...</p>
-              </div>`;
+          document.getElementById('view-container').innerHTML = `<div style="padding: 80px 20px; text-align: center;"><h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3><p style="color:var(--muted); font-size:15px;">Syncing Enterprise Master Database...</p></div>`;
           await backgroundSync(true);
       } else {
           ledger = deduplicateLedger(JSON.parse(localData) || []);
@@ -941,6 +589,7 @@
       else if (view === 'vehicle') { title.innerText = 'Vehicle Dashboard'; sub.innerText = 'Fuel consumption & Reserve-to-Reserve mileage calculator.'; container.innerHTML = renderVehicle(); }
       else if (view === 'reminders') { title.innerText = 'Reminders & Important Dates'; sub.innerText = 'Track upcoming bills, scheduled payments, and events.'; container.innerHTML = renderReminders(); }
       else if (view === 'vault') { title.innerText = 'Encrypted Doc Vault'; sub.innerText = 'Securely store documents and screenshots.'; container.innerHTML = renderVault(); }
+      else if (view === 'passwords') { title.innerText = 'Encrypted Password Vault'; sub.innerText = 'Store app credentials securely with client-side encryption.'; container.innerHTML = renderPasswords(); }
       else if (view === 'statements') { title.innerText = 'Statements (Import / Export)'; sub.innerText = 'Move your data across devices or download CSV reports.'; container.innerHTML = renderStatements(); }
       else if (view === 'settings') { title.innerText = 'Settings & Security'; sub.innerText = 'Manage preferences, user access, and theme.'; container.innerHTML = renderSettings(); }
     }
@@ -961,10 +610,8 @@
         <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;"><div class="quick-tile" onclick="openTxModal('DEBIT')"><div style="font-size: 32px; margin-bottom: 12px;">💸</div><h3 style="font-size: 16px; font-weight: 700;">Add Expense</h3></div><div class="quick-tile" onclick="openTxModal('CREDIT')"><div style="font-size: 32px; margin-bottom: 12px;">💰</div><h3 style="font-size: 16px; font-weight: 700;">Add Income</h3></div><div class="quick-tile" onclick="navigate('budget')"><div style="font-size: 32px; margin-bottom: 12px;">🎯</div><h3 style="font-size: 16px; font-weight: 700;">Check Budgets</h3></div><div class="quick-tile" onclick="navigate('analyzer')"><div style="font-size: 32px; margin-bottom: 12px;">📈</div><h3 style="font-size: 16px; font-weight: 700;">Spend Analyzer</h3></div></div>`;
     }
 
-    // Advanced Separation of Proxy Spends and Loans
     function renderOverview() {
       let inc = 0; let exp = 0; let ccSpent = 0; let ccPaid = 0; let loanRec = 0;
-      
       const isProxy = (cat) => cat === 'Credit Card Proxy Spend' || cat === 'Credit Card Proxy Refund';
       const isLoan = (cat) => cat.includes('Loan');
 
@@ -1008,10 +655,7 @@
             <div class="kpi-val" style="font-size:20px; color:var(--primary);">₹${ccPaid.toLocaleString('en-IN')}</div>
           </div>
         </div>
-        <div class="panel">
-            <div class="panel-head"><h3>Trend Overview</h3></div>
-            <div class="chart-container"><canvas id="overviewChart"></canvas></div>
-        </div>
+        <div class="panel"><div class="panel-head"><h3>Trend Overview</h3></div><div class="chart-container"><canvas id="overviewChart"></canvas></div></div>
         ${renderTableHTML(ledger.slice(0, 5), 'Recent 5 Transactions', false)}
       `;
     }
@@ -1039,11 +683,9 @@
     function attachSearchLogic() { document.getElementById('search-input').addEventListener('keyup', (e) => { if(e.key === 'Enter') executeSearch(); }); }
     function sortTable(col) { sortAsc = (sortCol === col) ? !sortAsc : true; sortCol = col; ledger.sort((a, b) => { let valA = a[col]; let valB = b[col]; if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); } return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1); }); document.getElementById('records-table-container').innerHTML = renderTableHTML(ledger, '', true); }
 
-    // Advanced Loan Segregation Board
     function renderLoans() {
         const loanData = ledger.filter(t => t.category.includes('Loan') || t.category.includes('Lent'));
         let assetGiven = 0, assetRepaid = 0, debtReceived = 0, debtRepaid = 0;
-        
         loanData.forEach(t => {
             if (t.category === 'Given Loan (Asset)') assetGiven += t.amount;
             if (t.category === 'Received Loan Repayment') assetRepaid += t.amount;
@@ -1114,13 +756,11 @@
         e.preventDefault(); const btn = e.submitter; btn.disabled = true; btn.innerText = 'Saving...';
         const rawDate = document.getElementById('fuel-date').value; const vehicleName = document.getElementById('fuel-vehicle').value.trim(); const amount = parseFloat(document.getElementById('fuel-amount').value); const currentPrice = document.getElementById('fuel-price').value;
         const cat = document.getElementById('fuel-log-type').value;
-        
         const notesObj = { vehicle: vehicleName, odo: parseFloat(document.getElementById('fuel-odo').value) };
         if(cat === 'Fuel / Petrol') {
             notesObj.liters = parseFloat(document.getElementById('fuel-liters').value); notesObj.price = parseFloat(currentPrice); notesObj.isReserve = document.getElementById('fuel-reserve').value === 'Yes';
             if (notesObj.isReserve) notesObj.resOdo = document.getElementById('fuel-res-odo').value ? parseFloat(document.getElementById('fuel-res-odo').value) : notesObj.odo;
         }
-        
         const record = { id: 'tx_fuel_' + Date.now(), date: rawDate, type: 'DEBIT', category: cat, method: document.getElementById('fuel-method').value, desc: 'Vehicle Entry - ' + vehicleName, notes: JSON.stringify(notesObj), amount: amount, user: document.getElementById('fuel-user').value };
         ledger.unshift(record); ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         closeModal('fuel-modal'); navigate('vehicle');
@@ -1170,10 +810,10 @@
       reader.onload = (ev) => {
           const img = new Image();
           img.onload = async () => {
-              const canvas = document.createElement('canvas'); const MAX_WIDTH = 600; const scale = MAX_WIDTH / img.width;
+              const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const scale = MAX_WIDTH / img.width;
               canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
               const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-              const b64 = canvas.toDataURL('image/jpeg', 0.5); 
+              const b64 = canvas.toDataURL('image/jpeg', 0.4); 
               const docObj = { id: 'doc_' + Date.now(), date: new Date().toISOString(), title: title, b64: b64 };
               docs.unshift(docObj); localStorage.setItem('gf_docs', JSON.stringify(docs));
               closeModal('doc-modal'); btn.disabled = false; btn.innerText = "Encrypt & Upload"; document.getElementById('doc-file').value=''; document.getElementById('doc-title').value=''; navigate('vault');
@@ -1184,16 +824,50 @@
       reader.readAsDataURL(file);
     }
 
-    function renderStatements() {
-      return `<div class="panel"><div class="panel-head"><h3>Device Sync (Backup & Restore)</h3></div><p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Move your data safely to another device. Export a complete database backup here, then import it on your phone or laptop. Importing securely merges records without creating duplicates.</p><div class="grid-2"><div><button class="btn" style="width:100%; height:41px;" onclick="exportFullBackup()">⬇️ Download Full Backup</button></div><div><input type="file" id="import-backup-file" accept=".json" style="display:none" onchange="importFullBackup(event)"><button class="btn primary" style="width:100%; height:41px;" onclick="document.getElementById('import-backup-file').click()">⬆️ Restore / Import Backup</button></div></div></div><div class="panel"><div class="panel-head"><h3>Export Ledger to CSV</h3></div><div class="grid-2"><div><label style="font-size:12px; color:var(--muted);">Select Period</label><select id="export-period" class="input-field" style="margin-top:6px;"><option value="CUR_MONTH">Current Month</option><option value="LAST_3_MONTHS">Last 3 Months</option><option value="LAST_6_MONTHS">Last 6 Months</option><option value="LAST_1_YEAR">Last 1 Year</option><option value="ALL">Entire Ledger History</option></select></div><div style="display:flex; align-items:flex-end;"><button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download CSV Report</button></div></div></div><div class="panel"><div class="panel-head"><h3>Smart Statement Importer (Copy & Paste)</h3></div><p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Paste your bank or credit card statement text below. We will intelligently extract dates, amounts, and auto-categorize them.</p><textarea id="import-text" class="input-field" style="height: 120px; resize: vertical; margin-bottom: 12px; font-family: monospace;" placeholder="Paste raw statement lines here..."></textarea><div class="grid-2"><div><label style="font-size:12px; color:var(--muted);">Default Payment Method</label><select id="import-method" class="input-field" style="margin-top:6px;"><option value="Credit Card">Credit Card</option><option value="UPI">UPI / NetBanking</option><option value="Debit Card">Debit Card</option></select></div><div style="display:flex; align-items:flex-end;"><button class="btn primary" style="width:100%; height:41px;" onclick="processImport()">Analyze & Import Locally</button></div></div></div>`;
+    // Advanced Encrypted Password Manager
+    function renderPasswords() {
+      const passHtml = passwords.map(p => {
+          const rawPass = decryptData(p.enc_pass);
+          return `<div class="pass-card"><div style="display:flex; justify-content:space-between;"><h4>${p.service}</h4><button class="btn" style="padding:2px 6px; font-size:10px; color:var(--red);" onclick="deletePass('${p.id}')">🗑</button></div><p style="font-size:12px; color:var(--muted); margin-bottom:4px;">${p.username}</p><div class="pass-val"><span id="pw_${p.id}">••••••••</span><button class="btn" style="padding:4px 8px; font-size:10px;" onclick="togglePass('${p.id}', '${rawPass.replace(/'/g, "\\'")}')">👁️ Show</button></div></div>`;
+      }).join('');
+      return `<div class="panel"><div class="panel-head"><h3>Encrypted Password Vault</h3><button class="btn primary" onclick="document.getElementById('pass-modal').style.display='grid'">+ Add Password</button></div><p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Credentials are encrypted natively on your device before syncing to the cloud.</p><div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px;">${passHtml || '<p style="color:var(--muted);">Vault is empty.</p>'}</div></div>`;
     }
 
-    function exportFullBackup() { const data = { ledger: ledger, budgets: budgets, reminders: reminders, docs: docs, users: users }; const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); const bkNow = new Date(); const bkDate = bkNow.getFullYear() + '-' + String(bkNow.getMonth() + 1).padStart(2, '0') + '-' + String(bkNow.getDate()).padStart(2, '0'); dlAnchorElem.setAttribute("download", `Enterprise_Finance_Backup_${bkDate}.json`); document.body.appendChild(dlAnchorElem); dlAnchorElem.click(); document.body.removeChild(dlAnchorElem); }
-    function importFullBackup(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const importedData = JSON.parse(e.target.result); if (importedData.ledger) { const existingIds = new Set(ledger.map(t => String(t.id).trim())); let added = 0; importedData.ledger.forEach(t => { if (!existingIds.has(String(t.id).trim())) { if (t.date && t.date.includes('T')) t.date = t.date.split('T')[0]; ledger.push(t); added++; } }); ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); if (importedData.budgets) { budgets = importedData.budgets; localStorage.setItem('gf_budgets', JSON.stringify(budgets)); } if (importedData.reminders) { const existingRemIds = new Set(reminders.map(r => String(r.id).trim())); importedData.reminders.forEach(r => { if (!existingRemIds.has(String(r.id).trim())) { if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0]; reminders.push(r); } }); reminders = deduplicateReminders(reminders); localStorage.setItem('gf_reminders', JSON.stringify(reminders)); } if(importedData.docs) { const existingDocs = new Set(docs.map(d=>String(d.id).trim())); importedData.docs.forEach(d=>{ if(!existingDocs.has(String(d.id).trim())) docs.push(d); }); docs = deduplicateDocs(docs); localStorage.setItem('gf_docs', JSON.stringify(docs)); } if (importedData.users) { users = [...new Set([...users, ...importedData.users])]; localStorage.setItem('gf_users', JSON.stringify(users)); } alert(`✅ Backup Restored: Merged ${added} new transactions.`); navigate('records'); if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); } else { alert("Invalid backup file format."); } } catch (err) { alert("Error reading backup file: " + err.message); } }; reader.readAsText(file); event.target.value = ''; }
+    function togglePass(id, plainText) {
+        const el = document.getElementById('pw_' + id);
+        if(el.innerText === '••••••••') { el.innerText = plainText; } else { el.innerText = '••••••••'; }
+    }
+
+    async function savePass(e) {
+        e.preventDefault();
+        const service = document.getElementById('pass-service').value;
+        const url = document.getElementById('pass-url').value;
+        const username = document.getElementById('pass-username').value;
+        const secret = document.getElementById('pass-secret').value;
+        const enc_pass = encryptData(secret);
+        const passObj = { id: 'pass_' + Date.now(), service: service, url: url, username: username, enc_pass: enc_pass };
+        passwords.unshift(passObj); passwords = deduplicatePasswords(passwords); localStorage.setItem('gf_passwords', JSON.stringify(passwords));
+        closeModal('pass-modal'); document.getElementById('pass-service').value=''; document.getElementById('pass-url').value=''; document.getElementById('pass-username').value=''; document.getElementById('pass-secret').value=''; navigate('passwords');
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { try { await apiPost('addPassword', passObj); } catch(err){} }
+    }
+
+    async function deletePass(id) {
+        if(confirm('Delete this encrypted credential?')) {
+            passwords = passwords.filter(x => String(x.id).trim() !== String(id).trim()); localStorage.setItem('gf_passwords', JSON.stringify(passwords)); navigate('passwords');
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { try { await apiPost('deletePassword', { id }); } catch(err) {} }
+        }
+    }
+
+    function renderStatements() {
+      return `<div class="panel"><div class="panel-head"><h3>Device Sync (Backup & Restore)</h3></div><p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Move your data safely to another device. Export a complete database backup here, then import it on your phone or laptop.</p><div class="grid-2"><div><button class="btn" style="width:100%; height:41px;" onclick="exportFullBackup()">⬇️ Download Full Backup</button></div><div><input type="file" id="import-backup-file" accept=".json" style="display:none" onchange="importFullBackup(event)"><button class="btn primary" style="width:100%; height:41px;" onclick="document.getElementById('import-backup-file').click()">⬆️ Restore / Import Backup</button></div></div></div><div class="panel"><div class="panel-head"><h3>Export Ledger to CSV</h3></div><div class="grid-2"><div><label style="font-size:12px; color:var(--muted);">Select Period</label><select id="export-period" class="input-field" style="margin-top:6px;"><option value="CUR_MONTH">Current Month</option><option value="LAST_3_MONTHS">Last 3 Months</option><option value="LAST_6_MONTHS">Last 6 Months</option><option value="LAST_1_YEAR">Last 1 Year</option><option value="ALL">Entire Ledger History</option></select></div><div style="display:flex; align-items:flex-end;"><button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download CSV Report</button></div></div></div><div class="panel"><div class="panel-head"><h3>Smart Statement Importer (Copy & Paste)</h3></div><p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Paste your bank or credit card statement text below.</p><textarea id="import-text" class="input-field" style="height: 120px; resize: vertical; margin-bottom: 12px; font-family: monospace;" placeholder="Paste raw statement lines here..."></textarea><div class="grid-2"><div><label style="font-size:12px; color:var(--muted);">Default Payment Method</label><select id="import-method" class="input-field" style="margin-top:6px;"><option value="Credit Card">Credit Card</option><option value="UPI">UPI / NetBanking</option><option value="Debit Card">Debit Card</option></select></div><div style="display:flex; align-items:flex-end;"><button class="btn primary" style="width:100%; height:41px;" onclick="processImport()">Analyze & Import Locally</button></div></div></div>`;
+    }
+
+    function exportFullBackup() { const data = { ledger: ledger, budgets: budgets, reminders: reminders, docs: docs, passwords: passwords, users: users }; const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); const bkNow = new Date(); const bkDate = bkNow.getFullYear() + '-' + String(bkNow.getMonth() + 1).padStart(2, '0') + '-' + String(bkNow.getDate()).padStart(2, '0'); dlAnchorElem.setAttribute("download", `Enterprise_Finance_Backup_${bkDate}.json`); document.body.appendChild(dlAnchorElem); dlAnchorElem.click(); document.body.removeChild(dlAnchorElem); }
+    function importFullBackup(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const importedData = JSON.parse(e.target.result); if (importedData.ledger) { const existingIds = new Set(ledger.map(t => String(t.id).trim())); let added = 0; importedData.ledger.forEach(t => { if (!existingIds.has(String(t.id).trim())) { if (t.date && t.date.includes('T')) t.date = t.date.split('T')[0]; ledger.push(t); added++; } }); ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); if (importedData.budgets) { budgets = importedData.budgets; localStorage.setItem('gf_budgets', JSON.stringify(budgets)); } if (importedData.reminders) { const existingRemIds = new Set(reminders.map(r => String(r.id).trim())); importedData.reminders.forEach(r => { if (!existingRemIds.has(String(r.id).trim())) { if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0]; reminders.push(r); } }); reminders = deduplicateReminders(reminders); localStorage.setItem('gf_reminders', JSON.stringify(reminders)); } if(importedData.docs) { const existingDocs = new Set(docs.map(d=>String(d.id).trim())); importedData.docs.forEach(d=>{ if(!existingDocs.has(String(d.id).trim())) docs.push(d); }); docs = deduplicateDocs(docs); localStorage.setItem('gf_docs', JSON.stringify(docs)); } if(importedData.passwords) { const existingPass = new Set(passwords.map(p=>String(p.id).trim())); importedData.passwords.forEach(p=>{ if(!existingPass.has(String(p.id).trim())) passwords.push(p); }); passwords = deduplicatePasswords(passwords); localStorage.setItem('gf_passwords', JSON.stringify(passwords)); } if (importedData.users) { users = [...new Set([...users, ...importedData.users])]; localStorage.setItem('gf_users', JSON.stringify(users)); } alert(`✅ Backup Restored: Merged ${added} new transactions.`); navigate('records'); if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); } else { alert("Invalid backup file format."); } } catch (err) { alert("Error reading backup file: " + err.message); } }; reader.readAsText(file); event.target.value = ''; }
     function exportCSV() { const period = document.getElementById('export-period').value; let filtered = ledger; const now = new Date(); if (period !== 'ALL') { filtered = ledger.filter(t => { const tDate = new Date(t.date); if (period === 'CUR_MONTH') return t.date.startsWith(now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0')); if (period === 'LAST_3_MONTHS') return (now - tDate) <= (90 * 24 * 60 * 60 * 1000); if (period === 'LAST_6_MONTHS') return (now - tDate) <= (180 * 24 * 60 * 60 * 1000); if (period === 'LAST_1_YEAR') return (now - tDate) <= (365 * 24 * 60 * 60 * 1000); return true; }); } if (filtered.length === 0) return alert("No transactions available for this period."); const headers = ['Date', 'Type', 'Category', 'Description', 'Method', 'Amount', 'User', 'Notes']; const rows = filtered.map(t => [t.date, t.type, t.category, `"${t.desc}"`, t.method || '', t.amount, t.user, `"${t.notes || ''}"`]); const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n'); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = `Enterprise_Statement_${period}.csv`; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
     function processImport() { const text = document.getElementById('import-text').value; const method = document.getElementById('import-method').value; if (!text.trim()) return alert('Please paste some text to import.'); const lines = text.split('\n'); let addedCount = 0; const catMap = { 'zomato': 'Dining Out', 'swiggy': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out', 'amazon': 'Groceries', 'flipkart': 'Groceries', 'supermarket': 'Groceries', 'mart': 'Groceries', 'uber': 'Fuel / Petrol', 'ola': 'Fuel / Petrol', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'airtel': 'Utility Bills', 'jio': 'Utility Bills', 'electricity': 'Electricity (EB)', 'tneb': 'Electricity (EB)', 'hospital': 'Medical / Pharmacy', 'pharmacy': 'Medical / Pharmacy', 'clinic': 'Medical / Pharmacy', 'lic': 'LIC Payment', 'insurance': 'LIC Payment', 'salon': 'Saloon / Parlour', 'parlour': 'Saloon / Parlour', 'hair': 'Saloon / Parlour', 'salary': 'Salary Received', 'payroll': 'Salary Received', 'emi': 'Loan', 'loan': 'Loan', 'travel': 'Travel' }; const sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}'); const user = sessionData.name || 'Admin'; lines.forEach(line => { if (!line.trim()) return; let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/); const impNow = new Date(); let dateStr = impNow.getFullYear() + '-' + String(impNow.getMonth() + 1).padStart(2, '0') + '-' + String(impNow.getDate()).padStart(2, '0'); if (dateMatch) { let part1 = dateMatch[1], part2 = dateMatch[2], part3 = dateMatch[3]; if (part1.length === 4) { part3 = part1; part1 = dateMatch[3]; } else if (part3.length === 2) { part3 = '20' + part3; } dateStr = `${part3}-${part2.padStart(2, '0')}-${part1.padStart(2, '0')}`; } let amtMatch = line.match(/(?:(?:Rs\.?|INR|₹|\$)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g); let amount = 0; let isCredit = false; if (amtMatch && amtMatch.length > 0) { let lastAmt = amtMatch[amtMatch.length - 1]; if (lastAmt.toLowerCase().includes('cr')) isCredit = true; amount = parseFloat(lastAmt.replace(/[^\d.]/g, '')); } if (!amount || isNaN(amount)) return; let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '').replace(/(?:(?:Rs\.?|INR|₹|\$)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '').trim(); if (!desc) desc = 'Imported Transaction'; let category = isCredit ? 'Reimbursement' : 'Other Expense'; let lowerDesc = desc.toLowerCase(); for (const [key, val] of Object.entries(catMap)) { if (lowerDesc.includes(key)) { category = val; if (incCategories.includes(val)) isCredit = true; break; } } if (!isCredit && category === 'Reimbursement') category = 'Other Expense'; ledger.unshift({ id: 'tx_imp_' + Date.now() + Math.floor(Math.random()*1000), date: dateStr, type: isCredit ? 'CREDIT' : 'DEBIT', category: category, method: method, desc: desc.substring(0, 50), notes: 'Auto-Imported', amount: amount, user: user }); addedCount++; }); if (addedCount > 0) { ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); alert(`Successfully imported ${addedCount} transactions locally.`); document.getElementById('import-text').value = ''; if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); } else { alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); } }
 
-    function renderSettings() { return `<div class="panel"><div class="panel-head"><h3>Cloud Sync Strategy</h3></div><p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Google Sheets is treated as the Master Storage. Your data syncs automatically in the background, but you can manually trigger a hard push/pull below.</p><button class="btn primary" id="manual-sync-btn" onclick="triggerManualSync()">🔄 Force Master Sync</button></div><div class="panel"><div class="panel-head"><h3>Appearance Customization</h3></div><div class="grid-2"><div><label style="font-size:12px; color:var(--muted); display:block; margin-bottom:8px;">Dashboard Theme</label><select class="input-field" onchange="changeTheme(this.value)"><option value="dark" ${currentTheme==='dark'?'selected':''}>Professional Dark (Abstract Bg)</option><option value="light" ${currentTheme==='light'?'selected':''}>Clean Light (Abstract Bg)</option><option value="neo-glass" ${currentTheme==='neo-glass'?'selected':''}>Neo Glass (Mesh Gradient)</option><option value="love" ${currentTheme==='love'?'selected':''}>Romantic Love (Graphic Background)</option></select></div></div></div><div class="panel"><div class="panel-head"><h3>User Management & Security</h3></div><p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, add new members, and reset device passwords.</p><div style="display:flex; gap:10px; margin-bottom: 16px;"><input type="text" id="new-username" class="input-field" placeholder="Enter new user name..."><button class="btn primary" onclick="addNewUser()" style="white-space:nowrap;">+ Add User</button></div><div class="table-responsive"><table style="margin-bottom:16px;"><thead><tr><th>User</th><th>Role</th><th>Actions</th></tr></thead><tbody>${users.map(u => `<tr><td>${u}</td><td><span class="badge credit">Member</span></td><td style="display:flex; gap:8px;"><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('${u}')">Reset Password</button><button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="removeUser('${u}')">Remove</button></td></tr>`).join('')}</tbody></table></div></div>`; }
+    function renderSettings() { return `<div class="panel"><div class="panel-head"><h3>Cloud Sync Strategy</h3></div><p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Google Sheets is treated as the Master Storage. Your data syncs automatically in the background, but you can manually trigger a hard push/pull below.</p><button class="btn primary" id="manual-sync-btn" onclick="triggerManualSync()">🔄 Force Master Sync</button></div><div class="panel"><div class="panel-head"><h3>Appearance Customization</h3></div><div class="grid-2"><div><label style="font-size:12px; color:var(--muted); display:block; margin-bottom:8px;">Dashboard Theme</label><select class="input-field" onchange="changeTheme(this.value)"><option value="dark" ${currentTheme==='dark'?'selected':''}>Professional Dark (Abstract Bg)</option><option value="light" ${currentTheme==='light'?'selected':''}>Clean Light (Abstract Bg)</option><option value="neo-glass" ${currentTheme==='neo-glass'?'selected':''}>Neo Glass (Mesh Gradient)</option><option value="love" ${currentTheme==='love'?'selected':''}>Romantic Love (Graphic Background)</option><option value="cyberpunk" ${currentTheme==='cyberpunk'?'selected':''}>Cyberpunk (Neon)</option><option value="ocean" ${currentTheme==='ocean'?'selected':''}>Deep Ocean</option></select></div></div></div><div class="panel"><div class="panel-head"><h3>User Management & Security</h3></div><p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, add new members, and reset device passwords.</p><div style="display:flex; gap:10px; margin-bottom: 16px;"><input type="text" id="new-username" class="input-field" placeholder="Enter new user name..."><button class="btn primary" onclick="addNewUser()" style="white-space:nowrap;">+ Add User</button></div><div class="table-responsive"><table style="margin-bottom:16px;"><thead><tr><th>User</th><th>Role</th><th>Actions</th></tr></thead><tbody>${users.map(u => `<tr><td>${u}</td><td><span class="badge credit">Member</span></td><td style="display:flex; gap:8px;"><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="resetMemberPassword('${u}')">Reset Password</button><button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="removeUser('${u}')">Remove</button></td></tr>`).join('')}</tbody></table></div></div>`; }
     function changeTheme(val) { currentTheme = val; document.documentElement.setAttribute('data-theme', val); localStorage.setItem('gf_theme', val); }
 
     function openTxModal(type) { document.getElementById('tx-form').reset(); document.getElementById('tx-id').value = ''; document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; document.getElementById('tx-type').value = type; document.getElementById('tx-date').value = getLocalISOTime(); document.getElementById('tx-save-btn').innerText = 'Save Transaction'; updateCatOptions(); document.getElementById('tx-modal').style.display = 'grid'; }
