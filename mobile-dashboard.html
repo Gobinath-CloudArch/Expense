@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ஆதிரா மதிவதனி Family Expenser</title>
+  
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="shortcut icon" href="logo.png" type="image/png">
   <link rel="apple-touch-icon" href="logo.png">
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* --- Dynamic Enterprise Theming System --- */
@@ -66,7 +68,7 @@
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .kpi-val { font-size: 26px; font-weight: 800; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; place-items: center; z-index: 2000; }
-    .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 550px; padding: 24px; backdrop-filter: blur(var(--glass-blur)); max-height: 90vh; overflow-y: auto; }
+    .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 550px; padding: 24px; backdrop-filter: blur(var(--glass-blur)); max-height: 90vh; overflow-y: auto; }
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-head h3 { font-size: 18px; font-weight: 700; }
     .close-btn { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; }
@@ -75,7 +77,6 @@
     .quick-tile { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(var(--glass-blur)); }
     .quick-tile:hover { transform: translateY(-3px); background: rgba(255,255,255,0.08); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     .reminder-card { background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 14px; min-width: 220px; flex-shrink: 0; }
-    
     .doc-card { background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; }
     .doc-card img { width: 100%; height: 180px; object-fit: cover; }
     .doc-card-info { padding: 12px; }
@@ -110,7 +111,7 @@
   <aside class="sidebar">
     <div class="brand-box">
       <div class="brand-icon">
-        <img src="logo.png" alt="App Logo" onerror="this.style.display='none'; this.parentNode.innerText='A';">
+        <img src="logo.png" alt="App Logo" onerror="this.style.display='none'">
       </div>
       <div class="brand-title">ஆதிரா மதிவதனி Family<br><span style="font-size:11px; color:var(--muted); font-weight:400;">Expenser</span></div>
     </div>
@@ -264,7 +265,7 @@
       </form>
     </div>
   </div>
-
+  
   <div id="pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head"><h3>Add Encrypted Password</h3><button class="close-btn" onclick="closeModal('pass-modal')">×</button></div>
@@ -278,7 +279,6 @@
     </div>
   </div>
 
-  <!-- Admin User Password Change Modal -->
   <div id="admin-pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head"><h3>Reset User App Password</h3><button class="close-btn" onclick="closeModal('admin-pass-modal')">×</button></div>
@@ -350,12 +350,14 @@
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return reject(new Error("Missing URL"));
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         window[callbackName] = function(data) { delete window[callbackName]; document.body.removeChild(script); if (data.error) reject(new Error(data.error)); else resolve(data); };
-        const script = document.createElement('script'); script.src = `${APPS_SCRIPT_URL}?action=${action}&apiKey=${API_KEY}&callback=${callbackName}`; script.onerror = () => reject(new Error("Network Error")); document.body.appendChild(script);
+        const script = document.createElement('script'); 
+        script.src = `${APPS_SCRIPT_URL}?action=${action}&apiKey=${API_KEY}&t=${Date.now()}&callback=${callbackName}`; 
+        script.onerror = () => reject(new Error("Network Error")); document.body.appendChild(script);
       });
     }
 
     async function apiPost(action, data) {
-       try { await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, data, apiKey: API_KEY }) }); return { ok: true }; } 
+       try { await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data, apiKey: API_KEY }) }); return { ok: true }; } 
        catch (err) { return { ok: false }; }
     }
 
@@ -472,24 +474,31 @@
         const input = document.getElementById('new-username'); const name = input.value.trim();
         if(name && !users.includes(name)) {
             users.push(name); localStorage.setItem('gf_users', JSON.stringify(users)); input.value = ''; navigate('settings');
-            if (APPS_SCRIPT_URL) { try { await apiPost('addUser', { name: name }); } catch(err) {} }
+            if (APPS_SCRIPT_URL) { try { await apiPost('addUser', { name: name }); setTimeout(() => backgroundSync(false), 1000); } catch(err) {} }
         }
     }
 
     async function removeUser(name) {
         if(confirm(`Remove user ${name}?`)) {
             users = users.filter(u => u !== name); localStorage.setItem('gf_users', JSON.stringify(users)); navigate('settings');
-            if (APPS_SCRIPT_URL) { try { await apiPost('removeUser', { name: name }); } catch(err) {} }
+            if (APPS_SCRIPT_URL) { try { await apiPost('removeUser', { name: name }); setTimeout(() => backgroundSync(false), 1000); } catch(err) {} }
         }
     }
 
     function openPasswordChange(uid) { document.getElementById('admin-pass-target-user').innerText = uid; document.getElementById('admin-pass-user-hidden').value = uid; document.getElementById('admin-new-pass').value = ''; document.getElementById('admin-pass-modal').style.display = 'grid'; }
+    
     async function saveAdminPassChange(e) { 
-        e.preventDefault(); const btn = document.getElementById('admin-pass-btn'); btn.disabled = true; btn.innerText = "Hashing..."; const uid = document.getElementById('admin-pass-user-hidden').value; const newPass = document.getElementById('admin-new-pass').value; 
+        e.preventDefault(); 
+        const btn = document.getElementById('admin-pass-btn'); 
+        btn.disabled = true; btn.innerText = "Hashing..."; 
+        const uid = document.getElementById('admin-pass-user-hidden').value; 
+        const newPass = document.getElementById('admin-new-pass').value; 
         if (APPS_SCRIPT_URL) { 
             try { 
                 await apiPost('changeUserPassword', { user: uid, newPass: newPass }); 
-                let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; authDB[uid.toLowerCase()] = btoa(newPass); localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
+                let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; 
+                authDB[uid.toLowerCase()] = btoa(newPass); 
+                localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
                 alert(`Password successfully securely hashed and updated for ${uid}.`); 
             } catch(err) { alert("Error changing password."); } 
         } 
@@ -498,9 +507,49 @@
 
     function openTxModal(type) { document.getElementById('tx-form').reset(); document.getElementById('tx-id').value = ''; document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; document.getElementById('tx-type').value = type; document.getElementById('tx-date').value = getLocalISOTime(); document.getElementById('tx-save-btn').innerText = 'Save Transaction'; updateCatOptions(); document.getElementById('tx-modal').style.display = 'grid'; }
     function updateCatOptions() { const type = document.getElementById('tx-type').value; const catSelect = document.getElementById('tx-category'); const list = type === 'DEBIT' ? expCategories : incCategories; catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); const userSelect = document.getElementById('tx-user'); if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join(''); }
-    function editTx(id) { const t = ledger.find(x => String(x.id).trim() === String(id).trim()); if (!t) return; document.getElementById('tx-id').value = t.id; document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; document.getElementById('tx-date').value = t.date; document.getElementById('tx-type').value = t.type; updateCatOptions(); document.getElementById('tx-category').value = t.category; document.getElementById('tx-desc').value = t.desc; document.getElementById('tx-amount').value = t.amount; document.getElementById('tx-user').value = t.user; document.getElementById('tx-method').value = t.method || 'UPI'; document.getElementById('tx-notes').value = t.notes || ''; document.getElementById('tx-save-btn').innerText = 'Update Transaction'; document.getElementById('tx-modal').style.display = 'grid'; }
-    async function deleteTx(id) { if (!confirm('Delete this transaction permanently?')) return; ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim()); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); const activeNav = document.querySelector('.nav-item.active').innerText; if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { try { await apiPost('deleteTransaction', { id }); } catch (err) {} } }
-    async function saveTx(e) { e.preventDefault(); const btn = document.getElementById('tx-save-btn'); btn.disabled = true; btn.innerText = 'Saving...'; const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now()); const isEdit = document.getElementById('tx-id').value !== ''; const rawDate = document.getElementById('tx-date').value; const record = { id: id, date: rawDate, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value }; const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim()); if (idx >= 0) ledger[idx] = record; else ledger.unshift(record); ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); closeModal('tx-modal'); btn.disabled = false; btn.innerText = 'Save Transaction'; const activeNav = document.querySelector('.nav-item.active').innerText; if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { try { await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); } catch (err) {} } }
+    
+    function editTx(id) { 
+        const t = ledger.find(x => String(x.id).trim() === String(id).trim()); 
+        if (!t) return; 
+        document.getElementById('tx-id').value = t.id; document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; document.getElementById('tx-date').value = t.date; document.getElementById('tx-type').value = t.type; updateCatOptions(); document.getElementById('tx-category').value = t.category; document.getElementById('tx-desc').value = t.desc; document.getElementById('tx-amount').value = t.amount; document.getElementById('tx-user').value = t.user; document.getElementById('tx-method').value = t.method || 'UPI'; document.getElementById('tx-notes').value = t.notes || ''; document.getElementById('tx-save-btn').innerText = 'Update Transaction'; document.getElementById('tx-modal').style.display = 'grid'; 
+    }
+    
+    // FIX: IMMEDIATE BACKGROUND SYNC AFTER DELETE PREVENTS REVERT BUG
+    async function deleteTx(id) { 
+        if (!confirm('Delete this transaction permanently?')) return; 
+        ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim()); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+        const activeNav = document.querySelector('.nav-item.active').innerText; 
+        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              await apiPost('deleteTransaction', { id: id }); 
+              setTimeout(() => backgroundSync(false), 1000); 
+            } catch (err) {} 
+        } 
+    }
+
+    // FIX: IMMEDIATE BACKGROUND SYNC AFTER EDIT PREVENTS REVERT BUG
+    async function saveTx(e) { 
+        e.preventDefault(); const btn = document.getElementById('tx-save-btn'); btn.disabled = true; btn.innerText = 'Saving...'; 
+        const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now()); 
+        const isEdit = document.getElementById('tx-id').value !== ''; 
+        const rawDate = document.getElementById('tx-date').value; 
+        const record = { id: id, date: rawDate, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value }; 
+        const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim()); 
+        if (idx >= 0) ledger[idx] = record; else ledger.unshift(record); 
+        ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); closeModal('tx-modal'); 
+        btn.disabled = false; btn.innerText = 'Save Transaction'; 
+        const activeNav = document.querySelector('.nav-item.active').innerText; 
+        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
+              setTimeout(() => backgroundSync(false), 1000); 
+            } catch (err) {} 
+        } 
+    }
+    
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
     function renderTableHTML(data, title, sortable) {
@@ -513,7 +562,7 @@
             <tbody>
               ${data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
               ${data.map(t => {
-                  const displayDate = t.date ? t.date.replace('T', ' ') : '';
+                  const displayDate = t.date ? String(t.date).replace('T', ' ') : '';
                   return `<tr><td style="white-space:nowrap;">${displayDate}</td><td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td><td>${t.category}</td><td>${t.desc}</td><td style="font-weight:700; color:${t.type==='CREDIT'?'var(--green)':'var(--red)'};">${t.type==='CREDIT'?'+':'-'} ₹${parseFloat(t.amount).toLocaleString('en-IN')}</td><td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button></td></tr>`
               }).join('')}
             </tbody>
