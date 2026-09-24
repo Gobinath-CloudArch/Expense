@@ -242,7 +242,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="brand-icon-wrap">
-        <img src="logo.png" alt="App Logo" onerror="this.style.display='none'">
+        <img src="logo.png" alt="App Logo" id="app-logo">
       </div>
       <h2>ஆதிரா மதிவதனி Family<br>Finance Workspace</h2>
       <p class="sub" id="form-sub">Native Mobile Edition</p>
@@ -254,13 +254,16 @@
 
       <form id="auth-form">
         <input type="hidden" id="account-id" value="gobinath">
+        
         <div class="input-box" style="display: none;">
           <input type="text" id="display-user" class="input-field" value="gobinath" readonly>
         </div>
+        
         <div class="input-box" id="pass-box">
           <label id="pass-label">Cloud Password</label>
           <input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required>
         </div>
+        
         <button type="submit" class="btn-submit" id="btn-submit">
           <span id="btn-text">Unlock App</span> &nbsp;→
         </button>
@@ -271,6 +274,12 @@
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
     const API_KEY = "GOBI_FAMILY_SECURE_2026";
+
+    // Cleanly handle missing images without breaking the UI
+    document.getElementById('app-logo').addEventListener('error', function() {
+      this.style.display = 'none';
+      this.parentElement.innerHTML = '<span style="font-size:32px; font-weight:800; color:#fff;">A</span>';
+    });
 
     let selectedUser = 'gobinath'; 
     let selectedName = 'Gobinath'; 
@@ -289,11 +298,13 @@
       selectedName = name;
       document.getElementById('account-id').value = id;
       document.getElementById('display-user').value = id;
+      
       document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active')); 
       btn.classList.add('active');
       document.getElementById('pass-input').value = '';
     }
 
+    // Initialize state
     switchUser('gobinath', 'Gobinath', document.querySelector('.user-btn.active'));
 
     function loginSuccess() {
@@ -305,16 +316,18 @@
 
     document.getElementById('auth-form').addEventListener('submit', (e) => {
       e.preventDefault(); 
-      const pass = document.getElementById('pass-input').value;
+      const pass = document.getElementById('pass-input').value.trim();
       const btn = document.getElementById('btn-submit'); 
       btn.innerHTML = 'Verifying Cloud...'; 
       btn.disabled = true;
 
+      // 1. Local Offline Verification
       if (localAuthDB[selectedUser] === btoa(pass)) { 
         loginSuccess(); 
         return; 
       }
 
+      // 2. Cloud Network Verification
       try {
          const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
          window[callbackName] = function(data) {
