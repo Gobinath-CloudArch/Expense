@@ -35,7 +35,7 @@
     .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.08); }
     .nav-item.active { background: rgba(255,255,255,0.1); color: var(--primary); border-color: var(--border); }
     .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    .btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 13.5px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text); cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;}
+    .btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 13.5px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text); cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
     .btn.primary { background: var(--primary); border: none; color: white; }
     .btn:hover:not(:disabled) { filter: brightness(1.15); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -121,7 +121,7 @@
       <button class="nav-item" onclick="navigate('reminders', this)"><span class="nav-icon">🔔</span><span class="nav-text">Reminders</span></button>
       <button class="nav-item" onclick="navigate('vault', this)"><span class="nav-icon">📁</span><span class="nav-text">Doc Vault</span></button>
       <button class="nav-item" onclick="navigate('passwords', this)"><span class="nav-icon">🔑</span><span class="nav-text">Pass Vault</span></button>
-      <button class="nav-item" onclick="navigate('statements', this)"><span class="nav-icon">📥</span><span class="nav-text">Import/Export</span></button>
+      <button class="nav-item" onclick="navigate('statements', this)"><span class="nav-icon">📥</span><span class="nav-text">Sync/Export</span></button>
       <button class="nav-item" onclick="navigate('settings', this)"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></button>
     </nav>
   </aside>
@@ -204,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Advanced Vehicle Log Modal -->
   <div id="fuel-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head"><h3>Add Vehicle Log Entry</h3><button class="close-btn" onclick="closeModal('fuel-modal')">×</button></div>
@@ -277,7 +276,6 @@
     </div>
   </div>
 
-  <!-- Admin User Password Change Modal -->
   <div id="admin-pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head"><h3>Reset User App Password</h3><button class="close-btn" onclick="closeModal('admin-pass-modal')">×</button></div>
@@ -337,7 +335,6 @@
 
     let sortCol = 'date'; let sortAsc = false; let selectedMonthA = '2026-08'; let selectedMonthB = '2026-09';
 
-    // Data Sanitization
     function deduplicateLedger(txList) { if (!txList || !Array.isArray(txList)) return []; const map = new Map(); for (const tx of txList) { if (tx && tx.id) map.set(String(tx.id).trim(), tx); } return Array.from(map.values()).sort((a,b) => new Date(b.date) - new Date(a.date)); }
     function deduplicateReminders(remList) { if (!remList || !Array.isArray(remList)) return []; const map = new Map(); for (const r of remList) { if (r && r.id) map.set(String(r.id).trim(), r); } return Array.from(map.values()).sort((a,b) => new Date(a.date) - new Date(b.date)); }
     function deduplicateDocs(docList) { if (!docList || !Array.isArray(docList)) return []; const map = new Map(); for (const d of docList) { if(d && d.id) map.set(String(d.id).trim(), d); } return Array.from(map.values()).sort((a,b) => b.id.localeCompare(a.id)); }
@@ -357,7 +354,7 @@
     }
 
     async function apiPost(action, data) {
-       try { await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, data, apiKey: API_KEY }) }); return { ok: true }; } 
+       try { await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data, apiKey: API_KEY }) }); return { ok: true }; } 
        catch (err) { return { ok: false }; }
     }
 
@@ -500,45 +497,9 @@
 
     function openTxModal(type) { document.getElementById('tx-form').reset(); document.getElementById('tx-id').value = ''; document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; document.getElementById('tx-type').value = type; document.getElementById('tx-date').value = getLocalISOTime(); document.getElementById('tx-save-btn').innerText = 'Save Transaction'; updateCatOptions(); document.getElementById('tx-modal').style.display = 'grid'; }
     function updateCatOptions() { const type = document.getElementById('tx-type').value; const catSelect = document.getElementById('tx-category'); const list = type === 'DEBIT' ? expCategories : incCategories; catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); const userSelect = document.getElementById('tx-user'); if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join(''); }
-    
-    function editTx(id) { 
-        const t = ledger.find(x => String(x.id).trim() === String(id).trim()); 
-        if (!t) return; 
-        document.getElementById('tx-id').value = t.id; document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; document.getElementById('tx-date').value = t.date; document.getElementById('tx-type').value = t.type; updateCatOptions(); document.getElementById('tx-category').value = t.category; document.getElementById('tx-desc').value = t.desc; document.getElementById('tx-amount').value = t.amount; document.getElementById('tx-user').value = t.user; document.getElementById('tx-method').value = t.method || 'UPI'; document.getElementById('tx-notes').value = t.notes || ''; document.getElementById('tx-save-btn').innerText = 'Update Transaction'; document.getElementById('tx-modal').style.display = 'grid'; 
-    }
-    
-    async function deleteTx(id) { 
-        if (!confirm('Delete this transaction permanently?')) return; 
-        ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim()); 
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
-        const activeNav = document.querySelector('.nav-item.active').innerText; 
-        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-            try { await apiPost('deleteTransaction', { id }); setTimeout(() => backgroundSync(false), 1000); } catch (err) {} 
-        } 
-    }
-
-    // FIX: IMMEDIATE BACKGROUND SYNC AFTER EDIT PREVENTS REVERT BUG
-    async function saveTx(e) { 
-        e.preventDefault(); const btn = document.getElementById('tx-save-btn'); btn.disabled = true; btn.innerText = 'Saving...'; 
-        const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now()); 
-        const isEdit = document.getElementById('tx-id').value !== ''; 
-        const rawDate = document.getElementById('tx-date').value; 
-        const record = { id: id, date: rawDate, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value }; 
-        const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim()); 
-        if (idx >= 0) ledger[idx] = record; else ledger.unshift(record); 
-        ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); closeModal('tx-modal'); 
-        btn.disabled = false; btn.innerText = 'Save Transaction'; 
-        const activeNav = document.querySelector('.nav-item.active').innerText; 
-        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-            try { 
-                await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record);
-                setTimeout(() => backgroundSync(false), 1000); 
-            } catch (err) {} 
-        } 
-    }
-    
+    function editTx(id) { const t = ledger.find(x => String(x.id).trim() === String(id).trim()); if (!t) return; document.getElementById('tx-id').value = t.id; document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; document.getElementById('tx-date').value = t.date; document.getElementById('tx-type').value = t.type; updateCatOptions(); document.getElementById('tx-category').value = t.category; document.getElementById('tx-desc').value = t.desc; document.getElementById('tx-amount').value = t.amount; document.getElementById('tx-user').value = t.user; document.getElementById('tx-method').value = t.method || 'UPI'; document.getElementById('tx-notes').value = t.notes || ''; document.getElementById('tx-save-btn').innerText = 'Update Transaction'; document.getElementById('tx-modal').style.display = 'grid'; }
+    async function deleteTx(id) { if (!confirm('Delete this transaction permanently?')) return; ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim()); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); const activeNav = document.querySelector('.nav-item.active').innerText; if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { try { await apiPost('deleteTransaction', { id: id }); setTimeout(() => backgroundSync(false), 1000); } catch (err) {} } }
+    async function saveTx(e) { e.preventDefault(); const btn = document.getElementById('tx-save-btn'); btn.disabled = true; btn.innerText = 'Saving...'; const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now()); const isEdit = document.getElementById('tx-id').value !== ''; const rawDate = document.getElementById('tx-date').value; const record = { id: id, date: rawDate, type: document.getElementById('tx-type').value, category: document.getElementById('tx-category').value, method: document.getElementById('tx-method').value, desc: document.getElementById('tx-desc').value, notes: document.getElementById('tx-notes').value, amount: parseFloat(document.getElementById('tx-amount').value), user: document.getElementById('tx-user').value }; const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim()); if (idx >= 0) ledger[idx] = record; else ledger.unshift(record); ledger = deduplicateLedger(ledger); localStorage.setItem('gf_ledger', JSON.stringify(ledger)); closeModal('tx-modal'); btn.disabled = false; btn.innerText = 'Save Transaction'; const activeNav = document.querySelector('.nav-item.active').innerText; if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { try { await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); setTimeout(() => backgroundSync(false), 1000); } catch (err) {} } }
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
     function renderTableHTML(data, title, sortable) {
@@ -559,7 +520,6 @@
         </div>`;
     }
 
-    // --- STANDARD WEB VOICE BROWSER SUPPORT ---
     async function startVoiceAssistant() { const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; if (!WebSpeech) { alert("Voice recognition is restricted in this browser."); return; } try { const recognition = new WebSpeech(); recognition.continuous = false; recognition.lang = 'en-IN'; recognition.interimResults = false; const topBtn = document.getElementById('voice-top-btn'); const modalBtn = document.getElementById('voice-modal-btn'); if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; } if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; } recognition.onerror = (e) => { resetVoiceUI(); }; recognition.onend = () => { resetVoiceUI(); }; recognition.onresult = (event) => { processVoiceCommand(event.results[0][0].transcript); }; recognition.start(); } catch (err) { resetVoiceUI(); } }
     function resetVoiceUI() { const topBtn = document.getElementById('voice-top-btn'); const modalBtn = document.getElementById('voice-modal-btn'); if (topBtn) { topBtn.classList.remove('voice-pulse'); topBtn.innerText = "🎙️ Voice Add"; } if (modalBtn) { modalBtn.classList.remove('voice-pulse'); modalBtn.innerText = "🎙️ Speak"; } }
     function processVoiceCommand(text) { const lower = text.toLowerCase(); let type = 'DEBIT'; if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) type = 'CREDIT'; let amount = ''; const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i); if (amtMatch) amount = parseFloat(amtMatch[1]); let method = 'UPI'; if (lower.includes('credit card')) method = 'Credit Card'; else if (lower.includes('debit card')) method = 'Debit Card'; else if (lower.includes('cash')) method = 'Cash'; let category = type === 'DEBIT' ? expCategories[0] : incCategories[0]; const voiceCatMap = { 'grocery': 'Groceries', 'supermarket': 'Groceries', 'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 'electricity': 'Electricity (EB)', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'dining': 'Dining Out', 'restaurant': 'Dining Out', 'snack': 'Snacks', 'salary': 'Salary Received', 'shopping': 'Shopping', 'travel': 'Travel' }; for (const [key, val] of Object.entries(voiceCatMap)) { if (lower.includes(key)) { category = val; break; } } openTxModal(type); document.getElementById('tx-amount').value = amount || ''; document.getElementById('tx-category').value = category; document.getElementById('tx-method').value = method; document.getElementById('tx-desc').value = text; document.getElementById('tx-notes').value = "Added via Voice Assistant"; }
