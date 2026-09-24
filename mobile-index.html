@@ -4,129 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#070b14">
-  <title>My Family Expenser</title>
+  <title>ஆதிரா மதிவதனி Family Expenser</title>
   
-  <!-- App Logo Icon mapped to the true PNG for global logic -->
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="apple-touch-icon" href="logo.png">
   
   <style>
-    :root {
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-      --primary-glow: rgba(79, 107, 247, 0.45);
-      --text: #f3f7fd; 
-      --muted: #a0b2d2; 
-      --input-bg: rgba(7, 13, 26, 0.6);
-      --card-bg: rgba(14, 21, 38, 0.65); 
-      --border: rgba(255, 255, 255, 0.1);
-    }
+    :root { --primary: #4f6bf7; --primary-hover: #3d58e3; --primary-glow: rgba(79, 107, 247, 0.45); --text: #f3f7fd; --muted: #a0b2d2; --input-bg: rgba(7, 13, 26, 0.6); --card-bg: rgba(14, 21, 38, 0.65); --border: rgba(255, 255, 255, 0.1); }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent;}
+    body, html { width: 100vw; height: 100vh; overflow: hidden; position: fixed; background-color: #070b14; }
+    body { background-image: linear-gradient(to right, rgba(4, 9, 20, 0.95) 0%, rgba(4, 9, 20, 0.75) 50%, rgba(4, 9, 20, 0.4) 100%), url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center; color: var(--text); display: flex; align-items: center; justify-content: center; }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    /* Strict Mobile Viewport Lock - NO SCROLLING */
-    body, html {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      position: fixed;
-      background-color: #070b14;
-    }
-
-    body {
-      background-image: linear-gradient(to right, rgba(4, 9, 20, 0.95) 0%, rgba(4, 9, 20, 0.75) 50%, rgba(4, 9, 20, 0.4) 100%), 
-                        url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop');
-      background-size: cover; 
-      background-position: center; 
-      color: var(--text); 
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-    }
-
-    .login-container { 
-      width: 100%; 
-      max-width: 400px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-
-    .login-card { 
-      width: 100%; 
-      background: var(--card-bg); 
-      backdrop-filter: blur(24px); 
-      -webkit-backdrop-filter: blur(24px); 
-      border: 1px solid var(--border); 
-      border-radius: 28px; 
-      padding: 35px 25px; 
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08); 
-      text-align: center; 
-    }
-
-    .login-card h2 { 
-      font-size: 24px; 
-      font-weight: 800; 
-      margin-bottom: 6px; 
-      letter-spacing: -0.02em; 
-      background: linear-gradient(135deg, #ffffff, #a0b2d2); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-    }
-    
+    .login-container { width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+    .login-card { width: 100%; background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 28px; padding: 35px 25px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08); text-align: center; }
+    .brand-icon-wrap { width: 90px; height: 90px; margin: 0 auto 24px; background: linear-gradient(135deg, rgba(77, 114, 254, 0.2), rgba(31, 71, 221, 0.4)); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #fff; box-shadow: 0 10px 25px var(--primary-glow); border: 1px solid rgba(255,255,255,0.1); padding: 6px; }
+    .brand-icon-wrap img { width: 100%; height: 100%; object-fit: contain; border-radius: 18px; }
+    .login-card h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.02em; background: linear-gradient(135deg, #ffffff, #a0b2d2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; font-weight: 500; }
-
-    .user-toggle { 
-      display: flex; gap: 8px; background: rgba(0, 0, 0, 0.3); padding: 5px; 
-      border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 22px; 
-    }
-    .user-btn { 
-      flex: 1; padding: 10px; background: transparent; border: none; color: var(--muted); 
-      font-size: 13.5px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; 
-    }
-    .user-btn.active { 
-      background: rgba(79, 107, 247, 0.25); color: #fff; border: 1px solid rgba(79, 107, 247, 0.4); 
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-    }
-
+    .user-toggle { display: flex; gap: 8px; background: rgba(0, 0, 0, 0.3); padding: 5px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 22px; }
+    .user-btn { flex: 1; padding: 10px; background: transparent; border: none; color: var(--muted); font-size: 13.5px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+    .user-btn.active { background: rgba(79, 107, 247, 0.25); color: #fff; border: 1px solid rgba(79, 107, 247, 0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .input-box { text-align: left; margin-bottom: 20px; }
-    .input-box label { 
-      display: block; font-size: 11px; font-weight: 700; color: var(--muted); 
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; 
-      padding-left: 4px;
-    }
-    .input-field { 
-      width: 100%; height: 52px; padding: 0 16px; background: var(--input-bg); 
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; color: var(--text); 
-      font-size: 15px; outline: none; transition: all 0.2s; 
-    }
-    .input-field:focus { 
-      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 107, 247, 0.2); background: rgba(0,0,0,0.5); 
-    }
-
-    .btn-submit { 
-      width: 100%; height: 54px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); 
-      color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; 
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; 
-      margin-top: 24px; box-shadow: 0 10px 25px var(--primary-glow); transition: all 0.2s; 
-    }
+    .input-box label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; padding-left: 4px; }
+    .input-field { width: 100%; height: 52px; padding: 0 16px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; color: var(--text); font-size: 15px; outline: none; transition: all 0.2s; }
+    .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 107, 247, 0.2); background: rgba(0,0,0,0.5); }
+    .btn-submit { width: 100%; height: 54px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; box-shadow: 0 10px 25px var(--primary-glow); transition: all 0.2s; }
     .btn-submit:active:not(:disabled) { transform: scale(0.98); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .toast { 
-      position: fixed; top: 30px; left: 50%; transform: translateX(-50%); padding: 14px 28px; 
-      border-radius: 30px; font-size: 13.5px; font-weight: 600; display: none; z-index: 2000; 
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 350px;
-    }
+    .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); padding: 14px 28px; border-radius: 30px; font-size: 13.5px; font-weight: 600; display: none; z-index: 2000; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 350px; }
     .toast.err { background: #321217; color: #ff8591; border: 1px solid #73222a; }
     .toast.suc { background: #0f2c1f; color: #43ebb3; border: 1px solid #165b3f; }
   </style>
@@ -137,7 +42,7 @@
 
   <div class="login-container">
     <div class="login-card">
-      <h2>Gobinath Family<br>Finance Workspace</h2>
+      <h2>ஆதிரா மதிவதனி Family<br>Finance Workspace</h2>
       <p class="sub" id="form-sub">Native Mobile Edition</p>
 
       <div class="user-toggle">
@@ -153,13 +58,8 @@
         </div>
 
         <div class="input-box" id="pass-box">
-          <label id="pass-label">Device Password</label>
-          <input type="password" id="pass-input" class="input-field" placeholder="Enter your password" required>
-        </div>
-
-        <div class="input-box" id="confirm-box" style="display: none;">
-          <label>Confirm New Password</label>
-          <input type="password" id="confirm-input" class="input-field" placeholder="Repeat your password">
+          <label id="pass-label">Cloud Password</label>
+          <input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required>
         </div>
 
         <button type="submit" class="btn-submit" id="btn-submit">
@@ -170,79 +70,66 @@
   </div>
 
   <script>
-    // --- STATE VARIABLES ---
-    let selectedUser = 'gobinath';
-    let selectedName = 'Gobinath';
-    let isSetupMode = false;
-    let localAuthDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {};
+    // --- APP SCRIPT VERIFICATION ---
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9GQdn8Gcc617_k7NQwFYwKs_QZ8gPLMSdop-So-JBc8jbpKP3RIEtiDuKoj1pb-IdMg/exec";
+    const API_KEY = "GOBI_FAMILY_SECURE_2026";
 
-    // --- TOAST NOTIFICATIONS ---
+    let selectedUser = 'gobinath'; let selectedName = 'Gobinath'; let localAuthDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {};
+
     function showToast(msg, isErr = false) {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast ' + (isErr ? 'err' : 'suc');
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
+      t.textContent = msg; t.className = 'toast ' + (isErr ? 'err' : 'suc'); t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 4000);
     }
 
-    // --- USER SWITCHER ---
     function switchUser(id, name, btn) {
-      selectedUser = id;
-      selectedName = name;
-      
+      selectedUser = id; selectedName = name;
       document.getElementById('account-id').value = id;
       document.getElementById('display-user').value = id;
-      
-      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
       document.getElementById('pass-input').value = '';
-      document.getElementById('confirm-input').value = '';
-      
-      if (!localAuthDB[id]) {
-        isSetupMode = true;
-        document.getElementById('confirm-box').style.display = 'block';
-        document.getElementById('confirm-input').required = true;
-        document.getElementById('form-sub').textContent = 'First-Time Setup: Set your device pin';
-        document.getElementById('pass-label').textContent = 'Create New Password';
-        document.getElementById('btn-text').textContent = 'Secure & Launch';
-      } else {
-        isSetupMode = false;
-        document.getElementById('confirm-box').style.display = 'none';
-        document.getElementById('confirm-input').required = false;
-        document.getElementById('form-sub').textContent = 'Native Mobile Edition';
-        document.getElementById('pass-label').textContent = 'Device Password';
-        document.getElementById('btn-text').textContent = 'Unlock App';
-      }
     }
 
     switchUser('gobinath', 'Gobinath', document.querySelector('.user-btn.active'));
 
-    // --- LOCAL AUTHENTICATION LOGIC ---
-    document.getElementById('auth-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const pass = document.getElementById('pass-input').value;
-      
-      if (isSetupMode) {
-        const confirmPass = document.getElementById('confirm-input').value;
-        if (pass !== confirmPass) { return showToast('Passwords do not match.', true); }
-        if (pass.length < 4) { return showToast('Password too short.', true); }
-        
-        localAuthDB[selectedUser] = btoa(pass); 
-        localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
-      } else {
-        if (localAuthDB[selectedUser] !== btoa(pass)) { return showToast('Incorrect password.', true); }
-      }
-
-      const btn = document.getElementById('btn-submit');
-      btn.innerHTML = 'Authenticating...';
-      btn.disabled = true;
-      
+    function loginSuccess() {
+      showToast('Authenticated successfully. Loading dashboard...');
       localStorage.setItem('gf_user', JSON.stringify({ id: selectedUser, name: selectedName, role: 'Owner' }));
       localStorage.setItem('gf_last_active', Date.now());
-      
-      setTimeout(() => { window.location.href = 'mobile-dashboard.html'; }, 500);
+      setTimeout(() => { window.location.href = 'mobile-dashboard.html'; }, 600);
+    }
+
+    document.getElementById('auth-form').addEventListener('submit', (e) => {
+      e.preventDefault(); const pass = document.getElementById('pass-input').value;
+      const btn = document.getElementById('btn-submit'); btn.innerHTML = 'Verifying Cloud...'; btn.disabled = true;
+
+      // 1. Local Offline Verification (if already set up)
+      if (localAuthDB[selectedUser] === btoa(pass)) {
+          loginSuccess(); return;
+      }
+
+      // 2. Cloud Network Verification (for new devices or changed passwords)
+      try {
+         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
+         window[callbackName] = function(data) {
+            delete window[callbackName]; document.body.removeChild(script);
+            if (data.valid) {
+               localAuthDB[selectedUser] = btoa(pass); 
+               localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
+               loginSuccess();
+            } else {
+               showToast('Incorrect password. Default is admin123', true);
+               btn.innerHTML = 'Unlock App'; btn.disabled = false;
+            }
+         };
+         const script = document.createElement('script');
+         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedName)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&callback=${callbackName}`;
+         script.onerror = () => { showToast('Network Error. Device offline?', true); btn.innerHTML = 'Unlock App'; btn.disabled = false; };
+         document.body.appendChild(script);
+      } catch(err) {
+         showToast('Verification failed.', true);
+         btn.innerHTML = 'Unlock App'; btn.disabled = false;
+      }
     });
   </script>
 </body>
