@@ -63,19 +63,25 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
     const API_KEY = "GOBI_FAMILY_SECURE_2026";
 
-    let selectedUser = 'gobinath'; let selectedName = 'Gobinath'; let localAuthDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {};
+    let selectedUser = 'gobinath'; 
+    let selectedName = 'Gobinath'; 
+    let localAuthDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {};
 
     function showToast(msg, isErr = false) {
       const t = document.getElementById('toast');
-      t.textContent = msg; t.className = 'toast ' + (isErr ? 'err' : 'suc'); t.style.display = 'block';
+      t.textContent = msg; 
+      t.className = 'toast ' + (isErr ? 'err' : 'suc'); 
+      t.style.display = 'block';
       setTimeout(() => { t.style.display = 'none'; }, 4000);
     }
 
     function switchUser(id, name, btn) {
-      selectedUser = id; selectedName = name;
+      selectedUser = id; 
+      selectedName = name;
       document.getElementById('account-id').value = id;
       document.getElementById('display-user').value = id;
-      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active')); 
+      btn.classList.add('active');
       document.getElementById('pass-input').value = '';
     }
 
@@ -89,31 +95,47 @@
     }
 
     document.getElementById('auth-form').addEventListener('submit', (e) => {
-      e.preventDefault(); const pass = document.getElementById('pass-input').value;
-      const btn = document.getElementById('btn-submit'); btn.innerHTML = 'Verifying Cloud...'; btn.disabled = true;
+      e.preventDefault(); 
+      const pass = document.getElementById('pass-input').value;
+      const btn = document.getElementById('btn-submit'); 
+      btn.innerHTML = 'Verifying Cloud...'; 
+      btn.disabled = true;
 
-      if (localAuthDB[selectedUser] === btoa(pass)) { loginSuccess(); return; }
+      if (localAuthDB[selectedUser] === btoa(pass)) { 
+        loginSuccess(); 
+        return; 
+      }
 
       try {
          const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
          window[callbackName] = function(data) {
-            delete window[callbackName]; document.body.removeChild(script);
+            delete window[callbackName]; 
+            document.body.removeChild(script);
+            
             if (data.valid) {
                localAuthDB[selectedUser] = btoa(pass); 
                localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
                loginSuccess();
             } else {
                showToast('Incorrect password. Default is admin123', true);
-               btn.innerHTML = 'Unlock App'; btn.disabled = false;
+               btn.innerHTML = 'Unlock App'; 
+               btn.disabled = false;
             }
          };
+         
          const script = document.createElement('script');
-         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedUser)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&callback=${callbackName}`;
-         script.onerror = () => { showToast('Network Error. Device offline?', true); btn.innerHTML = 'Unlock App'; btn.disabled = false; };
+         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedUser)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&t=${Date.now()}&callback=${callbackName}`;
+         
+         script.onerror = () => { 
+           showToast('Network Error. Device offline?', true); 
+           btn.innerHTML = 'Unlock App'; 
+           btn.disabled = false; 
+         };
          document.body.appendChild(script);
-      } catch(err) {
-         showToast('Verification failed.', true);
-         btn.innerHTML = 'Unlock App'; btn.disabled = false;
+      } catch(err) { 
+        showToast('Verification failed.', true); 
+        btn.innerHTML = 'Unlock App'; 
+        btn.disabled = false; 
       }
     });
   </script>
