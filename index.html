@@ -76,7 +76,7 @@
         <form id="auth-form">
           <input type="hidden" id="account-id" value="gobinath">
           <div class="input-box" style="display: none;"><input type="text" id="display-user" class="input-field" value="gobinath" readonly></div>
-          <div class="input-box" id="pass-box"><label id="pass-label">Password</label><input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required></div>
+          <div class="input-box" id="pass-box"><label id="pass-label">Cloud Password</label><input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required></div>
           <button type="submit" class="btn-submit" id="btn-submit"><span id="btn-text">Access Workspace</span> &nbsp;→</button>
         </form>
       </div>
@@ -95,15 +95,28 @@
       }
     }, 1000);
 
-    let selectedUser = 'gobinath'; let selectedName = 'Gobinath'; let localAuthDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {};
-    function showToast(msg, isErr = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + (isErr ? 'err' : 'suc'); t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 4000); }
+    let selectedUser = 'gobinath'; 
+    let selectedName = 'Gobinath'; 
+    let localAuthDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {};
+
+    function showToast(msg, isErr = false) { 
+      const t = document.getElementById('toast'); 
+      t.textContent = msg; 
+      t.className = 'toast ' + (isErr ? 'err' : 'suc'); 
+      t.style.display = 'block'; 
+      setTimeout(() => { t.style.display = 'none'; }, 4000); 
+    }
 
     function switchUser(id, name, btn) {
       selectedUser = id; selectedName = name;
-      document.getElementById('account-id').value = id; document.getElementById('display-user').value = id;
-      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+      document.getElementById('account-id').value = id; 
+      document.getElementById('display-user').value = id;
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active')); 
+      btn.classList.add('active');
       document.getElementById('pass-input').value = '';
     }
+
+    // Initialize state
     switchUser('gobinath', 'Gobinath', document.querySelector('.user-btn.active'));
 
     function loginSuccess() {
@@ -114,28 +127,49 @@
     }
 
     document.getElementById('auth-form').addEventListener('submit', (e) => {
-      e.preventDefault(); const pass = document.getElementById('pass-input').value;
-      const btn = document.getElementById('btn-submit'); btn.innerHTML = 'Verifying Cloud...'; btn.disabled = true;
+      e.preventDefault(); 
+      const pass = document.getElementById('pass-input').value;
+      const btn = document.getElementById('btn-submit'); 
+      btn.innerHTML = 'Verifying Cloud...'; 
+      btn.disabled = true;
 
-      if (localAuthDB[selectedUser] === btoa(pass)) { loginSuccess(); return; }
+      if (localAuthDB[selectedUser] === btoa(pass)) { 
+        loginSuccess(); 
+        return; 
+      }
 
       try {
          const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
          window[callbackName] = function(data) {
-            delete window[callbackName]; document.body.removeChild(script);
+            delete window[callbackName]; 
+            document.body.removeChild(script);
+            
             if (data.valid) {
-               localAuthDB[selectedUser] = btoa(pass); localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
+               localAuthDB[selectedUser] = btoa(pass); 
+               localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
                loginSuccess();
             } else {
                showToast('Incorrect password. Default is admin123', true);
-               btn.innerHTML = 'Access Workspace'; btn.disabled = false;
+               btn.innerHTML = 'Access Workspace'; 
+               btn.disabled = false;
             }
          };
+         
          const script = document.createElement('script');
-         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedUser)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&callback=${callbackName}`;
-         script.onerror = () => { showToast('Network Error. Device offline?', true); btn.innerHTML = 'Access Workspace'; btn.disabled = false; };
+         // Cache busting added to URL to prevent old locks
+         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedUser)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&t=${Date.now()}&callback=${callbackName}`;
+         
+         script.onerror = () => { 
+           showToast('Network Error. Device offline?', true); 
+           btn.innerHTML = 'Access Workspace'; 
+           btn.disabled = false; 
+         };
          document.body.appendChild(script);
-      } catch(err) { showToast('Verification failed.', true); btn.innerHTML = 'Access Workspace'; btn.disabled = false; }
+      } catch(err) { 
+        showToast('Verification failed.', true); 
+        btn.innerHTML = 'Access Workspace'; 
+        btn.disabled = false; 
+      }
     });
   </script>
 </body>
