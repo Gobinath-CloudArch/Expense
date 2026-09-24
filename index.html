@@ -43,7 +43,12 @@
     .toast.err { background: #321217; color: #ff8591; border: 1px solid #73222a; }
     .toast.suc { background: #0f2c1f; color: #43ebb3; border: 1px solid #165b3f; }
 
-    @media (max-width: 900px) { .layout-wrapper { flex-direction: column; gap: 40px; padding-top: 60px; } .info-section { text-align: center; } .family-quote { border-left: none; border-bottom: 2px solid var(--primary); padding-left: 0; padding-bottom: 10px; display: inline-block; } .feature-item { text-align: left; } }
+    @media (max-width: 900px) { 
+      .layout-wrapper { flex-direction: column; gap: 40px; padding-top: 60px; } 
+      .info-section { text-align: center; } 
+      .family-quote { border-left: none; border-bottom: 2px solid var(--primary); padding-left: 0; padding-bottom: 10px; display: inline-block; } 
+      .feature-item { text-align: left; } 
+    }
   </style>
 </head>
 <body>
@@ -66,7 +71,7 @@
     <div class="login-section">
       <div class="login-card">
         <div class="brand-icon-wrap">
-          <img src="logo.png" alt="App Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\"font-size:32px; font-weight:800; color:#fff;\">A</span>';">
+          <img src="logo.png" alt="App Logo" onerror="this.style.display='none'; this.parentNode.innerText='A';">
         </div>
         <h2>Secure Gateway</h2>
         <p class="sub" id="form-sub">Web Browser Edition</p>
@@ -79,7 +84,7 @@
         <form id="auth-form">
           <input type="hidden" id="account-id" value="gobinath">
           <div class="input-box" style="display: none;"><input type="text" id="display-user" class="input-field" value="gobinath" readonly></div>
-          <div class="input-box" id="pass-box"><label id="pass-label">Cloud Password</label><input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required></div>
+          <div class="input-box" id="pass-box"><label id="pass-label">Password</label><input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required></div>
           <button type="submit" class="btn-submit" id="btn-submit"><span id="btn-text">Access Workspace</span> &nbsp;→</button>
         </form>
       </div>
@@ -87,8 +92,7 @@
   </div>
 
   <script>
-    // --- UPDATED GOOGLE APPS SCRIPT URL WITH API KEY ---
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9GQdn8Gcc617_k7NQwFYwKs_QZ8gPLMSdop-So-JBc8jbpKP3RIEtiDuKoj1pb-IdMg/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSNLQxCRPZKdqSkbRxHpAu06xG-V4nqoSziQYwBmm5vTqXZXeXEjRkFhEpNVof-Wx71g/exec";
     const API_KEY = "GOBI_FAMILY_SECURE_2026";
 
     setInterval(() => {
@@ -121,19 +125,14 @@
       e.preventDefault(); const pass = document.getElementById('pass-input').value;
       const btn = document.getElementById('btn-submit'); btn.innerHTML = 'Verifying Cloud...'; btn.disabled = true;
 
-      // 1. Check offline cache
-      if (localAuthDB[selectedUser] === btoa(pass)) {
-          loginSuccess(); return;
-      }
+      if (localAuthDB[selectedUser] === btoa(pass)) { loginSuccess(); return; }
 
-      // 2. Network verification for new device or new password
       try {
          const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
          window[callbackName] = function(data) {
             delete window[callbackName]; document.body.removeChild(script);
             if (data.valid) {
-               localAuthDB[selectedUser] = btoa(pass); 
-               localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
+               localAuthDB[selectedUser] = btoa(pass); localStorage.setItem('gf_local_auth', JSON.stringify(localAuthDB));
                loginSuccess();
             } else {
                showToast('Incorrect password. Default is admin123', true);
@@ -144,10 +143,7 @@
          script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedName)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&callback=${callbackName}`;
          script.onerror = () => { showToast('Network Error. Device offline?', true); btn.innerHTML = 'Access Workspace'; btn.disabled = false; };
          document.body.appendChild(script);
-      } catch(err) {
-         showToast('Verification failed.', true);
-         btn.innerHTML = 'Access Workspace'; btn.disabled = false;
-      }
+      } catch(err) { showToast('Verification failed.', true); btn.innerHTML = 'Access Workspace'; btn.disabled = false; }
     });
   </script>
 </body>
