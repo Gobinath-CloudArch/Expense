@@ -406,7 +406,6 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
     const API_KEY = "GOBI_FAMILY_SECURE_2026";
 
-    // Cleanly handle missing images without breaking the UI
     document.getElementById('app-logo').addEventListener('error', function() {
       this.style.display = 'none';
       this.parentElement.innerHTML = '<span style="font-size:32px; font-weight:800; color:#fff;">A</span>';
