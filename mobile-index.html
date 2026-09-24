@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#070b14">
   <title>ஆதிரா மதிவதனி Family Expenser</title>
-  
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="apple-touch-icon" href="logo.png">
-  
   <style>
     :root { --primary: #4f6bf7; --primary-hover: #3d58e3; --primary-glow: rgba(79, 107, 247, 0.45); --text: #f3f7fd; --muted: #a0b2d2; --input-bg: rgba(7, 13, 26, 0.6); --card-bg: rgba(14, 21, 38, 0.65); --border: rgba(255, 255, 255, 0.1); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent;}
     body, html { width: 100vw; height: 100vh; overflow: hidden; position: fixed; background-color: #070b14; }
     body { background-image: linear-gradient(to right, rgba(4, 9, 20, 0.95) 0%, rgba(4, 9, 20, 0.75) 50%, rgba(4, 9, 20, 0.4) 100%), url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center; color: var(--text); display: flex; align-items: center; justify-content: center; }
-
     .login-container { width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
     .login-card { width: 100%; background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 28px; padding: 35px 25px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08); text-align: center; }
     .brand-icon-wrap { width: 90px; height: 90px; margin: 0 auto 24px; background: linear-gradient(135deg, rgba(77, 114, 254, 0.2), rgba(31, 71, 221, 0.4)); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #fff; box-shadow: 0 10px 25px var(--primary-glow); border: 1px solid rgba(255,255,255,0.1); padding: 6px; }
@@ -42,6 +39,9 @@
 
   <div class="login-container">
     <div class="login-card">
+      <div class="brand-icon-wrap">
+        <img src="logo.png" alt="App Logo" onerror="this.style.display='none'">
+      </div>
       <h2>ஆதிரா மதிவதனி Family<br>Finance Workspace</h2>
       <p class="sub" id="form-sub">Native Mobile Edition</p>
 
@@ -52,25 +52,14 @@
 
       <form id="auth-form">
         <input type="hidden" id="account-id" value="gobinath">
-        
-        <div class="input-box" style="display: none;">
-          <input type="text" id="display-user" class="input-field" value="gobinath" readonly>
-        </div>
-
-        <div class="input-box" id="pass-box">
-          <label id="pass-label">Cloud Password</label>
-          <input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required>
-        </div>
-
-        <button type="submit" class="btn-submit" id="btn-submit">
-          <span id="btn-text">Unlock App</span> &nbsp;→
-        </button>
+        <div class="input-box" style="display: none;"><input type="text" id="display-user" class="input-field" value="gobinath" readonly></div>
+        <div class="input-box" id="pass-box"><label id="pass-label">Cloud Password</label><input type="password" id="pass-input" class="input-field" placeholder="Default: admin123" required></div>
+        <button type="submit" class="btn-submit" id="btn-submit"><span id="btn-text">Unlock App</span> &nbsp;→</button>
       </form>
     </div>
   </div>
 
   <script>
-    // --- APP SCRIPT VERIFICATION ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
     const API_KEY = "GOBI_FAMILY_SECURE_2026";
 
@@ -103,12 +92,8 @@
       e.preventDefault(); const pass = document.getElementById('pass-input').value;
       const btn = document.getElementById('btn-submit'); btn.innerHTML = 'Verifying Cloud...'; btn.disabled = true;
 
-      // 1. Local Offline Verification (if already set up)
-      if (localAuthDB[selectedUser] === btoa(pass)) {
-          loginSuccess(); return;
-      }
+      if (localAuthDB[selectedUser] === btoa(pass)) { loginSuccess(); return; }
 
-      // 2. Cloud Network Verification (for new devices or changed passwords)
       try {
          const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
          window[callbackName] = function(data) {
@@ -123,7 +108,7 @@
             }
          };
          const script = document.createElement('script');
-         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedName)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&callback=${callbackName}`;
+         script.src = `${APPS_SCRIPT_URL}?action=verifyUser&user=${encodeURIComponent(selectedUser)}&pass=${encodeURIComponent(pass)}&apiKey=${API_KEY}&callback=${callbackName}`;
          script.onerror = () => { showToast('Network Error. Device offline?', true); btn.innerHTML = 'Unlock App'; btn.disabled = false; };
          document.body.appendChild(script);
       } catch(err) {
