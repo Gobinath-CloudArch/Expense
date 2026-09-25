@@ -9,8 +9,11 @@
   <link rel="apple-touch-icon" href="../logo.png">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <style>
-    /* --- Dynamic Enterprise Theming System --- */
+    /* ==========================================================================
+       ENTERPRISE THEMING SYSTEM
+       ========================================================================== */
     :root[data-theme="dark"] { 
       --bg-color: #070b14; 
       --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
@@ -126,13 +129,16 @@
       --red: #d63031; 
       --warn: #fdcb6e; 
     }
-    
+
     :root { 
       --green: #2ed573; 
       --red: #ff5263; 
       --warn: #fbc531; 
     }
 
+    /* ==========================================================================
+       CORE LAYOUT & RESET
+       ========================================================================== */
     * { 
       box-sizing: border-box; 
       margin: 0; 
@@ -184,6 +190,9 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
     }
     
+    /* ==========================================================================
+       BRANDING & SIDEBAR
+       ========================================================================== */
     .brand-box { 
       display: flex; 
       align-items: center; 
@@ -254,7 +263,10 @@
       color: var(--primary); 
       border-color: var(--border); 
     }
-    
+
+    /* ==========================================================================
+       BUTTONS & INPUTS
+       ========================================================================== */
     .panel-head { 
       display: flex; 
       justify-content: space-between; 
@@ -333,6 +345,9 @@
       color: #fff; 
     }
     
+    /* ==========================================================================
+       TABLES & BADGES
+       ========================================================================== */
     .table-responsive { 
       overflow-x: auto; 
       width: 100%; 
@@ -389,6 +404,9 @@
       color: var(--primary); 
     }
     
+    /* ==========================================================================
+       WIDGETS & CHARTS
+       ========================================================================== */
     .chart-container { 
       height: 300px; 
       width: 100%; 
@@ -470,7 +488,10 @@
       font-size: 26px; 
       font-weight: 800; 
     }
-    
+
+    /* ==========================================================================
+       MODALS & VAULTS
+       ========================================================================== */
     .modal-overlay { 
       position: fixed; 
       inset: 0; 
@@ -592,28 +613,90 @@
       border: 1px solid var(--border); 
     }
 
-    /* Responsive Web Adjustments */
+    /* ==========================================================================
+       RESPONSIVE WEB ADJUSTMENTS
+       ========================================================================== */
     @media (max-width: 850px) {
-      body { flex-direction: column; }
-      .sidebar { position: fixed; bottom: 0; width: 100%; height: 75px; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--border); z-index: 9999;}
-      .brand-box { display: none; }
-      .nav-list { flex-direction: row; width: 100%; overflow-x: auto; padding: 0 10px; align-items: center; justify-content: flex-start; -ms-overflow-style: none; scrollbar-width: none; }
-      .nav-list::-webkit-scrollbar { display: none; }
-      .nav-item { flex-direction: column; font-size: 10px; gap: 6px; padding: 8px 14px; white-space: nowrap; border: none; border-radius: 8px; }
-      .nav-item .nav-text { display: block; }
-      .main { padding: 16px; padding-bottom: 90px; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .kpi-grid { grid-template-columns: 1fr 1fr; gap:10px; }
-      .modern-clock-box { width: 100%; text-align: center; padding: 12px; margin-top: 10px; }
-      .panel-head { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .table-controls { flex-direction: column; }
-      .modal { padding: 16px; margin: 10px; width: calc(100% - 20px); }
+      body { 
+        flex-direction: column; 
+      }
+      .sidebar { 
+        position: fixed; 
+        bottom: 0; 
+        width: 100%; 
+        height: 75px; 
+        flex-direction: row; 
+        padding: 0; 
+        border-right: none; 
+        border-top: 1px solid var(--border); 
+        z-index: 9999;
+      }
+      .brand-box { 
+        display: none; 
+      }
+      .nav-list { 
+        flex-direction: row; 
+        width: 100%; 
+        overflow-x: auto; 
+        padding: 0 10px; 
+        align-items: center; 
+        justify-content: flex-start; 
+        -ms-overflow-style: none; 
+        scrollbar-width: none; 
+      }
+      .nav-list::-webkit-scrollbar { 
+        display: none; 
+      }
+      .nav-item { 
+        flex-direction: column; 
+        font-size: 10px; 
+        gap: 6px; 
+        padding: 8px 14px; 
+        white-space: nowrap; 
+        border: none; 
+        border-radius: 8px; 
+      }
+      .nav-item .nav-text { 
+        display: block; 
+      }
+      .main { 
+        padding: 16px; 
+        padding-bottom: 90px; 
+      }
+      .grid-2 { 
+        grid-template-columns: 1fr; 
+      }
+      .kpi-grid { 
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px; 
+      }
+      .modern-clock-box { 
+        width: 100%; 
+        text-align: center; 
+        padding: 12px; 
+        margin-top: 10px; 
+      }
+      .panel-head { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 12px; 
+      }
+      .table-controls { 
+        flex-direction: column; 
+      }
+      .modal { 
+        padding: 16px; 
+        margin: 10px; 
+        width: calc(100% - 20px); 
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- ==========================================================================
+       SIDEBAR NAVIGATION
+       ========================================================================== -->
   <aside class="sidebar">
     <div class="brand-box">
       <div class="brand-icon">
@@ -637,7 +720,9 @@
     </nav>
   </aside>
 
-  <!-- Main View -->
+  <!-- ==========================================================================
+       MAIN DASHBOARD AREA
+       ========================================================================== -->
   <main class="main">
     <div style="display:flex; justify-content:space-between; margin-bottom: 24px; align-items:center; flex-wrap:wrap; gap:12px;">
       <div>
@@ -654,7 +739,9 @@
     <div id="view-container"></div>
   </main>
 
-  <!-- Modals -->
+  <!-- ==========================================================================
+       MODAL: TRANSACTION ENTRY
+       ========================================================================== -->
   <div id="tx-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -717,6 +804,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: BUDGET CONFIGURATION
+       ========================================================================== -->
   <div id="budget-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -746,6 +836,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: REMINDERS
+       ========================================================================== -->
   <div id="rem-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -782,6 +875,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: VEHICLE LOG ENTRY
+       ========================================================================== -->
   <div id="fuel-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -869,6 +965,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: DOC VAULT UPLOAD
+       ========================================================================== -->
   <div id="doc-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -889,6 +988,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: ENCRYPTED PASSWORD VAULT
+       ========================================================================== -->
   <div id="pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -917,7 +1019,9 @@
     </div>
   </div>
 
-  <!-- Admin User Password Change Modal -->
+  <!-- ==========================================================================
+       MODAL: ADMIN PASSWORD RESET
+       ========================================================================== -->
   <div id="admin-pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -936,6 +1040,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       CORE JAVASCRIPT ENGINE
+       ========================================================================== -->
   <script>
     // --- ENTERPRISE API CONFIGURATION ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
@@ -947,6 +1054,7 @@
       this.parentElement.innerHTML = '<span style="font-size:18px; font-weight:800; color:#fff;">A</span>';
     });
 
+    // Master Clock Updater
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -963,15 +1071,18 @@
       }
     }, 1000);
 
+    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
+    // Mathematical Password Encryption
     function encryptData(text) { 
         return btoa(encodeURIComponent(text)); 
     }
     
+    // Mathematical Password Decryption
     function decryptData(text) { 
         try { 
             return decodeURIComponent(atob(text)); 
@@ -980,6 +1091,7 @@
         } 
     }
     
+    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -989,8 +1101,11 @@
         document.body.removeChild(a); 
     }
 
+    // --------------------------------------------------------------------------
+    // SECURITY: INACTIVITY TIMEOUT ENGINE
+    // --------------------------------------------------------------------------
     let inactivityTimer; 
-    const TIMEOUT_MS = 10 * 60 * 1000;
+    const TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
     
     function autoLogout() { 
         localStorage.removeItem('gf_user'); 
@@ -1015,16 +1130,20 @@
         } 
     }
     
+    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
 
+    // Theme Instantiation
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
+    // Base Category Configurations
     const expCategories = ['Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 'Credit Card Proxy Spend', 'Given Loan (Asset)', 'Gold Loan Paid', 'Personal Loan Paid', 'Vehicle Service', 'Vehicle Insurance', 'Home Maintenance', 'Saloon / Parlour', 'LIC Payment', 'Utility Bills', 'Shopping', 'Travel', 'Other Expense'];
     const incCategories = ['Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Credit Card Proxy Refund', 'Received Loan Repayment', 'Gold Loan Received', 'Personal Loan Received', 'Received Individual Loan'];
 
+    // Core Database Variables
     let ledger = []; 
     let users = JSON.parse(localStorage.getItem('gf_users')) || ['Admin', 'User 2'];
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 'Groceries': { type: 'Fixed', val: 15000 }, 'Credit Card Bill': { type: 'Percentage', val: 15 } };
@@ -1032,12 +1151,15 @@
     let docs = JSON.parse(localStorage.getItem('gf_docs')) || []; 
     let passwords = JSON.parse(localStorage.getItem('gf_passwords')) || [];
 
+    // Sorting State Variables
     let sortCol = 'date'; 
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
 
-    // Data Sanitization
+    // --------------------------------------------------------------------------
+    // DATABASE SANITIZATION ENGINE (Prevents Blank Screen Errors)
+    // --------------------------------------------------------------------------
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1074,6 +1196,9 @@
         return Array.from(map.values()).sort((a,b) => String(a.service).localeCompare(String(b.service))); 
     }
 
+    // --------------------------------------------------------------------------
+    // CLOUD SYNC ENGINE
+    // --------------------------------------------------------------------------
     let isSyncing = false; 
 
     function apiGetJSONP(action) {
@@ -1081,7 +1206,14 @@
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return reject(new Error("Missing URL"));
         
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
+        
+        // BUG FIX: Add Timeout so app doesn't spin forever if Google Sheets fails
+        const timeoutId = setTimeout(() => {
+            reject(new Error("Timeout: Master Storage did not respond."));
+        }, 15000);
+
         window[callbackName] = function(data) { 
+            clearTimeout(timeoutId);
             delete window[callbackName]; 
             document.body.removeChild(script); 
             if (data.error) reject(new Error(data.error)); 
@@ -1090,7 +1222,11 @@
         
         const script = document.createElement('script'); 
         script.src = `${APPS_SCRIPT_URL}?action=${action}&apiKey=${API_KEY}&t=${Date.now()}&callback=${callbackName}`; 
-        script.onerror = () => reject(new Error("Network Error")); 
+        
+        script.onerror = () => {
+            clearTimeout(timeoutId);
+            reject(new Error("Network Error")); 
+        };
         document.body.appendChild(script);
       });
     }
@@ -1103,8 +1239,7 @@
                body: JSON.stringify({ action: action, data: data, apiKey: API_KEY }) 
            }); 
            return { ok: true }; 
-       } 
-       catch (err) { 
+       } catch (err) { 
            return { ok: false }; 
        }
     }
@@ -1193,6 +1328,7 @@
             } else { navigate('home'); }
         }
       } catch(e) { 
+          // Revert to displaying Home if API fails
           if (isBoot) navigate('home'); 
       } finally { 
           isSyncing = false; 
@@ -1218,6 +1354,7 @@
       }
       
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
+          // If no local data, wait for Cloud connection
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
                   <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
@@ -1225,6 +1362,7 @@
               </div>`;
           await backgroundSync(true);
       } else {
+          // If local data exists, load immediately, then background sync
           ledger = deduplicateLedger(JSON.parse(localData) || []);
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
           navigate('home');
@@ -1236,6 +1374,9 @@
       }
     }
 
+    // --------------------------------------------------------------------------
+    // USER MANAGEMENT & SECURITY CONTROLS
+    // --------------------------------------------------------------------------
     function logout() {
         if(confirm("Are you sure you want to log out?")) {
             localStorage.removeItem('gf_user');
@@ -1251,6 +1392,7 @@
             localStorage.setItem('gf_users', JSON.stringify(users)); 
             input.value = ''; 
             navigate('settings');
+            
             if (APPS_SCRIPT_URL) { 
                 try { 
                     await apiPost('addUser', { name: name }); 
@@ -1264,6 +1406,7 @@
             users = users.filter(u => u !== name); 
             localStorage.setItem('gf_users', JSON.stringify(users)); 
             navigate('settings');
+            
             if (APPS_SCRIPT_URL) { 
                 try { 
                     await apiPost('removeUser', { name: name }); 
@@ -1291,19 +1434,26 @@
         if (APPS_SCRIPT_URL) { 
             try { 
                 await apiPost('changeUserPassword', { user: uid, newPass: newPass }); 
+                
+                // Update Local Device Cache simultaneously to prevent lockout
                 let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; 
                 authDB[uid.toLowerCase()] = btoa(newPass); 
                 localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
+                
                 alert(`Password successfully securely hashed and updated for ${uid}.`); 
             } catch(err) { 
                 alert("Error changing password."); 
             } 
         } 
+        
         closeModal('admin-pass-modal'); 
         btn.disabled = false; 
         btn.innerText = "Hash & Secure"; 
     }
 
+    // --------------------------------------------------------------------------
+    // TRANSACTION MANAGEMENT (CRUD)
+    // --------------------------------------------------------------------------
     function openTxModal(type) { 
         document.getElementById('tx-form').reset(); 
         document.getElementById('tx-id').value = ''; 
@@ -1320,6 +1470,7 @@
         const catSelect = document.getElementById('tx-category'); 
         const list = type === 'DEBIT' ? expCategories : incCategories; 
         catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); 
+        
         const userSelect = document.getElementById('tx-user'); 
         if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join(''); 
     }
@@ -1343,7 +1494,6 @@
         document.getElementById('tx-modal').style.display = 'grid'; 
     }
     
-    // SAFE DELETE
     async function deleteTx(id) { 
         if (!confirm('Delete this transaction permanently?')) return; 
         
@@ -1360,7 +1510,6 @@
         } 
     }
 
-    // SAFE SAVE
     async function saveTx(e) { 
         e.preventDefault(); 
         const btn = document.getElementById('tx-save-btn'); 
@@ -1407,6 +1556,13 @@
         } 
     }
     
+    function closeModal(modalId) { 
+        document.getElementById(modalId).style.display = 'none'; 
+    }
+
+    // --------------------------------------------------------------------------
+    // DASHBOARD ROUTING & RENDERING ENGINE (Crash-Proofed)
+    // --------------------------------------------------------------------------
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       if (btn) { 
@@ -1434,7 +1590,6 @@
       else if (view === 'settings') { title.innerText = 'Settings & Security'; sub.innerText = 'Manage preferences, user access, and theme.'; container.innerHTML = renderSettings(); }
     }
 
-    // --- CRASH-PROOF RENDERING ENGINE ---
     function renderHome() {
       try {
         const currentHour = new Date().getHours(); 
@@ -1449,7 +1604,7 @@
         
         if (pendingRems.length > 0) {
           remHtml = `<div style="display:flex; gap:14px; overflow-x:auto; padding-bottom:8px;">${pendingRems.map(r => `
-              <div class="reminder-card"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="badge ${(r.type \vert{}\vert{} '').includes('Date') ? 'primary' : 'warn'}">${r.type || 'Reminder'}</span><span style="font-size:11px; color:var(--primary); font-weight:700;">${(r.date || '').split('T')[0]}</span></div><div style="font-size:14px; font-weight:700; margin-bottom:4px;">${r.title || 'Untitled'}</div><div style="font-size:12px; color:var(--muted);">${r.amount ? 'Expected: ₹' + r.amount : 'No amount linked'}</div></div>`).join('')}</div>`;
+              <div class="reminder-card"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="badge ${(r.type || '').includes('Date') ? 'primary' : 'warn'}">${r.type || 'Reminder'}</span><span style="font-size:11px; color:var(--primary); font-weight:700;">${(r.date || '').split('T')[0]}</span></div><div style="font-size:14px; font-weight:700; margin-bottom:4px;">${r.title || 'Untitled'}</div><div style="font-size:12px; color:var(--muted);">${r.amount ? 'Expected: ₹' + r.amount : 'No amount linked'}</div></div>`).join('')}</div>`;
         }
         
         return `
@@ -1525,6 +1680,7 @@
       if (!ctx || typeof Chart === 'undefined') return;
       
       let m1 = 0, m1_e = 0, m2 = 0, m2_e = 0;
+      
       (ledger || []).forEach(t => { 
           if ((t.date || '').startsWith(selectedMonthA)) { 
               if(t.type === 'CREDIT' && !(t.category || '').includes('Loan') && !(t.category || '').includes('Proxy')) m1 += (t.amount || 0); 
@@ -1535,110 +1691,1016 @@
               else if(t.type === 'DEBIT' && !(t.category || '').includes('Proxy') && t.category !== 'Credit Card Bill') m2_e += (t.amount || 0); 
           } 
       });
-      new Chart(ctx, { type: 'bar', data: { labels: [selectedMonthA, selectedMonthB], datasets: [{ label: 'Income', data: [m1, m2], backgroundColor: '#2ed573' }, { label: 'Expenses', data: [m1_e, m2_e], backgroundColor: '#ff5263' }] }, options: { responsive: true, maintainAspectRatio: false } });
-    }
-    
-    function closeModal(modalId) { 
-        document.getElementById(modalId).style.display = 'none'; 
+      
+      new Chart(ctx, { 
+          type: 'bar', 
+          data: { 
+              labels: [selectedMonthA, selectedMonthB], 
+              datasets: [
+                  { label: 'Income', data: [m1, m2], backgroundColor: '#2ed573' }, 
+                  { label: 'Expenses', data: [m1_e, m2_e], backgroundColor: '#ff5263' }
+              ] 
+          }, 
+          options: { responsive: true, maintainAspectRatio: false } 
+      });
     }
 
-    // SAFE RENDER TABLE HTML (Prevents Blank Screens)
-    function renderTableHTML(data, title, sortable) {
-      const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
+    function renderAllRecords(data = ledger) {
+      try {
+        return `<div class="panel"><div class="table-controls"><input type="text" id="search-input" class="input-field" placeholder="Search by description, category, or amount..."><button class="btn primary" onclick="executeSearch()">Find</button></div><div id="records-table-container">${renderTableHTML(data, '', true)}</div></div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+    
+    function executeSearch() { 
+      const q = document.getElementById('search-input').value.toLowerCase(); 
+      const filtered = ledger.filter(t => (t.desc || '').toLowerCase().includes(q) || (t.category || '').toLowerCase().includes(q) || (t.amount || 0).toString().includes(q)); 
+      document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
+    }
+    
+    function attachSearchLogic() { 
+      document.getElementById('search-input').addEventListener('keyup', (e) => { if(e.key === 'Enter') executeSearch(); }); 
+    }
+    
+    function sortTable(col) { 
+      sortAsc = (sortCol === col) ? !sortAsc : true; 
+      sortCol = col; 
+      ledger.sort((a, b) => { 
+        let valA = a[col]; let valB = b[col]; 
+        if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); } 
+        return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1); 
+      }); 
+      document.getElementById('records-table-container').innerHTML = renderTableHTML(ledger, '', true); 
+    }
+
+    function renderLoans() {
+      try {
+        const loanData = (ledger || []).filter(t => (t.category || '').includes('Loan') || (t.category || '').includes('Lent'));
+        let assetGiven = 0, assetRepaid = 0, debtReceived = 0, debtRepaid = 0;
+        
+        loanData.forEach(t => {
+            if (t.category === 'Given Loan (Asset)') assetGiven += (t.amount || 0);
+            if (t.category === 'Received Loan Repayment') assetRepaid += (t.amount || 0);
+            if ((t.category || '').includes('Received') && t.category !== 'Received Loan Repayment') debtReceived += (t.amount || 0);
+            if ((t.category || '').includes('Paid') && t.category !== 'Rent Paid' && t.category !== 'LIC Payment') debtRepaid += (t.amount || 0);
+        });
+
+        return `
+        <div class="kpi-grid">
+            <div class="panel" style="margin:0; padding:20px; border-color:var(--green);">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">LOANS GIVEN (ASSETS)</div>
+                <div style="font-size:22px; font-weight:bold; color:var(--green);">₹${assetGiven.toLocaleString()}</div>
+                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${assetRepaid.toLocaleString()} | Pending: ₹${(assetGiven - assetRepaid).toLocaleString()}</div>
+            </div>
+            <div class="panel" style="margin:0; padding:20px; border-color:var(--red);">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">LOANS TAKEN (DEBTS)</div>
+                <div style="font-size:22px; font-weight:bold; color:var(--red);">₹${debtReceived.toLocaleString()}</div>
+                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${debtRepaid.toLocaleString()} | Pending: ₹${(debtReceived - debtRepaid).toLocaleString()}</div>
+            </div>
+        </div>
+        ${renderTableHTML(loanData, 'Loan Ledger', false)}`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+
+    function renderAnalyzer() {
+      try {
+        const aggA = {}; const aggB = {};
+        
+        (ledger || []).forEach(t => { 
+          if (t.type === 'DEBIT' && !(t.category || '').includes('Proxy')) { 
+            if ((t.date || '').startsWith(selectedMonthA)) aggA[t.category] = (aggA[t.category] || 0) + (t.amount || 0); 
+            if ((t.date || '').startsWith(selectedMonthB)) aggB[t.category] = (aggB[t.category] || 0) + (t.amount || 0); 
+          } 
+        });
+        
+        const allCats = [...new Set([...Object.keys(aggA), ...Object.keys(aggB)])];
+        let compRows = allCats.map(c => { 
+          const valA = aggA[c] || 0; 
+          const valB = aggB[c] || 0; 
+          const diff = valB - valA; 
+          
+          let diffStr = `<span>₹0</span>`; 
+          if (diff > 0) diffStr = `<span style="color:var(--red);">+₹${diff.toLocaleString('en-IN')}</span>`; 
+          else if (diff < 0) diffStr = `<span style="color:var(--green);">-₹${Math.abs(diff).toLocaleString('en-IN')}</span>`; 
+          
+          return `<tr><td>${c}</td><td>₹${valA.toLocaleString('en-IN')}</td><td>₹${valB.toLocaleString('en-IN')}</td><td>${diffStr}</td></tr>`; 
+        }).join('');
+        
+        if (!compRows) compRows = `<tr><td colspan="4" style="text-align:center;">No data for selected months.</td></tr>`;
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Month-over-Month Comparison</h3>
+              <div style="display:flex; gap:10px;">
+                <input type="month" id="cmp-month-a" class="input-field" value="${selectedMonthA}" onchange="updateAnalyzerMonths()">
+                <span style="align-self:center;">vs</span>
+                <input type="month" id="cmp-month-b" class="input-field" value="${selectedMonthB}" onchange="updateAnalyzerMonths()">
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table style="margin-bottom: 24px;">
+                <thead><tr><th>Category</th><th>Month A</th><th>Month B</th><th>Difference</th></tr></thead>
+                <tbody>${compRows}</tbody>
+              </table>
+            </div>
+            <div class="panel-head"><h3>Selected Month (B) Distribution</h3></div>
+            <div class="chart-container" style="height:250px;"><canvas id="analyzerChart"></canvas></div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+    
+    function updateAnalyzerMonths() { 
+      selectedMonthA = document.getElementById('cmp-month-a').value; 
+      selectedMonthB = document.getElementById('cmp-month-b').value; 
+      navigate('analyzer'); 
+    }
+    
+    function renderAnalyzerChart() { 
+      const ctx = document.getElementById('analyzerChart'); 
+      if (!ctx || typeof Chart === 'undefined') return; 
       
+      const agg = {}; 
+      (ledger || []).filter(t => t.type === 'DEBIT' && !(t.category || '').includes('Proxy') && (t.date || '').startsWith(selectedMonthB)).forEach(t => { 
+        agg[t.category] = (agg[t.category] || 0) + (t.amount || 0); 
+      }); 
+      
+      new Chart(ctx, { 
+        type: 'doughnut', 
+        data: { 
+          labels: Object.keys(agg), 
+          datasets: [{ data: Object.values(agg), backgroundColor: ['#4f6bf7', '#2ed573', '#ff5263', '#fbc531', '#a55eea', '#45aaf2'] }] 
+        }, 
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } 
+      }); 
+    }
+
+    function renderBudget() {
+      try {
+        let totalIncome = (ledger || []).filter(t => t.type === 'CREDIT' && !(t.category || '').includes('Loan') && !(t.category || '').includes('Proxy') && (t.date || '').startsWith('2026-09')).reduce((s, t) => s + (t.amount || 0), 0); 
+        if(totalIncome === 0) totalIncome = 68000; 
+        
+        let budgetHTML = Object.keys(budgets || {}).map(cat => {
+          const b = budgets[cat]; 
+          const target = b.type === 'Percentage' ? (totalIncome * (b.val || 0) / 100) : (b.val || 0); 
+          const spent = (ledger || []).filter(t => t.type === 'DEBIT' && t.category === cat && (t.date || '').startsWith('2026-09')).reduce((s,t) => s + (t.amount || 0), 0);
+          
+          const pct = target > 0 ? Math.round((spent / target) * 100) : 0; 
+          let color = 'var(--green)'; 
+          if (pct > 100) color = 'var(--red)'; 
+          else if (pct > 85) color = 'var(--warn)'; 
+          const remains = target - spent;
+          
+          return `
+            <div class="budget-row">
+              <div class="budget-info">
+                <div><strong>${cat}</strong> <span style="color:var(--muted); font-size:11px; margin-left:6px;">${b.type || 'Fixed'}</span></div>
+                <div>₹${spent.toLocaleString('en-IN')} / ₹${target.toLocaleString('en-IN')} <span style="color:${color}; font-weight:700;">${pct}%</span></div>
+              </div>
+              <div class="bar-bg">
+                <div class="bar-fill" style="width:${Math.min(pct, 100)}%; background:${color};"></div>
+              </div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px; text-align:right;">
+                ${remains < 0 ? `<span style="color:var(--red)">Over budget by ₹${Math.abs(remains)}</span>` : `₹${remains} remaining`}
+              </div>
+            </div>`;
+        }).join('');
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Monthly Allocations</h3>
+              <button class="btn primary" onclick="openBudgetModal()">+ Edit / Add Budget</button>
+            </div>
+            ${budgetHTML || '<p style="color:var(--muted); font-size:13px;">No budgets configured yet.</p>'}
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+    
+    function openBudgetModal() { 
+      const select = document.getElementById('budget-cat'); 
+      select.innerHTML = expCategories.map(c => `<option value="${c}">${c}</option>`).join(''); 
+      document.getElementById('budget-modal').style.display = 'grid'; 
+    }
+    
+    function saveBudget(e) { 
+      e.preventDefault(); 
+      const cat = document.getElementById('budget-cat').value; 
+      const type = document.getElementById('budget-type').value; 
+      const val = parseFloat(document.getElementById('budget-val').value) || 0; 
+      
+      budgets[cat] = { type, val }; 
+      localStorage.setItem('gf_budgets', JSON.stringify(budgets)); 
+      closeModal('budget-modal'); 
+      navigate('budget'); 
+      
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+        try { 
+          apiPost('updateBudget', { category: cat, type: type, val: val }); 
+        } catch(err) {} 
+      } 
+    }
+
+    function toggleVehicleFields() {
+        const type = document.getElementById('fuel-log-type').value;
+        const s = document.getElementById('fuel-specific-fields');
+        if(type === 'Fuel / Petrol') { s.style.display = 'block'; } else { s.style.display = 'none'; }
+    }
+    
+    function toggleReserveOdo() {
+        const res = document.getElementById('fuel-reserve').value;
+        document.getElementById('res-odo-box').style.display = res === 'Yes' ? 'block' : 'none';
+    }
+    
+    function calcFuelLiters() { 
+      const amt = parseFloat(document.getElementById('fuel-amount').value) || 0; 
+      const price = parseFloat(document.getElementById('fuel-price').value) || 1; 
+      document.getElementById('fuel-liters').value = (amt / price).toFixed(2); 
+    }
+    
+    function updateFuelPrice() { 
+      const v = document.getElementById('fuel-vehicle').value; 
+      const pInput = document.getElementById('fuel-price'); 
+      if (v === 'Jupiter 125') { pInput.value = '107.77'; } 
+      else { pInput.value = '108.60'; } 
+      calcFuelLiters(); 
+    }
+    
+    function openFuelModal() {
+        document.getElementById('fuel-date').value = getLocalISOTime();
+        document.getElementById('fuel-vehicle').value = 'Jupiter 125'; 
+        document.getElementById('fuel-odo').value = ''; 
+        document.getElementById('fuel-amount').value = ''; 
+        document.getElementById('fuel-liters').value = ''; 
+        document.getElementById('fuel-price').value = '107.77';
+        document.getElementById('fuel-res-odo').value = ''; 
+        document.getElementById('fuel-reserve').value = 'No'; 
+        toggleReserveOdo();
+        
+        const userSelect = document.getElementById('fuel-user'); 
+        if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join('');
+        
+        document.getElementById('fuel-modal').style.display = 'grid'; 
+        toggleVehicleFields();
+    }
+    
+    async function saveFuelEntry(e) {
+        e.preventDefault(); 
+        const btn = e.submitter; 
+        btn.disabled = true; 
+        btn.innerText = 'Saving...';
+        
+        const rawDate = document.getElementById('fuel-date').value || new Date().toISOString(); 
+        const vehicleName = document.getElementById('fuel-vehicle').value.trim(); 
+        const amount = parseFloat(document.getElementById('fuel-amount').value) || 0; 
+        const currentPrice = document.getElementById('fuel-price').value;
+        const cat = document.getElementById('fuel-log-type').value;
+        
+        const notesObj = { 
+          vehicle: vehicleName, 
+          odo: parseFloat(document.getElementById('fuel-odo').value) || 0 
+        };
+        
+        if(cat === 'Fuel / Petrol') {
+            notesObj.liters = parseFloat(document.getElementById('fuel-liters').value) || 0; 
+            notesObj.price = parseFloat(currentPrice) || 0; 
+            notesObj.isReserve = document.getElementById('fuel-reserve').value === 'Yes';
+            
+            if (notesObj.isReserve) {
+              notesObj.resOdo = document.getElementById('fuel-res-odo').value ? parseFloat(document.getElementById('fuel-res-odo').value) : notesObj.odo;
+            }
+        }
+        
+        const record = { 
+          id: 'tx_fuel_' + Date.now(), 
+          date: rawDate, 
+          type: 'DEBIT', 
+          category: cat, 
+          method: document.getElementById('fuel-method').value, 
+          desc: 'Vehicle Entry - ' + vehicleName, 
+          notes: JSON.stringify(notesObj), 
+          amount: amount, 
+          user: document.getElementById('fuel-user').value 
+        };
+        
+        ledger.unshift(record); 
+        ledger = deduplicateLedger(ledger); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        closeModal('fuel-modal'); 
+        navigate('vehicle');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            await apiPost('addTransaction', record); 
+          } catch (err) { } 
+        }
+    }
+
+    function renderVehicle() {
+      try {
+        const fuelTxs = (ledger || []).filter(t => t.category === 'Fuel / Petrol').sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0));
+        const vMap = {}; 
+        let totalFuelSpent = 0; 
+        let globalLiters = 0;
+        
+        fuelTxs.forEach(t => { 
+          totalFuelSpent += (t.amount || 0); 
+          try { 
+            const data = JSON.parse(t.notes || '{}'); 
+            if (data && data.vehicle && data.odo) { 
+              if (!vMap[data.vehicle]) vMap[data.vehicle] = { entries: [], lastReserveOdo: null, accumulatedLiters: 0, count: 0 }; 
+              vMap[data.vehicle].entries.push({ 
+                date: t.date, 
+                odo: data.odo, 
+                liters: data.liters, 
+                price: data.price, 
+                isReserve: data.isReserve, 
+                resOdo: data.resOdo || data.odo, 
+                amount: t.amount 
+              }); 
+              globalLiters += (data.liters || 0); 
+            } 
+          } catch(e) {} 
+        });
+        
+        let vehicleCards = '';
+        for (const vName in vMap) {
+            const vData = vMap[vName]; 
+            vData.entries.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            let vTotalCost = 0; 
+            let vTotalLiters = 0; 
+            let minOdo = vData.entries.length > 0 ? vData.entries[0].odo : 0; 
+            let maxOdo = vData.entries.length > 0 ? vData.entries[vData.entries.length - 1].odo : 0; 
+            let totalDistTracked = Math.max(0, maxOdo - minOdo);
+            let reserveDist = 0; 
+            let reserveLiters = 0;
+            
+            vData.entries.forEach(entry => {
+                vTotalCost += (entry.amount || 0); 
+                vTotalLiters += (entry.liters || 0);
+                
+                if (entry.isReserve) { 
+                  if (vData.lastReserveOdo !== null && vData.accumulatedLiters > 0) { 
+                    reserveDist += (entry.resOdo - vData.lastReserveOdo); 
+                    reserveLiters += vData.accumulatedLiters; 
+                  } 
+                  vData.lastReserveOdo = entry.resOdo; 
+                  vData.accumulatedLiters = entry.liters; 
+                } else { 
+                  if (vData.lastReserveOdo !== null) { 
+                    vData.accumulatedLiters += entry.liters; 
+                  } 
+                }
+            });
+            
+            let trueMileage = reserveLiters > 0 ? (reserveDist / reserveLiters).toFixed(2) : 0; 
+            let costPerKm = totalDistTracked > 0 ? (vTotalCost / totalDistTracked).toFixed(2) : 0;
+            
+            vehicleCards += `
+              <div class="panel" style="background: rgba(255,255,255,0.02);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                  <h4 style="font-size:18px; color:var(--primary); font-weight:700;">🚗 ${vName}</h4>
+                  <div style="display:flex; gap:8px;">
+                    <span class="badge credit">Avg Mileage: ${trueMileage > 0 ? trueMileage + ' km/l' : 'Need 2 Reserves'}</span>
+                    <span class="badge warn">Cost/KM: ₹${costPerKm}</span>
+                  </div>
+                </div>
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); margin-bottom:16px;">
+                  <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                    <div style="font-size:10px; color:var(--muted);">TOTAL DISTANCE</div>
+                    <div style="font-size:16px; font-weight:bold;">${totalDistTracked} KM</div>
+                  </div>
+                  <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                    <div style="font-size:10px; color:var(--muted);">TOTAL LITERS</div>
+                    <div style="font-size:16px; font-weight:bold;">${vTotalLiters.toFixed(2)} L</div>
+                  </div>
+                  <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                    <div style="font-size:10px; color:var(--muted);">TOTAL SPENT</div>
+                    <div style="font-size:16px; font-weight:bold; color:var(--red);">₹${vTotalCost.toLocaleString('en-IN')}</div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table>
+                    <thead><tr><th>Date</th><th>Odo (KM)</th><th>Liters</th><th>Price/L</th><th>Reserve Hit?</th><th>Cost</th></tr></thead>
+                    <tbody>${vData.entries.slice().reverse().map(e => `
+                      <tr>
+                        <td>${(e.date || '').split('T')[0]}</td>
+                        <td>${e.odo}</td>
+                        <td>${(e.liters || 0).toFixed(2)} L</td>
+                        <td>₹${e.price || '-'}</td>
+                        <td><span class="badge ${e.isReserve ? 'primary' : ''}">${e.isReserve ? 'Yes ('+e.resOdo+')' : 'No'}</span></td>
+                        <td style="color:var(--red); font-weight:bold;">- ₹${e.amount}</td>
+                      </tr>`).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>`;
+        }
+        
+        return `
+          <div class="kpi-grid">
+            <div class="panel" style="margin:0; padding:20px;">
+              <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">TOTAL FUEL SPENT</div>
+              <div class="kpi-val" style="color:var(--red);">₹${totalFuelSpent.toLocaleString('en-IN')}</div>
+            </div>
+            <div class="panel" style="margin:0; padding:20px;">
+              <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">TOTAL LITERS ADDED</div>
+              <div class="kpi-val" style="color:var(--warn);">${globalLiters.toFixed(2)} L</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Vehicle Log & Mileage Calculator</h3>
+              <button class="btn primary" onclick="openFuelModal()">+ Add Vehicle Log</button>
+            </div>
+            <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">To calculate accurate mileage, ensure you check "Reserve Hit" when the fuel indicator drops to reserve and note the exact Reserve Odometer reading.</p>
+            ${vehicleCards || '<p style="text-align:center; color:var(--muted); padding:20px;">No vehicle fuel entries found.</p>'}
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+
+    function renderReminders() {
+      try {
+        let pending = (reminders || []).filter(r => r && r.status === 'Pending').sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0)); 
+        let done = (reminders || []).filter(r => r && r.status === 'Done').sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+        
+        const rowHtml = (r) => { 
+          const displayDate = r.date ? String(r.date).replace('T', ' ') : ''; 
+          const rType = r.type || '';
+          return `<tr>
+            <td>${displayDate}</td>
+            <td><span class="badge ${r.status === 'Pending' ? 'warn' : 'credit'}">${r.status || ''}</span></td>
+            <td><span class="badge ${rType.includes('Date') ? 'primary' : 'debit'}">${rType}</span></td>
+            <td style="font-weight:700;">${r.title || ''}</td>
+            <td>${r.amount ? '₹' + parseFloat(r.amount).toLocaleString('en-IN') : '-'}</td>
+            <td>
+              ${r.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Mark Done</button>` : ''} 
+              <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
+            </td>
+          </tr>`; 
+        };
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Scheduled Tracker</h3>
+              <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead><tr><th>Date & Time</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr></thead>
+                <tbody>${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No pending reminders.</td></tr>'}</tbody>
+              </table>
+            </div>
+            <br>
+            <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
+            <div class="table-responsive">
+              <table>
+                <tbody style="opacity: 0.6;">${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No completed history.</td></tr>'}</tbody>
+              </table>
+            </div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+    
+    function openRemModal() { 
+      document.getElementById('rem-id').value = ''; 
+      document.getElementById('rem-title').value = ''; 
+      document.getElementById('rem-date').value = getLocalISOTime(); 
+      document.getElementById('rem-amount').value = ''; 
+      document.getElementById('rem-modal').style.display = 'grid'; 
+    }
+    
+    async function saveReminder(e) { 
+      e.preventDefault(); 
+      const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
+      const isEdit = document.getElementById('rem-id').value !== ''; 
+      
+      const record = { 
+        id: id, 
+        date: document.getElementById('rem-date').value, 
+        title: document.getElementById('rem-title').value, 
+        type: document.getElementById('rem-type').value, 
+        amount: parseFloat(document.getElementById('rem-amount').value) || null, 
+        status: 'Pending' 
+      }; 
+      
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) reminders[idx] = record; else reminders.push(record); 
+      
+      reminders = deduplicateReminders(reminders); 
+      localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+      closeModal('rem-modal'); 
+      navigate('reminders'); 
+      
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+        try { 
+          await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
+        } catch(err) {} 
+      } 
+    }
+    
+    async function markRemDone(id) { 
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) { 
+        reminders[idx].status = 'Done'; 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { await apiPost('editReminder', reminders[idx]); } catch(err) {} 
+        } 
+      } 
+    }
+    
+    async function deleteRem(id) { 
+      if(confirm('Delete this reminder?')) { 
+        reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { await apiPost('deleteReminder', { id }); } catch(err) {} 
+        } 
+      } 
+    }
+
+    function renderVault() {
+      try {
+        const docHtml = (docs || []).map(d => {
+          if (!d) return '';
+          return `
+            <div class="doc-card">
+              <img src="${d.b64 || ''}">
+              <div class="doc-card-info">
+                <h4 style="font-size:14px;">${d.title || ''}</h4>
+                <p style="font-size:11px; color:var(--muted);">${(d.date || '').split('T')[0]}</p>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <button class="btn" style="flex:1; font-size:11px;" onclick="window.open('${d.b64 || ''}', '_blank')">View</button>
+                  <button class="btn primary" style="flex:1; font-size:11px;" onclick="downloadDoc('${d.b64 || ''}', '${(d.title || '').replace(/'/g,"\\'")}')">⬇ Save</button>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Encrypted Doc Vault</h3>
+              <button class="btn primary" onclick="document.getElementById('doc-modal').style.display='grid'">+ Upload Document</button>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Store important bills, screenshots, and RC books. Images are mathematically compressed and encrypted into Base64 to sync with your Cloud Storage.</p>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+              ${docHtml || '<p style="color:var(--muted);">Vault is empty.</p>'}
+            </div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+
+    function saveDoc(e) {
+      e.preventDefault(); 
+      const btn = document.getElementById('doc-btn-save'); 
+      btn.disabled = true; 
+      btn.innerText = "Encrypting...";
+      
+      const file = document.getElementById('doc-file').files[0]; 
+      const title = document.getElementById('doc-title').value;
+      if(!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = async () => {
+              const canvas = document.createElement('canvas'); 
+              const MAX_WIDTH = 400; 
+              const scale = MAX_WIDTH / img.width;
+              canvas.width = MAX_WIDTH; 
+              canvas.height = img.height * scale;
+              const ctx = canvas.getContext('2d'); 
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              
+              const b64 = canvas.toDataURL('image/jpeg', 0.4); 
+              const docObj = { id: 'doc_' + Date.now(), date: new Date().toISOString(), title: title, b64: b64 };
+              
+              docs.unshift(docObj); 
+              localStorage.setItem('gf_docs', JSON.stringify(docs));
+              
+              closeModal('doc-modal'); 
+              btn.disabled = false; 
+              btn.innerText = "Encrypt & Upload"; 
+              document.getElementById('doc-file').value=''; 
+              document.getElementById('doc-title').value=''; 
+              navigate('vault');
+              
+              if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+                try { await apiPost('addDoc', docObj); } catch(err){} 
+              }
+          };
+          img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderPasswords() {
+      try {
+        const passHtml = (passwords || []).map(p => {
+            if (!p) return '';
+            const rawPass = decryptData(p.enc_pass || '');
+            return `
+              <div class="pass-card">
+                <div style="display:flex; justify-content:space-between;">
+                  <h4>${p.service || ''}</h4>
+                  <button class="btn" style="padding:2px 6px; font-size:10px; color:var(--red);" onclick="deletePass('${p.id}')">🗑</button>
+                </div>
+                <p style="font-size:12px; color:var(--muted); margin-bottom:4px;">${p.username || ''}</p>
+                <div class="pass-val">
+                  <span id="pw_${p.id}">••••••••</span>
+                  <button class="btn" style="padding:4px 8px; font-size:10px;" onclick="togglePass('${p.id}', '${(rawPass || '').replace(/'/g, "\\'")}')">👁️ Show</button>
+                </div>
+              </div>`;
+        }).join('');
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Encrypted Password Vault</h3>
+              <button class="btn primary" onclick="document.getElementById('pass-modal').style.display='grid'">+ Add Password</button>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Credentials are encrypted natively on your device before syncing to the cloud.</p>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px;">
+              ${passHtml || '<p style="color:var(--muted);">Vault is empty.</p>'}
+            </div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+
+    function togglePass(id, plainText) {
+        const el = document.getElementById('pw_' + id);
+        if(el.innerText === '••••••••') { el.innerText = plainText; } else { el.innerText = '••••••••'; }
+    }
+
+    async function savePass(e) {
+        e.preventDefault();
+        const service = document.getElementById('pass-service').value; 
+        const url = document.getElementById('pass-url').value; 
+        const username = document.getElementById('pass-username').value; 
+        const secret = document.getElementById('pass-secret').value;
+        const enc_pass = encryptData(secret); 
+        
+        const passObj = { id: 'pass_' + Date.now(), service: service, url: url, username: username, enc_pass: enc_pass };
+        passwords.unshift(passObj); 
+        passwords = deduplicatePasswords(passwords); 
+        localStorage.setItem('gf_passwords', JSON.stringify(passwords));
+        
+        closeModal('pass-modal'); 
+        document.getElementById('pass-service').value=''; 
+        document.getElementById('pass-url').value=''; 
+        document.getElementById('pass-username').value=''; 
+        document.getElementById('pass-secret').value=''; 
+        navigate('passwords');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { await apiPost('addPassword', passObj); } catch(err){} 
+        }
+    }
+
+    async function deletePass(id) {
+        if(confirm('Delete this encrypted credential?')) {
+            passwords = passwords.filter(x => String(x.id).trim() !== String(id).trim()); 
+            localStorage.setItem('gf_passwords', JSON.stringify(passwords)); 
+            navigate('passwords');
+            
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+              try { await apiPost('deletePassword', { id }); } catch(err) {} 
+            }
+        }
+    }
+
+    function renderStatements() {
       return `
-        ${title ? `<div class="panel-head"><h3>${title}</h3></div>` : ''}
-        <div class="table-responsive">
-          <table>
-            <thead><tr>${th('Date & Time','date')} ${th('Type','type')} ${th('Category','category')} ${th('Description','desc')} ${th('Amount','amount')} <th>Actions</th></tr></thead>
-            <tbody>
-              ${(!data || data.length === 0) ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
-              ${(data || []).map(t => {
-                  const displayDate = t.date ? String(t.date).replace('T', ' ') : 'No Date';
-                  const tType = t.type ? String(t.type) : 'DEBIT';
-                  const tAmt = parseFloat(t.amount || 0).toLocaleString('en-IN');
-                  
-                  return `<tr>
-                    <td style="white-space:nowrap;">${displayDate}</td>
-                    <td><span class="badge ${tType.toLowerCase()}">${tType}</span></td>
-                    <td>${t.category || ''}</td>
-                    <td>${t.desc || ''}</td>
-                    <td style="font-weight:700; color:${tType==='CREDIT'?'var(--green)':'var(--red)'};">${tType==='CREDIT'?'+':'-'} ₹${tAmt}</td>
-                    <td>
-                      <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> 
-                      <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
-                    </td>
-                  </tr>`
-              }).join('')}
-            </tbody>
-          </table>
+        <div class="panel">
+          <div class="panel-head"><h3>Device Sync (Backup & Restore)</h3></div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Move your data safely to another device. Export a complete database backup here, then import it on your phone or laptop.</p>
+          <div class="grid-2">
+            <div><button class="btn" style="width:100%; height:41px;" onclick="exportFullBackup()">⬇️ Download Full Backup</button></div>
+            <div>
+              <input type="file" id="import-backup-file" accept=".json" style="display:none" onchange="importFullBackup(event)">
+              <button class="btn primary" style="width:100%; height:41px;" onclick="document.getElementById('import-backup-file').click()">⬆️ Restore / Import Backup</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Export Ledger to CSV</h3></div>
+          <div class="grid-2">
+            <div>
+              <label style="font-size:12px; color:var(--muted);">Select Period</label>
+              <select id="export-period" class="input-field" style="margin-top:6px;">
+                <option value="CUR_MONTH">Current Month</option>
+                <option value="LAST_3_MONTHS">Last 3 Months</option>
+                <option value="LAST_6_MONTHS">Last 6 Months</option>
+                <option value="LAST_1_YEAR">Last 1 Year</option>
+                <option value="ALL">Entire Ledger History</option>
+              </select>
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+              <button class="btn primary" style="width:100%; height:41px;" onclick="exportCSV()">Download CSV Report</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Smart Statement Importer (Copy & Paste)</h3></div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Paste your bank or credit card statement text below.</p>
+          <textarea id="import-text" class="input-field" style="height: 120px; resize: vertical; margin-bottom: 12px; font-family: monospace;" placeholder="Paste raw statement lines here..."></textarea>
+          <div class="grid-2">
+            <div>
+              <label style="font-size:12px; color:var(--muted);">Default Payment Method</label>
+              <select id="import-method" class="input-field" style="margin-top:6px;">
+                <option value="Credit Card">Credit Card</option>
+                <option value="UPI">UPI / NetBanking</option>
+                <option value="Debit Card">Debit Card</option>
+              </select>
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+              <button class="btn primary" style="width:100%; height:41px;" onclick="processImport()">Analyze & Import Locally</button>
+            </div>
+          </div>
         </div>`;
     }
 
-    async function startVoiceAssistant() { 
-        const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; 
-        if (!WebSpeech) { 
-            alert("Voice recognition is restricted in this browser."); 
-            return; 
-        } 
+    function exportFullBackup() { 
+      const data = { ledger: ledger, budgets: budgets, reminders: reminders, docs: docs, passwords: passwords, users: users }; 
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); 
+      const dlAnchorElem = document.createElement('a'); 
+      dlAnchorElem.setAttribute("href", dataStr); 
+      
+      const bkNow = new Date(); 
+      const bkDate = bkNow.getFullYear() + '-' + String(bkNow.getMonth() + 1).padStart(2, '0') + '-' + String(bkNow.getDate()).padStart(2, '0'); 
+      dlAnchorElem.setAttribute("download", `Enterprise_Finance_Backup_${bkDate}.json`); 
+      
+      document.body.appendChild(dlAnchorElem); 
+      dlAnchorElem.click(); 
+      document.body.removeChild(dlAnchorElem); 
+    }
+    
+    function importFullBackup(event) { 
+      const file = event.target.files[0]; 
+      if (!file) return; 
+      
+      const reader = new FileReader(); 
+      reader.onload = function(e) { 
         try { 
-            const recognition = new WebSpeech(); 
-            recognition.continuous = false; 
-            recognition.lang = 'en-IN'; 
-            recognition.interimResults = false; 
+          const importedData = JSON.parse(e.target.result); 
+          if (importedData.ledger) { 
+            const existingIds = new Set(ledger.map(t => String(t.id).trim())); 
+            let added = 0; 
+            importedData.ledger.forEach(t => { 
+              if (!existingIds.has(String(t.id).trim())) { 
+                if (t.date && t.date.includes('T')) t.date = t.date.split('T')[0]; 
+                ledger.push(t); 
+                added++; 
+              } 
+            }); 
+            ledger = deduplicateLedger(ledger); 
+            localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
             
-            const topBtn = document.getElementById('voice-top-btn'); 
-            const modalBtn = document.getElementById('voice-modal-btn'); 
+            if (importedData.budgets) { 
+              budgets = importedData.budgets; 
+              localStorage.setItem('gf_budgets', JSON.stringify(budgets)); 
+            } 
             
-            if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; } 
-            if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; } 
+            if (importedData.reminders) { 
+              const existingRemIds = new Set(reminders.map(r => String(r.id).trim())); 
+              importedData.reminders.forEach(r => { 
+                if (!existingRemIds.has(String(r.id).trim())) { 
+                  if (r.date && r.date.includes('T')) r.date = r.date.split('T')[0]; 
+                  reminders.push(r); 
+                } 
+              }); 
+              reminders = deduplicateReminders(reminders); 
+              localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+            } 
             
-            recognition.onerror = (e) => { resetVoiceUI(); }; 
-            recognition.onend = () => { resetVoiceUI(); }; 
-            recognition.onresult = (event) => { processVoiceCommand(event.results[0][0].transcript); }; 
+            if(importedData.docs) { 
+              const existingDocs = new Set(docs.map(d=>String(d.id).trim())); 
+              importedData.docs.forEach(d=>{ 
+                if(!existingDocs.has(String(d.id).trim())) docs.push(d); 
+              }); 
+              docs = deduplicateDocs(docs); 
+              localStorage.setItem('gf_docs', JSON.stringify(docs)); 
+            } 
             
-            recognition.start(); 
+            if(importedData.passwords) { 
+              const existingPass = new Set(passwords.map(p=>String(p.id).trim())); 
+              importedData.passwords.forEach(p=>{ 
+                if(!existingPass.has(String(p.id).trim())) passwords.push(p); 
+              }); 
+              passwords = deduplicatePasswords(passwords); 
+              localStorage.setItem('gf_passwords', JSON.stringify(passwords)); 
+            } 
+            
+            if (importedData.users) { 
+              users = [...new Set([...users, ...importedData.users])]; 
+              localStorage.setItem('gf_users', JSON.stringify(users)); 
+            } 
+            
+            alert(`✅ Backup Restored: Merged ${added} new transactions.`); 
+            navigate('records'); 
+            
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); 
+          } else { 
+            alert("Invalid backup file format."); 
+          } 
         } catch (err) { 
-            resetVoiceUI(); 
+          alert("Error reading backup file: " + err.message); 
         } 
+      }; 
+      reader.readAsText(file); 
+      event.target.value = ''; 
     }
     
-    function resetVoiceUI() { 
-        const topBtn = document.getElementById('voice-top-btn'); 
-        const modalBtn = document.getElementById('voice-modal-btn'); 
-        if (topBtn) { topBtn.classList.remove('voice-pulse'); topBtn.innerText = "🎙️ Voice Add"; } 
-        if (modalBtn) { modalBtn.classList.remove('voice-pulse'); modalBtn.innerText = "🎙️ Speak"; } 
+    function exportCSV() { 
+      const period = document.getElementById('export-period').value; 
+      let filtered = ledger; 
+      const now = new Date(); 
+      
+      if (period !== 'ALL') { 
+        filtered = ledger.filter(t => { 
+          const tDate = new Date(t.date || 0); 
+          if (period === 'CUR_MONTH') return (t.date || '').startsWith(now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0')); 
+          if (period === 'LAST_3_MONTHS') return (now - tDate) <= (90 * 24 * 60 * 60 * 1000); 
+          if (period === 'LAST_6_MONTHS') return (now - tDate) <= (180 * 24 * 60 * 60 * 1000); 
+          if (period === 'LAST_1_YEAR') return (now - tDate) <= (365 * 24 * 60 * 60 * 1000); 
+          return true; 
+        }); 
+      } 
+      
+      if (filtered.length === 0) return alert("No transactions available for this period."); 
+      
+      const headers = ['Date', 'Type', 'Category', 'Description', 'Method', 'Amount', 'User', 'Notes']; 
+      const rows = filtered.map(t => [
+        t.date || '', 
+        t.type || '', 
+        t.category || '', 
+        `"${t.desc || ''}"`, 
+        t.method || '', 
+        t.amount || 0, 
+        t.user || '', 
+        `"${t.notes || ''}"`
+      ]); 
+      
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n'); 
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); 
+      const url = URL.createObjectURL(blob); 
+      
+      const link = document.createElement("a"); 
+      link.href = url; 
+      link.download = `Enterprise_Statement_${period}.csv`; 
+      document.body.appendChild(link); 
+      link.click(); 
+      document.body.removeChild(link); 
     }
-    
-    function processVoiceCommand(text) { 
-        const lower = text.toLowerCase(); 
-        let type = 'DEBIT'; 
-        if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) {
-            type = 'CREDIT'; 
-        }
+
+    function processImport() { 
+      const text = document.getElementById('import-text').value; 
+      const method = document.getElementById('import-method').value; 
+      if (!text.trim()) return alert('Please paste some text to import.'); 
+      
+      const lines = text.split('\n'); 
+      let addedCount = 0; 
+      
+      const catMap = { 'zomato': 'Dining Out', 'swiggy': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out', 'amazon': 'Groceries', 'flipkart': 'Groceries', 'supermarket': 'Groceries', 'mart': 'Groceries', 'uber': 'Fuel / Petrol', 'ola': 'Fuel / Petrol', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'airtel': 'Utility Bills', 'jio': 'Utility Bills', 'electricity': 'Electricity (EB)', 'tneb': 'Electricity (EB)', 'hospital': 'Medical / Pharmacy', 'pharmacy': 'Medical / Pharmacy', 'clinic': 'Medical / Pharmacy', 'lic': 'LIC Payment', 'insurance': 'LIC Payment', 'salon': 'Saloon / Parlour', 'parlour': 'Saloon / Parlour', 'hair': 'Saloon / Parlour', 'salary': 'Salary Received', 'payroll': 'Salary Received', 'emi': 'Loan', 'loan': 'Loan', 'travel': 'Travel' }; 
+      
+      let sessionData = {};
+      try { sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}'); } catch(e){}
+      const user = sessionData.name || 'Admin'; 
+      
+      lines.forEach(line => { 
+        if (!line.trim()) return; 
         
-        let amount = ''; 
-        const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i); 
-        if (amtMatch) amount = parseFloat(amtMatch[1]); 
+        let dateMatch = line.match(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/); 
+        const impNow = new Date(); 
+        let dateStr = impNow.getFullYear() + '-' + String(impNow.getMonth() + 1).padStart(2, '0') + '-' + String(impNow.getDate()).padStart(2, '0'); 
         
-        let method = 'UPI'; 
-        if (lower.includes('credit card')) method = 'Credit Card'; 
-        else if (lower.includes('debit card')) method = 'Debit Card'; 
-        else if (lower.includes('cash')) method = 'Cash'; 
-        
-        let category = type === 'DEBIT' ? expCategories[0] : incCategories[0]; 
-        const voiceCatMap = { 'grocery': 'Groceries', 'supermarket': 'Groceries', 'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 'electricity': 'Electricity (EB)', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'dining': 'Dining Out', 'restaurant': 'Dining Out', 'snack': 'Snacks', 'salary': 'Salary Received', 'shopping': 'Shopping', 'travel': 'Travel' }; 
-        
-        for (const [key, val] of Object.entries(voiceCatMap)) { 
-            if (lower.includes(key)) { category = val; break; } 
+        if (dateMatch) { 
+          let part1 = dateMatch[1], part2 = dateMatch[2], part3 = dateMatch[3]; 
+          if (part1.length === 4) { part3 = part1; part1 = dateMatch[3]; } 
+          else if (part3.length === 2) { part3 = '20' + part3; } 
+          dateStr = `${part3}-${part2.padStart(2, '0')}-${part1.padStart(2, '0')}`; 
         } 
         
-        openTxModal(type); 
-        document.getElementById('tx-amount').value = amount || ''; 
-        document.getElementById('tx-category').value = category; 
-        document.getElementById('tx-method').value = method; 
-        document.getElementById('tx-desc').value = text; 
-        document.getElementById('tx-notes').value = "Added via Voice Assistant"; 
+        let amtMatch = line.match(/(?:(?:Rs\.?|INR|₹|\$)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g); 
+        let amount = 0; 
+        let isCredit = false; 
+        
+        if (amtMatch && amtMatch.length > 0) { 
+          let lastAmt = amtMatch[amtMatch.length - 1]; 
+          if (lastAmt.toLowerCase().includes('cr')) isCredit = true; 
+          amount = parseFloat(lastAmt.replace(/[^\d.]/g, '')); 
+        } 
+        if (!amount || isNaN(amount)) return; 
+        
+        let desc = line.replace(/(\d{1,4})[-/.](\d{1,2})[-/.](\d{1,4})/, '').replace(/(?:(?:Rs\.?|INR|₹|\$)?\s?)?([\d,]+(?:\.\d+)?)(?:\s?(Cr|Dr|cr|dr))?/g, '').trim(); 
+        if (!desc) desc = 'Imported Transaction'; 
+        
+        let category = isCredit ? 'Reimbursement' : 'Other Expense'; 
+        let lowerDesc = desc.toLowerCase(); 
+        
+        for (const [key, val] of Object.entries(catMap)) { 
+          if (lowerDesc.includes(key)) { 
+            category = val; 
+            if (incCategories.includes(val)) isCredit = true; 
+            break; 
+          } 
+        } 
+        
+        if (!isCredit && category === 'Reimbursement') category = 'Other Expense'; 
+        
+        ledger.unshift({ 
+          id: 'tx_imp_' + Date.now() + Math.floor(Math.random()*1000), 
+          date: dateStr, 
+          type: isCredit ? 'CREDIT' : 'DEBIT', 
+          category: category, 
+          method: method, 
+          desc: desc.substring(0, 50), 
+          notes: 'Auto-Imported', 
+          amount: amount, 
+          user: user 
+        }); 
+        addedCount++; 
+      }); 
+      
+      if (addedCount > 0) { 
+        ledger = deduplicateLedger(ledger); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+        alert(`Successfully imported ${addedCount} transactions locally.`); 
+        document.getElementById('import-text').value = ''; 
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); 
+      } else { 
+        alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
+      } 
+    }
+
+    function renderSettings() { 
+      return `
+        <div class="panel">
+          <div class="panel-head"><h3>Cloud Sync Strategy</h3></div>
+          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Google Sheets is treated as the Master Storage. Your data syncs automatically in the background, but you can manually trigger a hard push/pull below.</p>
+          <button class="btn primary" id="manual-sync-btn" onclick="triggerManualSync()">🔄 Force Master Sync</button>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Appearance Customization</h3></div>
+          <div class="grid-2">
+            <div>
+              <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:8px;">Dashboard Theme</label>
+              <select class="input-field" onchange="changeTheme(this.value)">
+                <option value="dark" ${currentTheme==='dark'?'selected':''}>Professional Dark</option>
+                <option value="light" ${currentTheme==='light'?'selected':''}>Clean Light</option>
+                <option value="neo-glass" ${currentTheme==='neo-glass'?'selected':''}>Neo Glass</option>
+                <option value="love" ${currentTheme==='love'?'selected':''}>Romantic</option>
+                <option value="cyberpunk" ${currentTheme==='cyberpunk'?'selected':''}>Cyberpunk</option>
+                <option value="ocean" ${currentTheme==='ocean'?'selected':''}>Deep Ocean</option>
+                <option value="forest" ${currentTheme==='forest'?'selected':''}>Forest</option>
+                <option value="sunset" ${currentTheme==='sunset'?'selected':''}>Sunset</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>User Management & Security</h3></div>
+          <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Manage accounts, add new members, and reset device passwords.</p>
+          <div style="display:flex; gap:10px; margin-bottom: 16px;">
+            <input type="text" id="new-username" class="input-field" placeholder="Enter new user name...">
+            <button class="btn primary" onclick="addNewUser()" style="white-space:nowrap;">+ Add User</button>
+          </div>
+          <div class="table-responsive">
+            <table style="margin-bottom:16px;">
+              <thead><tr><th>User</th><th>Role</th><th>Actions</th></tr></thead>
+              <tbody>${(users || []).map(u => `<tr><td>${u}</td><td><span class="badge credit">Member</span></td><td style="display:flex; gap:8px;"><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openPasswordChange('${u}')">Change Password</button><button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="removeUser('${u}')">Remove</button></td></tr>`).join('')}</tbody>
+            </table>
+          </div>
+        </div>`; 
+    }
+    
+    function changeTheme(val) { 
+      currentTheme = val; 
+      document.documentElement.setAttribute('data-theme', val); 
+      localStorage.setItem('gf_theme', val); 
     }
 
     // Initialize Application
