@@ -1073,7 +1073,7 @@
       this.parentElement.innerHTML = '<span style="font-size:18px; font-weight:800; color:#fff;">A</span>';
     });
 
-    // Master Clock
+    // Master Clock Updater
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -1090,6 +1090,7 @@
       }
     }, 1000);
 
+    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
@@ -1116,9 +1117,11 @@
         document.body.removeChild(a); 
     }
 
-    // --- SECURITY TIMEOUT ---
+    // --------------------------------------------------------------------------
+    // SECURITY TIMEOUT ENGINE
+    // --------------------------------------------------------------------------
     let inactivityTimer; 
-    const TIMEOUT_MS = 10 * 60 * 1000;
+    const TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
     
     function autoLogout() { 
         localStorage.removeItem('gf_user'); 
@@ -1250,10 +1253,12 @@
       }
     }
 
-    // --- CLOUD SYNC ENGINE ---
+    // --------------------------------------------------------------------------
+    // CLOUD SYNC ENGINE
+    // --------------------------------------------------------------------------
     let isSyncing = false; 
     
-    // FIX: Master sync block to prevent reverting edits!
+    // FIX 1: Master lock to prevent backgroundSync from running right after you make an edit!
     window.pauseSync = false; 
 
     function apiGetJSONP(action) {
@@ -1288,6 +1293,7 @@
        try { 
            await fetch(APPS_SCRIPT_URL, { 
                method: 'POST', 
+               mode: 'no-cors', // FIX 2: Added to prevent CORS errors from silently crashing the sync lock
                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                body: JSON.stringify({ action: action, data: data, apiKey: API_KEY }) 
            }); 
@@ -1299,8 +1305,6 @@
 
     async function backgroundSync(isBoot = false) {
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return;
-      
-      // FIX: If we just edited something, abort background sync so it doesn't revert your data!
       if (isSyncing || window.pauseSync) return; 
       isSyncing = true;
 
@@ -1316,6 +1320,14 @@
         }
 
         const cloudData = await apiGetJSONP('getDashboard');
+        
+        // FIX 3: If you started editing something during the exact 2 seconds it took to download the data, 
+        // abort the overwrite completely to protect your edit!
+        if (window.pauseSync) {
+            isSyncing = false;
+            return; 
+        }
+        
         if(!cloudData || cloudData.error) throw new Error("Sync blocked by API Key");
         
         let cloudTxs = deduplicateLedger(cloudData.transactions || []);
@@ -1338,7 +1350,6 @@
 
         let requiresRefresh = false;
 
-        // If we have local data that isn't in the cloud yet, push it up first
         if (missingInCloud.length > 0 || missingRems.length > 0 || missingDocs.length > 0 || missingPass.length > 0) {
            for (const tx of missingInCloud) { await apiPost('addTransaction', tx); }
            for (const r of missingRems) { await apiPost('addReminder', r); }
@@ -1368,18 +1379,22 @@
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
+        // FIX 4: Explicitly map EVERY tab name so backgroundSync NEVER kicks you back to the home screen!
         if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
               const navText = activeNav.innerText.trim();
-              if(navText.includes('Records')) navigate('records', activeNav);
+              if(navText.includes('Overview')) navigate('overview', activeNav);
+              else if(navText.includes('Records')) navigate('records', activeNav);
+              else if(navText.includes('Loans')) navigate('loans', activeNav);
               else if(navText.includes('Analyzer')) navigate('analyzer', activeNav);
               else if(navText.includes('Budget')) navigate('budget', activeNav);
               else if(navText.includes('Vehicle')) navigate('vehicle', activeNav);
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
-              else if(navText.includes('Loans')) navigate('loans', activeNav);
-              else if(navText.includes('Vault') && !navText.includes('Pass')) navigate('vault', activeNav);
-              else if(navText.includes('Pass')) navigate('passwords', activeNav);
+              else if(navText.includes('Doc Vault') || (navText.includes('Vault') && !navText.includes('Pass'))) navigate('vault', activeNav);
+              else if(navText.includes('Pass Vault') || navText.includes('Pass')) navigate('passwords', activeNav);
+              else if(navText.includes('Sync') || navText.includes('Export')) navigate('statements', activeNav);
+              else if(navText.includes('Settings')) navigate('settings', activeNav);
               else navigate('home');
             } else { navigate('home'); }
         }
@@ -1450,7 +1465,7 @@
                 try { 
                     window.pauseSync = true;
                     await apiPost('addUser', { name: name }); 
-                    setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+                    setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
                 } catch(err) { window.pauseSync = false; } 
             }
         }
@@ -1466,7 +1481,7 @@
                 try { 
                     window.pauseSync = true;
                     await apiPost('removeUser', { name: name }); 
-                    setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+                    setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
                 } catch(err) { window.pauseSync = false; } 
             }
         }
@@ -1550,7 +1565,6 @@
         document.getElementById('tx-modal').style.display = 'grid'; 
     }
     
-    // FIX: Added pauseSync to prevent data reverting during deletion
     async function deleteTx(id) { 
         if (!confirm('Delete this transaction permanently?')) return; 
         
@@ -1564,12 +1578,11 @@
             try { 
               window.pauseSync = true;
               await apiPost('deleteTransaction', { id: id }); 
-              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
             } catch (err) { window.pauseSync = false; } 
         } 
     }
 
-    // FIX: Added pauseSync to prevent the "revert back" issue seen in the video
     async function saveTx(e) { 
         e.preventDefault(); 
         const btn = document.getElementById('tx-save-btn'); 
@@ -1611,10 +1624,12 @@
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
             try { 
-              window.pauseSync = true; // Lock the sync
+              window.pauseSync = true; // Lock the background sync from reverting edits
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
-              // Wait 5 seconds for Google Sheets to finish writing before we allow it to sync again
-              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+              
+              // Wait 8 FULL seconds for Google Sheets to execute and confirm database update 
+              // before we permit the app to sync with the cloud again.
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
             } catch (err) { window.pauseSync = false; } 
         } 
     }
@@ -2018,7 +2033,7 @@
         try { 
           window.pauseSync = true;
           apiPost('updateBudget', { category: cat, type: type, val: val }); 
-          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
         } catch(err) { window.pauseSync = false; } 
       } 
     }
@@ -2115,7 +2130,7 @@
           try { 
             window.pauseSync = true;
             await apiPost('addTransaction', record); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
           } catch (err) { window.pauseSync = false; } 
         }
     }
@@ -2326,7 +2341,7 @@
         try { 
           window.pauseSync = true;
           await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
-          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
         } catch(err) { window.pauseSync = false; } 
       } 
     }
@@ -2342,7 +2357,7 @@
           try { 
             window.pauseSync = true;
             await apiPost('editReminder', reminders[idx]); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
           } catch(err) { window.pauseSync = false; } 
         } 
       } 
@@ -2358,7 +2373,7 @@
           try { 
             window.pauseSync = true;
             await apiPost('deleteReminder', { id }); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
           } catch(err) { window.pauseSync = false; } 
         } 
       } 
@@ -2437,7 +2452,7 @@
                 try { 
                   window.pauseSync = true;
                   await apiPost('addDoc', docObj); 
-                  setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+                  setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
                 } catch(err){ window.pauseSync = false; } 
               }
           };
@@ -2510,7 +2525,7 @@
           try { 
             window.pauseSync = true;
             await apiPost('addPassword', passObj); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
           } catch(err){ window.pauseSync = false; } 
         }
     }
@@ -2525,7 +2540,7 @@
               try { 
                 window.pauseSync = true;
                 await apiPost('deletePassword', { id }); 
-                setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+                setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
               } catch(err) { window.pauseSync = false; } 
             }
         }
