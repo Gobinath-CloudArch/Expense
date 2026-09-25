@@ -4,687 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ஆதிரா மதிவதனி Family Expenser</title>
-  
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="shortcut icon" href="logo.png" type="image/png">
   <link rel="apple-touch-icon" href="logo.png">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
   <style>
-    /* 
-    ======================================================================
-    ENTERPRISE THEMING SYSTEM
-    ======================================================================
-    */
-    :root[data-theme="dark"] { 
-      --bg-color: #070b14; 
-      --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), 
-                url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(9, 15, 29, 0.7); 
-      --panel: rgba(14, 21, 38, 0.75); 
-      --border: rgba(30, 46, 78, 0.8); 
-      --text: #f3f7fd; 
-      --muted: #8598b8; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="light"] { 
-      --bg-color: #f4f7f9; 
-      --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), 
-                url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(255, 255, 255, 0.6); 
-      --panel: rgba(255, 255, 255, 0.7); 
-      --border: rgba(225, 229, 235, 0.8); 
-      --text: #1a202c; 
-      --muted: #718096; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="neo-glass"] { 
-      --bg-color: #0f172a; 
-      --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), 
-                radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); 
-      --sidebar: rgba(15, 23, 42, 0.4); 
-      --panel: rgba(17, 24, 39, 0.5); 
-      --border: rgba(255, 255, 255, 0.1); 
-      --text: #ffffff; 
-      --muted: #94a3b8; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="love"] { 
-      --bg-color: #1a050a; 
-      --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), 
-                url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(40, 10, 20, 0.5); 
-      --panel: rgba(60, 15, 30, 0.6); 
-      --border: rgba(255, 77, 109, 0.25); 
-      --text: #ffe0e6; 
-      --muted: #ffb3c6; 
-      --glass-blur: 16px; 
-      --primary: #ff4d6d; 
-      --primary-hover: #c9184a; 
-    }
-    
-    :root[data-theme="cyberpunk"] { 
-      --bg-color: #0d0221; 
-      --bg-img: linear-gradient(rgba(13, 2, 33, 0.9), rgba(13, 2, 33, 0.9)), 
-                url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000'); 
-      --sidebar: rgba(13, 2, 33, 0.8); 
-      --panel: rgba(26, 9, 51, 0.8); 
-      --border: #00ffcc; 
-      --text: #00ffcc; 
-      --muted: #ff007f; 
-      --glass-blur: 10px; 
-      --primary: #ff007f; 
-      --primary-hover: #e60073; 
-      --green: #00ffcc; 
-      --red: #ff007f; 
-      --warn: #fbc531; 
-    }
-    
-    :root[data-theme="ocean"] { 
-      --bg-color: #001f3f; 
-      --bg-img: linear-gradient(rgba(0, 31, 63, 0.9), rgba(0, 31, 63, 0.9)), 
-                url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000'); 
-      --sidebar: rgba(0, 31, 63, 0.7); 
-      --panel: rgba(0, 43, 86, 0.8); 
-      --border: rgba(0, 116, 217, 0.5); 
-      --text: #7fdbff; 
-      --muted: #39cccc; 
-      --glass-blur: 12px; 
-      --primary: #0074d9; 
-      --primary-hover: #0056b3; 
-      --green: #2ecc40; 
-      --red: #ff4136; 
-      --warn: #ff851b; 
-    }
-    
-    :root[data-theme="forest"] { 
-      --bg-color: #011f10; 
-      --bg-img: linear-gradient(rgba(1, 31, 16, 0.9), rgba(1, 31, 16, 0.9)), 
-                url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2000'); 
-      --sidebar: rgba(1, 31, 16, 0.7); 
-      --panel: rgba(2, 43, 22, 0.8); 
-      --border: rgba(39, 174, 96, 0.5); 
-      --text: #e8f5e9; 
-      --muted: #a5d6a7; 
-      --glass-blur: 12px; 
-      --primary: #27ae60; 
-      --primary-hover: #2ecc71; 
-      --green: #2ecc40; 
-      --red: #e74c3c; 
-      --warn: #f1c40f; 
-    }
-    
-    :root[data-theme="sunset"] { 
-      --bg-color: #2c0e18; 
-      --bg-img: linear-gradient(rgba(44, 14, 24, 0.85), rgba(44, 14, 24, 0.85)), 
-                url('https://images.unsplash.com/photo-1502489597346-bf10f4d5be94?q=80&w=2000'); 
-      --sidebar: rgba(44, 14, 24, 0.6); 
-      --panel: rgba(60, 20, 35, 0.75); 
-      --border: rgba(255, 118, 117, 0.4); 
-      --text: #ffeaa7; 
-      --muted: #fab1a0; 
-      --glass-blur: 16px; 
-      --primary: #ff7675; 
-      --primary-hover: #d63031; 
-      --green: #00b894; 
-      --red: #d63031; 
-      --warn: #fdcb6e; 
-    }
-
-    :root { 
-      --green: #2ed573; 
-      --red: #ff5263; 
-      --warn: #fbc531; 
-    }
-
-    /* 
-    ======================================================================
-    CORE LAYOUT & RESET (MOBILE NATIVE VIEW)
-    ======================================================================
-    */
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    body, html { 
-      width: 100vw; 
-      height: 100vh; 
-      overflow: hidden; 
-      position: fixed; 
-      background-color: var(--bg-color); 
-    }
-    
-    body { 
-      background-image: var(--bg-img); 
-      background-size: cover; 
-      background-position: center; 
-      color: var(--text); 
-      display: flex; 
-      flex-direction: column;
-      transition: background 0.3s, color 0.3s; 
-    }
-    
-    .sidebar { 
-      position: fixed; 
-      bottom: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 70px; 
-      flex-direction: row; 
-      padding: 0; 
-      background: var(--bg-color); 
-      border-right: none; 
-      border-top: 1px solid var(--border); 
-      backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur)); 
-      z-index: 9999; 
-      display: flex;
-    }
-    
-    .main { 
-      flex: 1; 
-      padding: 16px; 
-      padding-top: 20px; 
-      padding-bottom: 90px; 
-      overflow-y: auto; 
-      height: calc(100vh - 70px); 
-    }
-    
-    .panel { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      padding: 22px; 
-      margin-bottom: 24px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur)); 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
-    }
-
-    /* 
-    ======================================================================
-    BOTTOM APP NAVIGATION
-    ======================================================================
-    */
-    .brand-box { 
-      display: none; 
-    }
-    
-    .nav-list { 
-      display: flex; 
-      flex-direction: row; 
-      width: 100%; 
-      overflow-x: auto; 
-      padding: 0 5px; 
-      align-items: center; 
-      justify-content: space-between; 
-      -ms-overflow-style: none; 
-      scrollbar-width: none; 
-    }
-    
-    .nav-list::-webkit-scrollbar { 
-      display: none; 
-    }
-    
-    .nav-item { 
-      display: flex; 
-      flex-direction: column; 
-      font-size: 10px; 
-      gap: 4px; 
-      padding: 8px 10px; 
-      border: none; 
-      border-radius: 8px; 
-      flex: 1; 
-      justify-content: center; 
-      align-items: center;
-      white-space: nowrap; 
-      color: var(--muted); 
-      background: transparent; 
-      cursor: pointer; 
-      transition: 0.2s; 
-    }
-    
-    .nav-icon { 
-      font-size: 18px; 
-      margin: 0; 
-    }
-    
-    .nav-item .nav-text { 
-      display: block; 
-      font-size: 9.5px; 
-      margin-top: 2px;
-      font-weight: 600;
-    }
-    
-    .nav-item:hover { 
-      color: var(--text); 
-      background: rgba(255,255,255,0.08); 
-    }
-    
-    .nav-item.active { 
-      background: rgba(255,255,255,0.1); 
-      color: var(--primary); 
-    }
-
-    /* 
-    ======================================================================
-    BUTTONS, INPUTS, AND ACTION BARS
-    ======================================================================
-    */
-    .panel-head { 
-      display: flex; 
-      flex-direction: column; 
-      align-items: flex-start; 
-      gap: 12px; 
-      margin-bottom: 18px; 
-    }
-    
-    .top-action-bar { 
-      display: flex; 
-      overflow-x: auto; 
-      gap: 10px; 
-      width: 100%; 
-      padding-bottom: 8px; 
-      -ms-overflow-style: none; 
-      scrollbar-width: none; 
-    }
-    
-    .top-action-bar::-webkit-scrollbar { 
-      display: none; 
-    }
-    
-    .top-action-bar .btn { 
-      flex-shrink: 0; 
-    }
-
-    .btn { 
-      padding: 10px 18px; 
-      border-radius: 10px; 
-      font-weight: 600; 
-      font-size: 13.5px; 
-      border: 1px solid var(--border); 
-      background: rgba(0,0,0,0.2); 
-      color: var(--text); 
-      cursor: pointer; 
-      transition: 0.2s; 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 6px; 
-      white-space: nowrap; 
-    }
-    
-    .btn.primary { 
-      background: var(--primary); 
-      border: none; 
-      color: white; 
-    }
-    
-    .btn:hover:not(:disabled) { 
-      filter: brightness(1.15); 
-    }
-    
-    .btn:disabled { 
-      opacity: 0.5; 
-      cursor: not-allowed; 
-    }
-    
-    .btn.voice-pulse { 
-      background: var(--red) !important; 
-      color: white !important; 
-      border-color: var(--red) !important; 
-      animation: pulseAnim 1.2s infinite; 
-    }
-    
-    @keyframes pulseAnim { 
-        0% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0.7); } 
-        70% { box-shadow: 0 0 0 10px rgba(255, 82, 99, 0); } 
-        100% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0); } 
-    }
-    
-    .table-controls { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 12px; 
-      margin-bottom: 16px; 
-    }
-    
-    .input-field { 
-      width: 100%; 
-      padding: 10px 14px; 
-      border-radius: 10px; 
-      border: 1px solid var(--border); 
-      background: rgba(0,0,0,0.3); 
-      color: var(--text); 
-      outline: none; 
-      font-size: 14px; 
-      backdrop-filter: blur(4px); 
-    }
-    
-    .input-field:focus { 
-      border-color: var(--primary); 
-    }
-    
-    select.input-field option { 
-      background-color: #0f172a; 
-      color: #fff; 
-    }
-
-    /* 
-    ======================================================================
-    TABLES & BADGES
-    ======================================================================
-    */
-    .table-responsive { 
-      overflow-x: auto; 
-      width: 100%; 
-    }
-    
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      text-align: left; 
-      font-size: 13px; 
-      min-width: 600px; 
-    }
-    
-    th { 
-      color: var(--muted); 
-      padding: 12px 10px; 
-      border-bottom: 1px solid var(--border); 
-      font-size: 11px; 
-      text-transform: uppercase; 
-      cursor: pointer; 
-      user-select: none; 
-    }
-    
-    td { 
-      padding: 14px 10px; 
-      border-bottom: 1px solid var(--border); 
-    }
-    
-    .badge { 
-      padding: 4px 8px; 
-      border-radius: 6px; 
-      font-size: 10.5px; 
-      font-weight: 700; 
-      white-space: nowrap; 
-    }
-    
-    .badge.debit { 
-      background: rgba(255,82,99,0.15); 
-      color: var(--red); 
-    }
-    
-    .badge.credit { 
-      background: rgba(46,213,115,0.15); 
-      color: var(--green); 
-    }
-    
-    .badge.warn { 
-      background: rgba(251,197,49,0.15); 
-      color: var(--warn); 
-    }
-    
-    .badge.primary { 
-      background: rgba(79, 107, 247, 0.15); 
-      color: var(--primary); 
-    }
-
-    /* 
-    ======================================================================
-    WIDGETS & CHARTS
-    ======================================================================
-    */
-    .chart-container { 
-      height: 300px; 
-      width: 100%; 
-      margin-bottom: 20px; 
-    }
-    
-    .modern-clock-box { 
-      border: 1px solid var(--primary); 
-      border-radius: 16px; 
-      padding: 12px; 
-      text-align: center; 
-      background: rgba(0, 0, 0, 0.35); 
-      backdrop-filter: blur(8px); 
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
-      width: 100%;
-      margin-top: 10px;
-    }
-    
-    .modern-time { 
-      font-size: 46px; 
-      font-weight: 800; 
-      letter-spacing: 2px; 
-      font-variant-numeric: tabular-nums; 
-      color: var(--text); 
-      line-height: 1; 
-      margin-bottom: 6px; 
-    }
-    
-    .modern-time span { 
-      font-size: 24px; 
-      font-weight: 700; 
-      text-transform: lowercase; 
-    }
-    
-    .modern-date { 
-      color: var(--primary); 
-      font-weight: 700; 
-      font-size: 14.5px; 
-      letter-spacing: 0.5px; 
-    }
-    
-    .budget-row { 
-      margin-bottom: 16px; 
-    }
-    
-    .budget-info { 
-      display: flex; 
-      justify-content: space-between; 
-      font-size: 13px; 
-      margin-bottom: 6px; 
-    }
-    
-    .bar-bg { 
-      width: 100%; 
-      height: 8px; 
-      background: rgba(255,255,255,0.1); 
-      border-radius: 6px; 
-      overflow: hidden; 
-    }
-    
-    .bar-fill { 
-      height: 100%; 
-      border-radius: 6px; 
-      transition: width 0.3s; 
-    }
-    
-    .grid-2 { 
-      display: grid; 
-      grid-template-columns: 1fr; 
-      gap: 16px; 
-    }
-    
-    .kpi-grid { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 10px; 
-      margin-bottom: 24px; 
-    }
-    
-    .kpi-val { 
-      font-size: 26px; 
-      font-weight: 800; 
-    }
-
-    /* 
-    ======================================================================
-    MODALS & OVERLAYS
-    ======================================================================
-    */
-    .modal-overlay { 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(0,0,0,0.7); 
-      backdrop-filter: blur(8px); 
-      display: none; 
-      place-items: center; 
-      z-index: 2000; 
-    }
-    
-    .modal { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      width: calc(100% - 20px); 
-      max-width: 550px; 
-      padding: 20px; 
-      margin: 10px;
-      backdrop-filter: blur(var(--glass-blur)); 
-      max-height: 90vh; 
-      overflow-y: auto; 
-    }
-    
-    .modal-head { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 20px; 
-    }
-    
-    .modal-head h3 { 
-      font-size: 18px; 
-      font-weight: 700; 
-    }
-    
-    .close-btn { 
-      background: none; 
-      border: none; 
-      font-size: 24px; 
-      color: var(--muted); 
-      cursor: pointer; 
-    }
-    
-    .form-group { 
-      margin-bottom: 16px; 
-    }
-    
-    .form-group label { 
-      display: block; 
-      font-size: 11.5px; 
-      color: var(--muted); 
-      margin-bottom: 6px; 
-      text-transform: uppercase; 
-      font-weight: 700; 
-    }
-
-    /* 
-    ======================================================================
-    VAULTS & CARDS
-    ======================================================================
-    */
-    .quick-tile { 
-      background: rgba(255,255,255,0.03); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      padding: 30px 20px; 
-      text-align: center; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      backdrop-filter: blur(var(--glass-blur)); 
-    }
-    
-    .quick-tile:hover { 
-      transform: translateY(-3px); 
-      background: rgba(255,255,255,0.08); 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-    }
-    
-    .reminder-card { 
-      background: rgba(0,0,0,0.25); 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      padding: 14px; 
-      min-width: 220px; 
-      flex-shrink: 0; 
-    }
-    
-    .doc-card { 
-      background: rgba(0,0,0,0.25); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      overflow: hidden; 
-      position: relative; 
-    }
-    
-    .doc-card img { 
-      width: 100%; 
-      height: 180px; 
-      object-fit: cover; 
-    }
-    
-    .doc-card-info { 
-      padding: 12px; 
-    }
-    
-    .pass-card { 
-      background: rgba(0,0,0,0.3); 
-      border: 1px solid var(--primary); 
-      border-radius: 12px; 
-      padding: 16px; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px; 
-    }
-    
-    .pass-val { 
-      background: rgba(0,0,0,0.5); 
-      padding: 8px; 
-      border-radius: 6px; 
-      font-family: monospace; 
-      font-size: 14px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      border: 1px solid var(--border); 
-    }
-
-    /* Fallback Desktop style fix if loaded on large screen */
-    @media (min-width: 851px) {
-        .grid-2 { grid-template-columns: 1fr 1fr; }
-        .sidebar { position: relative; width: 260px; height: 100vh; flex-direction: column; padding: 24px 16px; }
-        .nav-list { flex-direction: column; align-items: stretch; justify-content: flex-start; }
-        .nav-item { flex-direction: row; font-size: 13.5px; }
-        .nav-item .nav-text { font-size: 13.5px; }
-        .brand-box { display: flex; }
-        body { flex-direction: row; }
-        .main { height: 100vh; padding: 28px 32px; }
-    }
+    :root[data-theme="dark"]{--bg-color:#070b14;--bg-img:linear-gradient(rgba(7,11,20,0.92),rgba(7,11,20,0.92)),url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop');--sidebar:rgba(9,15,29,0.7);--panel:rgba(14,21,38,0.75);--border:rgba(30,46,78,0.8);--text:#f3f7fd;--muted:#8598b8;--glass-blur:16px;--primary:#4f6bf7;--primary-hover:#3d58e3;}:root[data-theme="light"]{--bg-color:#f4f7f9;--bg-img:linear-gradient(rgba(244,247,249,0.88),rgba(244,247,249,0.88)),url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop');--sidebar:rgba(255,255,255,0.6);--panel:rgba(255,255,255,0.7);--border:rgba(225,229,235,0.8);--text:#1a202c;--muted:#718096;--glass-blur:16px;--primary:#4f6bf7;--primary-hover:#3d58e3;}:root[data-theme="neo-glass"]{--bg-color:#0f172a;--bg-img:radial-gradient(at 0% 0%,rgba(56,30,114,0.4) 0px,transparent 50%),radial-gradient(at 100% 100%,rgba(30,58,138,0.4) 0px,transparent 50%);--sidebar:rgba(15,23,42,0.4);--panel:rgba(17,24,39,0.5);--border:rgba(255,255,255,0.1);--text:#ffffff;--muted:#94a3b8;--glass-blur:16px;--primary:#4f6bf7;--primary-hover:#3d58e3;}:root[data-theme="love"]{--bg-color:#1a050a;--bg-img:linear-gradient(rgba(26,5,10,0.88),rgba(26,5,10,0.88)),url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop');--sidebar:rgba(40,10,20,0.5);--panel:rgba(60,15,30,0.6);--border:rgba(255,77,109,0.25);--text:#ffe0e6;--muted:#ffb3c6;--glass-blur:16px;--primary:#ff4d6d;--primary-hover:#c9184a;}:root[data-theme="cyberpunk"]{--bg-color:#0d0221;--bg-img:linear-gradient(rgba(13,2,33,0.9),rgba(13,2,33,0.9)),url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000');--sidebar:rgba(13,2,33,0.8);--panel:rgba(26,9,51,0.8);--border:#00ffcc;--text:#00ffcc;--muted:#ff007f;--glass-blur:10px;--primary:#ff007f;--primary-hover:#e60073;--green:#00ffcc;--red:#ff007f;--warn:#fbc531;}:root[data-theme="ocean"]{--bg-color:#001f3f;--bg-img:linear-gradient(rgba(0,31,63,0.9),rgba(0,31,63,0.9)),url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000');--sidebar:rgba(0,31,63,0.7);--panel:rgba(0,43,86,0.8);--border:rgba(0,116,217,0.5);--text:#7fdbff;--muted:#39cccc;--glass-blur:12px;--primary:#0074d9;--primary-hover:#0056b3;--green:#2ecc40;--red:#ff4136;--warn:#ff851b;}:root[data-theme="forest"]{--bg-color:#011f10;--bg-img:linear-gradient(rgba(1,31,16,0.9),rgba(1,31,16,0.9)),url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2000');--sidebar:rgba(1,31,16,0.7);--panel:rgba(2,43,22,0.8);--border:rgba(39,174,96,0.5);--text:#e8f5e9;--muted:#a5d6a7;--glass-blur:12px;--primary:#27ae60;--primary-hover:#2ecc71;--green:#2ecc40;--red:#e74c3c;--warn:#f1c40f;}:root[data-theme="sunset"]{--bg-color:#2c0e18;--bg-img:linear-gradient(rgba(44,14,24,0.85),rgba(44,14,24,0.85)),url('https://images.unsplash.com/photo-1502489597346-bf10f4d5be94?q=80&w=2000');--sidebar:rgba(44,14,24,0.6);--panel:rgba(60,20,35,0.75);--border:rgba(255,118,117,0.4);--text:#ffeaa7;--muted:#fab1a0;--glass-blur:16px;--primary:#ff7675;--primary-hover:#d63031;--green:#00b894;--red:#d63031;--warn:#fdcb6e;}:root{--green:#2ed573;--red:#ff5263;--warn:#fbc531;}*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;}body,html{width:100vw;height:100vh;overflow:hidden;position:fixed;background-color:var(--bg-color);}body{background-image:var(--bg-img);background-size:cover;background-position:center;color:var(--text);display:flex;flex-direction:column;transition:background 0.3s,color 0.3s;}.sidebar{position:fixed;bottom:0;left:0;width:100%;height:70px;flex-direction:row;padding:0;background:var(--bg-color);border-right:none;border-top:1px solid var(--border);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));z-index:9999;display:flex;}.main{flex:1;padding:16px;padding-top:20px;padding-bottom:90px;overflow-y:auto;height:calc(100vh - 70px);}.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:24px;backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));box-shadow:0 8px 32px rgba(0,0,0,0.15);}.brand-box{display:none;}.nav-list{display:flex;flex-direction:row;width:100%;overflow-x:auto;padding:0 5px;align-items:center;justify-content:space-between;-ms-overflow-style:none;scrollbar-width:none;}.nav-list::-webkit-scrollbar{display:none;}.nav-item{display:flex;flex-direction:column;font-size:10px;gap:4px;padding:8px 10px;border:none;border-radius:8px;flex:1;justify-content:center;align-items:center;white-space:nowrap;color:var(--muted);background:transparent;cursor:pointer;transition:0.2s;}.nav-icon{font-size:18px;margin:0;}.nav-item .nav-text{display:block;font-size:9.5px;margin-top:2px;font-weight:600;}.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.08);}.nav-item.active{background:rgba(255,255,255,0.1);color:var(--primary);}.panel-head{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:18px;}.top-action-bar{display:flex;overflow-x:auto;gap:10px;width:100%;padding-bottom:8px;-ms-overflow-style:none;scrollbar-width:none;}.top-action-bar::-webkit-scrollbar{display:none;}.top-action-bar .btn{flex-shrink:0;}.btn{padding:10px 18px;border-radius:10px;font-weight:600;font-size:13.5px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:var(--text);cursor:pointer;transition:0.2s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}.btn.primary{background:var(--primary);border:none;color:white;}.btn:hover:not(:disabled){filter:brightness(1.15);}.btn:disabled{opacity:0.5;cursor:not-allowed;}.btn.voice-pulse{background:var(--red)!important;color:white!important;border-color:var(--red)!important;animation:pulseAnim 1.2s infinite;}@keyframes pulseAnim{0%{box-shadow:0 0 0 0 rgba(255,82,99,0.7);}70%{box-shadow:0 0 0 10px rgba(255,82,99,0);}100%{box-shadow:0 0 0 0 rgba(255,82,99,0);}}.table-controls{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}.input-field{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);outline:none;font-size:14px;backdrop-filter:blur(4px);}.input-field:focus{border-color:var(--primary);}select.input-field option{background-color:#0f172a;color:#fff;}.table-responsive{overflow-x:auto;width:100%;}table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;min-width:600px;}th{color:var(--muted);padding:12px 10px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;cursor:pointer;user-select:none;}td{padding:14px 10px;border-bottom:1px solid var(--border);}.badge{padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;white-space:nowrap;}.badge.debit{background:rgba(255,82,99,0.15);color:var(--red);}.badge.credit{background:rgba(46,213,115,0.15);color:var(--green);}.badge.warn{background:rgba(251,197,49,0.15);color:var(--warn);}.badge.primary{background:rgba(79,107,247,0.15);color:var(--primary);}.chart-container{height:300px;width:100%;margin-bottom:20px;}.modern-clock-box{border:1px solid var(--primary);border-radius:16px;padding:12px;text-align:center;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,0.2);width:100%;margin-top:10px;}.modern-time{font-size:46px;font-weight:800;letter-spacing:2px;font-variant-numeric:tabular-nums;color:var(--text);line-height:1;margin-bottom:6px;}.modern-time span{font-size:24px;font-weight:700;text-transform:lowercase;}.modern-date{color:var(--primary);font-weight:700;font-size:14.5px;letter-spacing:0.5px;}.budget-row{margin-bottom:16px;}.budget-info{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}.bar-bg{width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:6px;overflow:hidden;}.bar-fill{height:100%;border-radius:6px;transition:width 0.3s;}.grid-2{display:grid;grid-template-columns:1fr;gap:16px;}.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}.kpi-val{font-size:26px;font-weight:800;}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:none;place-items:center;z-index:2000;}.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:calc(100% - 20px);max-width:550px;padding:20px;margin:10px;backdrop-filter:blur(var(--glass-blur));max-height:90vh;overflow-y:auto;}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}.modal-head h3{font-size:18px;font-weight:700;}.close-btn{background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer;}.form-group{margin-bottom:16px;}.form-group label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;font-weight:700;}.quick-tile{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(var(--glass-blur));}.quick-tile:hover{transform:translateY(-3px);background:rgba(255,255,255,0.08);box-shadow:0 10px 25px rgba(0,0,0,0.2);}.reminder-card{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:10px;padding:14px;min-width:220px;flex-shrink:0;}.doc-card{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;}.doc-card img{width:100%;height:180px;object-fit:cover;}.doc-card-info{padding:12px;}.pass-card{background:rgba(0,0,0,0.3);border:1px solid var(--primary);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;}.pass-val{background:rgba(0,0,0,0.5);padding:8px;border-radius:6px;font-family:monospace;font-size:14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);}@media(min-width:851px){.grid-2{grid-template-columns:1fr 1fr;}.sidebar{position:relative;width:260px;height:100vh;flex-direction:column;padding:24px 16px;}.nav-list{flex-direction:column;align-items:stretch;justify-content:flex-start;}.nav-item{flex-direction:row;font-size:13.5px;}.nav-item .nav-text{font-size:13.5px;}.brand-box{display:flex;}body{flex-direction:row;}.main{height:100vh;padding:28px 32px;}}
   </style>
 </head>
 <body>
 
-  <!-- 
-  ======================================================================
-  SIDEBAR NAVIGATION (BOTTOM NAV ON MOBILE)
-  ======================================================================
-  -->
+  <!-- SIDEBAR NAVIGATION (BOTTOM NAV ON MOBILE) -->
   <aside class="sidebar">
     <div class="brand-box">
       <div class="brand-icon">
@@ -708,11 +38,7 @@
     </nav>
   </aside>
 
-  <!-- 
-  ======================================================================
-  MAIN DASHBOARD VIEW
-  ======================================================================
-  -->
+  <!-- MAIN DASHBOARD VIEW -->
   <main class="main">
     <div style="display:flex; justify-content:space-between; margin-bottom: 24px; align-items:center; flex-wrap:wrap; gap:12px;">
       <div style="width: 100%;">
@@ -732,11 +58,7 @@
     <div id="view-container"></div>
   </main>
 
-  <!-- 
-  ======================================================================
-  MODALS & OVERLAYS
-  ======================================================================
-  -->
+  <!-- MODALS & OVERLAYS -->
   
   <!-- Transaction Modal -->
   <div id="tx-modal" class="modal-overlay">
@@ -751,7 +73,6 @@
       <form id="tx-form" onsubmit="saveTx(event)">
         <input type="hidden" id="tx-id">
         <div class="grid-2">
-          <!-- DATETIME INJECTION FOR PERFECT TIMESTAMPING -->
           <div class="form-group">
             <label>Date & Time</label>
             <input type="datetime-local" id="tx-date" class="input-field" required>
@@ -957,7 +278,7 @@
     </div>
   </div>
 
-  <!-- Document Modal (UPDATED WITH CATEGORY SELECTION) -->
+  <!-- Document Modal -->
   <div id="doc-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -1047,6 +368,76 @@
     </div>
   </div>
 
+  <!-- ACTIVE LOAN MODAL -->
+  <div id="al-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="al-modal-title">Add Active Loan</h3>
+        <button class="close-btn" onclick="closeModal('al-modal')">×</button>
+      </div>
+      <form onsubmit="saveActiveLoan(event)">
+        <input type="hidden" id="al-id">
+        <div class="form-group">
+          <label>Loan Name / Bank</label>
+          <input type="text" id="al-name" class="input-field" required placeholder="e.g. Muthoot Gold Loan">
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="al-category" class="input-field">
+              <option value="Gold Loan">Gold Loan</option>
+              <option value="Personal Loan">Personal Loan</option>
+              <option value="Housing Loan">Housing Loan</option>
+              <option value="Car Loan">Car Loan</option>
+              <option value="Bike Loan">Bike Loan</option>
+              <option value="Education Loan">Education Loan</option>
+              <option value="Other Loan">Other Loan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Interest Rate (% / Year) <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="number" id="al-rate" step="0.01" class="input-field" placeholder="e.g. 9.5">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Total Principal Amount (₹)</label>
+            <input type="number" id="al-total" step="0.01" class="input-field" required placeholder="e.g. 100000">
+          </div>
+          <div class="form-group">
+            <label>Principal Already Paid (₹)</label>
+            <input type="number" id="al-paid" step="0.01" class="input-field" required placeholder="0">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Monthly EMI (₹) <span style="font-size:9px;color:var(--muted)">(Leave blank if Flexible/Gold)</span></label>
+            <input type="number" id="al-emi" step="0.01" class="input-field" placeholder="Flexible if left blank">
+          </div>
+          <div class="form-group">
+            <label>Interest Paid So Far (₹) <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="number" id="al-interest-paid" step="0.01" class="input-field" placeholder="0.00">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Loan Start Date <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="date" id="al-start" class="input-field">
+          </div>
+          <div class="form-group">
+            <label>Expected End Date <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="date" id="al-end" class="input-field">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Processing Fees (₹) <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+          <input type="number" id="al-fee" step="0.01" class="input-field" placeholder="0.00">
+        </div>
+        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="al-save-btn">Save Active Loan</button>
+      </form>
+    </div>
+  </div>
+
   <!-- 
   ======================================================================
   CORE JAVASCRIPT ENGINE
@@ -1080,13 +471,11 @@
       }
     }, 1000);
 
-    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
-    // Mathematical Security
     function encryptData(text) { 
         return btoa(encodeURIComponent(text)); 
     }
@@ -1099,7 +488,6 @@
         } 
     }
     
-    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -1109,7 +497,6 @@
         document.body.removeChild(a); 
     }
 
-    // Opens Native Image Viewer
     function viewDoc(b64) {
         document.getElementById('doc-view-image').src = b64;
         document.getElementById('doc-view-modal').style.display = 'flex';
@@ -1144,7 +531,6 @@
         } 
     }
     
-    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
@@ -1167,10 +553,9 @@
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
-    
     window.currentDocCategory = null; 
 
-    // --- SANITIZATION (CRASH PROTECTION) ---
+    // --- SANITIZATION ---
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1230,6 +615,7 @@
                   ${(!data || data.length === 0) ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
                   ${(data || []).map(t => {
                       if (!t) return '';
+                      if (t.type === 'ACTIVE_LOAN') return ''; 
                       const displayDate = t.date ? String(t.date).replace('T', ' ') : 'No Date';
                       const tType = t.type ? String(t.type) : 'DEBIT';
                       const tAmt = parseFloat(t.amount || 0).toLocaleString('en-IN');
@@ -1376,7 +762,6 @@
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
-        // Comprehensive tab router mapping
         if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
@@ -1632,9 +1017,6 @@
         document.getElementById(modalId).style.display = 'none'; 
     }
 
-    // --------------------------------------------------------------------------
-    // DASHBOARD ROUTING & RENDERING ENGINE
-    // --------------------------------------------------------------------------
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       if (btn) { 
@@ -1651,7 +1033,7 @@
       if (view === 'home') { title.innerText = 'Home'; sub.innerText = 'Welcome and quick actions.'; container.innerHTML = renderHome(); }
       else if (view === 'overview') { title.innerText = 'Overview Dashboard'; sub.innerText = 'Executive financial summary.'; container.innerHTML = renderOverview(); renderOverviewChart(); }
       else if (view === 'records') { title.innerText = 'All Records'; sub.innerText = 'Search, sort, and manage ledger entries.'; container.innerHTML = renderAllRecords(); attachSearchLogic(); }
-      else if (view === 'loans') { title.innerText = 'Loan Management'; sub.innerText = 'Track personal, gold, and given loans.'; container.innerHTML = renderLoans(); }
+      else if (view === 'loans') { title.innerText = 'Loan Management'; sub.innerText = 'Track personal, gold, and given loans.'; container.innerHTML = renderLoans(); renderLoanChart(); }
       else if (view === 'analyzer') { title.innerText = 'Spend Analyzer'; sub.innerText = 'Deep dive into spending patterns.'; container.innerHTML = renderAnalyzer(); renderAnalyzerChart(); }
       else if (view === 'budget') { title.innerText = 'Budget Tracker'; sub.innerText = 'Set limits and monitor category spending.'; container.innerHTML = renderBudget(); }
       else if (view === 'vehicle') { title.innerText = 'Vehicle Dashboard'; sub.innerText = 'Fuel consumption & Reserve-to-Reserve mileage calculator.'; container.innerHTML = renderVehicle(); }
@@ -1742,7 +1124,7 @@
                 if (isLoan(t.category)) loanRec += (t.amount || 0);
                 else if (!isProxy(t.category)) inc += (t.amount || 0); 
             } 
-            else { 
+            else if (t.type === 'DEBIT') { 
                 if (!isProxy(t.category) && !isLoan(t.category) && t.category !== 'Credit Card Bill') exp += (t.amount || 0); 
                 if (t.method === 'Credit Card') ccSpent += (t.amount || 0);
                 if (t.category === 'Credit Card Bill') ccPaid += (t.amount || 0);
@@ -1782,7 +1164,7 @@
               <div class="panel-head"><h3>Trend Overview</h3></div>
               <div class="chart-container"><canvas id="overviewChart"></canvas></div>
           </div>
-          ${renderTableHTML((ledger || []).slice(0, 5), 'Recent 5 Transactions', false)}
+          ${renderTableHTML((ledger || []).filter(t => t.type !== 'ACTIVE_LOAN').slice(0, 5), 'Recent 5 Transactions', false)}
         `;
       } catch (err) {
           return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
@@ -1819,8 +1201,9 @@
       });
     }
 
-    function renderAllRecords(data = ledger) {
+    function renderAllRecords() {
       try {
+        const displayLedger = (ledger || []).filter(t => t.type !== 'ACTIVE_LOAN');
         return `
           <div class="panel">
             <div class="table-controls">
@@ -1828,7 +1211,7 @@
               <button class="btn primary" onclick="executeSearch()">Find</button>
             </div>
             <div id="records-table-container">
-              ${renderTableHTML(data, '', true)}
+              ${renderTableHTML(displayLedger, '', true)}
             </div>
           </div>`;
       } catch (err) {
@@ -1839,9 +1222,10 @@
     function executeSearch() { 
       const q = document.getElementById('search-input').value.toLowerCase(); 
       const filtered = ledger.filter(t => 
+        t.type !== 'ACTIVE_LOAN' && (
         (t.desc || '').toLowerCase().includes(q) || 
         (t.category || '').toLowerCase().includes(q) || 
-        (t.amount || 0).toString().includes(q)
+        (t.amount || 0).toString().includes(q) )
       ); 
       document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
@@ -1853,17 +1237,22 @@
     function sortTable(col) { 
       sortAsc = (sortCol === col) ? !sortAsc : true; 
       sortCol = col; 
-      ledger.sort((a, b) => { 
+      
+      const filtered = ledger.filter(t => t.type !== 'ACTIVE_LOAN');
+      filtered.sort((a, b) => { 
         let valA = a[col]; let valB = b[col]; 
         if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); } 
         return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1); 
       }); 
-      document.getElementById('records-table-container').innerHTML = renderTableHTML(ledger, '', true); 
+      document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
 
+    // --- LOAN MANAGEMENT ENGINE (WITH ADVANCED INTEREST & TOTAL OUTSTANDING) ---
     function renderLoans() {
       try {
-        const loanData = (ledger || []).filter(t => (t.category || '').includes('Loan') || (t.category || '').includes('Lent'));
+        const loanData = (ledger || []).filter(t => t.type !== 'ACTIVE_LOAN' && ((t.category || '').includes('Loan') || (t.category || '').includes('Lent')));
+        const activeLoans = (ledger || []).filter(t => t.type === 'ACTIVE_LOAN');
+        
         let assetGiven = 0, assetRepaid = 0, debtReceived = 0, debtRepaid = 0;
         
         loanData.forEach(t => {
@@ -1873,23 +1262,260 @@
             if ((t.category || '').includes('Paid') && t.category !== 'Rent Paid' && t.category !== 'LIC Payment') debtRepaid += (t.amount || 0);
         });
 
+        // Totals for Active Loan Portfolio
+        let totalActivePrincipal = 0;
+        let totalActivePaid = 0;
+        let totalActivePending = 0;
+        let totalActiveInterestPaid = 0;
+
+        let activeLoansHtml = activeLoans.map(al => {
+          let notes = {}; try { notes = JSON.parse(al.notes || '{}'); } catch(e){}
+          let principal = al.amount || 0;
+          let paid = notes.paid || 0;
+          let pending = Math.max(0, principal - paid);
+          let rate = notes.rate || 0;
+          let emi = notes.emi || 0;
+          let interestPaid = notes.interestPaid || 0;
+          let fee = notes.fee || 0;
+          let startDate = notes.startDate || '';
+          let endDate = notes.endDate || '';
+          
+          totalActivePrincipal += principal;
+          totalActivePaid += paid;
+          totalActivePending += pending;
+          totalActiveInterestPaid += interestPaid;
+
+          let pct = principal > 0 ? Math.min(100, Math.round((paid / principal) * 100)) : 0;
+          
+          // Monthly Interest calculation based on remaining balance
+          let monthlyInterest = rate > 0 ? Math.round((pending * (rate / 100)) / 12) : 0;
+          
+          // Accrued interest estimation if Start Date provided
+          let accruedInterestInfo = '';
+          if (startDate && rate > 0) {
+            let start = new Date(startDate);
+            let now = new Date();
+            let daysElapsed = Math.max(0, Math.round((now - start) / (1000 * 60 * 60 * 24)));
+            let monthsElapsed = (daysElapsed / 30.44).toFixed(1);
+            let approxAccrued = Math.round(principal * (rate / 100) * (daysElapsed / 365.25));
+            accruedInterestInfo = `<div style="font-size:11px; color:var(--muted); margin-top:4px;">Tenure: <strong>${daysElapsed} days (~${monthsElapsed} mos)</strong> elapsed | Est. Accrued Interest: <strong style="color:var(--warn);">₹${approxAccrued.toLocaleString('en-IN')}</strong></div>`;
+          }
+
+          let emiDisplay = emi > 0 ? `₹${emi.toLocaleString('en-IN')}/mo` : `<span style="color:var(--primary); font-weight:bold;">Flexible (No Fixed EMI)</span>`;
+          let rateDisplay = rate > 0 ? `${rate}% / yr (~₹${monthlyInterest.toLocaleString('en-IN')}/mo)` : 'Not specified';
+          let feeDisplay = fee > 0 ? ` | Fee: ₹${fee.toLocaleString('en-IN')}` : '';
+
+          return `
+            <div class="panel" style="background:rgba(255,255,255,0.02); margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <h4 style="color:var(--text); font-size:16px; font-weight:800;">${al.desc} <span class="badge" style="background:rgba(255,255,255,0.1); color:var(--muted); font-weight:normal; margin-left:8px;">${al.category}</span></h4>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editActiveLoan('${al.id}')">✎ Edit</button>
+                        <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteActiveLoan('${al.id}')">🗑</button>
+                    </div>
+                </div>
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px; margin-top:12px;">
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PRINCIPAL AMOUNT</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--primary);">₹${principal.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PRINCIPAL PAID</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--green);">₹${paid.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">OUTSTANDING (PENDING)</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--red);">₹${pending.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">INTEREST PAID</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--warn);">₹${interestPaid.toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+                
+                <div style="padding:10px 14px; background:rgba(0,0,0,0.2); border-radius:10px; border:1px solid var(--border); margin-bottom:12px; font-size:12px;">
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                      <div><strong>Plan:</strong> ${emiDisplay}</div>
+                      <div><strong>Interest Rate:</strong> ${rateDisplay}${feeDisplay}</div>
+                      <div><strong>Start:</strong> ${startDate || 'N/A'} | <strong>End:</strong> ${endDate || 'Flexible'}</div>
+                    </div>
+                    ${accruedInterestInfo}
+                </div>
+
+                <div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:var(--green);"></div></div>
+                <div style="font-size:11px; color:var(--muted); text-align:right; margin-top:6px;">Principal Repaid: <span style="color:var(--green); font-weight:bold;">${pct}%</span></div>
+            </div>`;
+        }).join('');
+
         return `
-        <div class="kpi-grid">
+        <!-- Main Top KPI Cards -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
+            <div class="panel" style="margin:0; padding:20px; border-color:var(--red); box-shadow: 0 0 15px rgba(255,82,99,0.15);">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">TOTAL LOAN OUTSTANDING</div>
+                <div style="font-size:26px; font-weight:bold; color:var(--red);">₹${totalActivePending.toLocaleString('en-IN')}</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:6px;">Borrowed: ₹${totalActivePrincipal.toLocaleString('en-IN')} | Principal Paid: ₹${totalActivePaid.toLocaleString('en-IN')} | Interest Paid: ₹${totalActiveInterestPaid.toLocaleString('en-IN')}</div>
+            </div>
             <div class="panel" style="margin:0; padding:20px; border-color:var(--green);">
                 <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">LOANS GIVEN (ASSETS)</div>
-                <div style="font-size:22px; font-weight:bold; color:var(--green);">₹${assetGiven.toLocaleString()}</div>
-                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${assetRepaid.toLocaleString()} | Pending: ₹${(assetGiven - assetRepaid).toLocaleString()}</div>
+                <div style="font-size:24px; font-weight:bold; color:var(--green);">₹${assetGiven.toLocaleString()}</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:6px;">Repaid: ₹${assetRepaid.toLocaleString()} | Pending: ₹${(assetGiven - assetRepaid).toLocaleString()}</div>
             </div>
-            <div class="panel" style="margin:0; padding:20px; border-color:var(--red);">
-                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">LOANS TAKEN (DEBTS)</div>
-                <div style="font-size:22px; font-weight:bold; color:var(--red);">₹${debtReceived.toLocaleString()}</div>
-                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${debtRepaid.toLocaleString()} | Pending: ₹${(debtReceived - debtRepaid).toLocaleString()}</div>
+            <div class="panel" style="margin:0; padding:20px; border-color:var(--warn);">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">RECORDED TAKEN LOANS</div>
+                <div style="font-size:24px; font-weight:bold; color:var(--warn);">₹${debtReceived.toLocaleString()}</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:6px;">Repaid: ₹${debtRepaid.toLocaleString()} | Pending: ₹${(debtReceived - debtRepaid).toLocaleString()}</div>
             </div>
         </div>
-        ${renderTableHTML(loanData, 'Loan Ledger', false)}`;
+        
+        <div class="panel">
+            <div class="panel-head">
+                <h3>Active Loan Portfolios</h3>
+                <button class="btn primary" onclick="openActiveLoanModal()">+ Add Loan Account</button>
+            </div>
+            <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Track your current active loans, month-on-month flexible repayments, interest rates, and total outstanding balances.</p>
+            <div class="chart-container" style="height:250px; margin-bottom:24px; display:none;" id="loanChartContainer"><canvas id="loanChart"></canvas></div>
+            ${activeLoansHtml || '<p style="text-align:center; color:var(--muted); padding:20px;">No active loans added.</p>'}
+        </div>
+        
+        ${renderTableHTML(loanData, 'Loan Ledger Transactions', false)}`;
       } catch (err) {
         return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
       }
+    }
+
+    function renderLoanChart() {
+        const ctx = document.getElementById('loanChart');
+        if (!ctx || typeof Chart === 'undefined') return;
+
+        const activeLoans = (ledger || []).filter(t => t.type === 'ACTIVE_LOAN');
+        if (activeLoans.length === 0) {
+            document.getElementById('loanChartContainer').style.display = 'none';
+            return;
+        }
+        document.getElementById('loanChartContainer').style.display = 'block';
+
+        const labels = activeLoans.map(l => l.desc || 'Unknown');
+        const totalData = activeLoans.map(l => l.amount || 0);
+        const paidData = activeLoans.map(l => {
+            try { const n = JSON.parse(l.notes); return n.paid || 0; } catch(e){ return 0; }
+        });
+        const pendingData = activeLoans.map((l, i) => Math.max(0, totalData[i] - paidData[i]));
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Outstanding (Pending)', data: pendingData, backgroundColor: '#ff5263' },
+                    { label: 'Principal Paid', data: paidData, backgroundColor: '#2ed573' },
+                    { label: 'Total Principal', data: totalData, backgroundColor: '#4f6bf7' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function openActiveLoanModal() {
+        document.getElementById('al-id').value = '';
+        document.getElementById('al-name').value = '';
+        document.getElementById('al-total').value = '';
+        document.getElementById('al-paid').value = '0';
+        document.getElementById('al-rate').value = '';
+        document.getElementById('al-emi').value = '';
+        document.getElementById('al-interest-paid').value = '';
+        document.getElementById('al-start').value = '';
+        document.getElementById('al-end').value = '';
+        document.getElementById('al-fee').value = '';
+        document.getElementById('al-modal-title').innerText = 'Add Active Loan';
+        document.getElementById('al-modal').style.display = 'grid';
+    }
+
+    function editActiveLoan(id) {
+        const t = ledger.find(x => String(x.id).trim() === String(id).trim());
+        if (!t) return;
+        let notes = {};
+        try { notes = JSON.parse(t.notes || '{}'); } catch(e){}
+        
+        document.getElementById('al-id').value = t.id;
+        document.getElementById('al-name').value = t.desc;
+        document.getElementById('al-category').value = t.category;
+        document.getElementById('al-total').value = t.amount;
+        document.getElementById('al-paid').value = notes.paid || 0;
+        document.getElementById('al-rate').value = notes.rate || '';
+        document.getElementById('al-emi').value = notes.emi || '';
+        document.getElementById('al-interest-paid').value = notes.interestPaid || '';
+        document.getElementById('al-start').value = notes.startDate || '';
+        document.getElementById('al-end').value = notes.endDate || '';
+        document.getElementById('al-fee').value = notes.fee || '';
+        
+        document.getElementById('al-modal-title').innerText = 'Edit Active Loan';
+        document.getElementById('al-modal').style.display = 'grid';
+    }
+
+    async function deleteActiveLoan(id) {
+        if (!confirm('Delete this loan account permanently?')) return;
+        ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim());
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        navigate('loans');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              window.pauseSync = true;
+              await apiPost('deleteTransaction', { id: id }); 
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
+            } catch (err) { window.pauseSync = false; } 
+        } 
+    }
+
+    async function saveActiveLoan(e) {
+        e.preventDefault();
+        const btn = document.getElementById('al-save-btn');
+        btn.disabled = true; btn.innerText = 'Saving...';
+        
+        const id = document.getElementById('al-id').value || 'al_' + String(Date.now());
+        const isEdit = document.getElementById('al-id').value !== '';
+        
+        const notesObj = {
+            paid: parseFloat(document.getElementById('al-paid').value) || 0,
+            rate: parseFloat(document.getElementById('al-rate').value) || 0,
+            emi: parseFloat(document.getElementById('al-emi').value) || 0,
+            interestPaid: parseFloat(document.getElementById('al-interest-paid').value) || 0,
+            fee: parseFloat(document.getElementById('al-fee').value) || 0,
+            startDate: document.getElementById('al-start').value || '',
+            endDate: document.getElementById('al-end').value || ''
+        };
+        
+        let sessionData = {}; try { sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}'); } catch(e){}
+        
+        const record = {
+            id: id,
+            date: getLocalISOTime(),
+            type: 'ACTIVE_LOAN',
+            category: document.getElementById('al-category').value,
+            method: 'System',
+            desc: document.getElementById('al-name').value,
+            notes: JSON.stringify(notesObj),
+            amount: parseFloat(document.getElementById('al-total').value) || 0,
+            user: sessionData.name || 'User'
+        };
+        
+        const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim());
+        if (idx >= 0) ledger[idx] = record; else ledger.unshift(record);
+        
+        ledger = deduplicateLedger(ledger);
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        closeModal('al-modal');
+        btn.disabled = false; btn.innerText = 'Save Active Loan';
+        
+        navigate('loans');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              window.pauseSync = true;
+              await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
+            } catch (err) { window.pauseSync = false; } 
+        } 
     }
 
     function renderAnalyzer() {
@@ -2258,6 +1884,124 @@
       } catch (err) {
         return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
       }
+    }
+
+    function renderReminders() {
+      try {
+        let pending = (reminders || []).filter(r => r && r.status === 'Pending').sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0)); 
+        let done = (reminders || []).filter(r => r && r.status === 'Done').sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+        
+        const rowHtml = (r) => { 
+          const displayDate = r.date ? String(r.date).replace('T', ' ') : ''; 
+          const rType = r.type || '';
+          return `<tr>
+            <td>${displayDate}</td>
+            <td><span class="badge ${r.status === 'Pending' ? 'warn' : 'credit'}">${r.status || ''}</span></td>
+            <td><span class="badge ${rType.includes('Date') ? 'primary' : 'debit'}">${rType}</span></td>
+            <td style="font-weight:700;">${r.title || ''}</td>
+            <td>${r.amount ? '₹' + parseFloat(r.amount).toLocaleString('en-IN') : '-'}</td>
+            <td>
+              ${r.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Mark Done</button>` : ''} 
+              <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
+            </td>
+          </tr>`; 
+        };
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Scheduled Tracker</h3>
+              <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead><tr><th>Date & Time</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr></thead>
+                <tbody>${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No pending reminders.</td></tr>'}</tbody>
+              </table>
+            </div>
+            <br>
+            <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
+            <div class="table-responsive">
+              <table>
+                <tbody style="opacity: 0.6;">${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No completed history.</td></tr>'}</tbody>
+              </table>
+            </div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+    
+    function openRemModal() { 
+      document.getElementById('rem-id').value = ''; 
+      document.getElementById('rem-title').value = ''; 
+      document.getElementById('rem-date').value = getLocalISOTime(); 
+      document.getElementById('rem-amount').value = ''; 
+      document.getElementById('rem-modal').style.display = 'grid'; 
+    }
+    
+    async function saveReminder(e) { 
+      e.preventDefault(); 
+      const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
+      const isEdit = document.getElementById('rem-id').value !== ''; 
+      
+      const record = { 
+        id: id, 
+        date: document.getElementById('rem-date').value, 
+        title: document.getElementById('rem-title').value, 
+        type: document.getElementById('rem-type').value, 
+        amount: parseFloat(document.getElementById('rem-amount').value) || null, 
+        status: 'Pending' 
+      }; 
+      
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) reminders[idx] = record; else reminders.push(record); 
+      
+      reminders = deduplicateReminders(reminders); 
+      localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+      closeModal('rem-modal'); 
+      navigate('reminders'); 
+      
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+        try { 
+          window.pauseSync = true;
+          await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+        } catch(err) { window.pauseSync = false; } 
+      } 
+    }
+    
+    async function markRemDone(id) { 
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) { 
+        reminders[idx].status = 'Done'; 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            window.pauseSync = true;
+            await apiPost('editReminder', reminders[idx]); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+          } catch(err) { window.pauseSync = false; } 
+        } 
+      } 
+    }
+    
+    async function deleteRem(id) { 
+      if(confirm('Delete this reminder?')) { 
+        reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            window.pauseSync = true;
+            await apiPost('deleteReminder', { id }); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+          } catch(err) { window.pauseSync = false; } 
+        } 
+      } 
     }
 
     // --------------------------------------------------------------------------
@@ -2816,11 +2560,35 @@
       localStorage.setItem('gf_theme', val); 
     }
 
-    // --- STANDARD WEB VOICE BROWSER SUPPORT ---
+    // --- NATIVE MOBILE VOICE ASSISTANT SUPPORT ---
     async function startVoiceAssistant() { 
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SpeechRecognition) {
+            try {
+                const { SpeechRecognition } = Capacitor.Plugins;
+                const hasPerm = await SpeechRecognition.checkPermissions();
+                if (hasPerm.speechRecognition !== 'granted') await SpeechRecognition.requestPermissions();
+                
+                const topBtn = document.getElementById('voice-top-btn'); 
+                const modalBtn = document.getElementById('voice-modal-btn'); 
+                
+                if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; } 
+                if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; } 
+                
+                const result = await SpeechRecognition.start({ language: "en-IN", maxResults: 1, prompt: "Say your expense..." });
+                resetVoiceUI();
+                
+                if (result && result.matches && result.matches.length > 0) {
+                    processVoiceCommand(result.matches[0]);
+                }
+                return;
+            } catch(err) {
+                resetVoiceUI();
+            }
+        }
+    
         const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; 
         if (!WebSpeech) { 
-            alert("Voice recognition is restricted in this browser."); 
+            alert("Voice recognition is restricted. Install the Native App."); 
             return; 
         } 
         try { 
