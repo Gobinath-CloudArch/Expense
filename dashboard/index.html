@@ -4,672 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ஆதிரா மதிவதனி Family Expenser</title>
-  
   <link rel="icon" href="../logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="../logo.png">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
   <style>
-    /* 
-    ======================================================================
-    ENTERPRISE THEMING SYSTEM
-    ======================================================================
-    */
-    :root[data-theme="dark"] { 
-      --bg-color: #070b14; 
-      --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), 
-                url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(9, 15, 29, 0.7); 
-      --panel: rgba(14, 21, 38, 0.75); 
-      --border: rgba(30, 46, 78, 0.8); 
-      --text: #f3f7fd; 
-      --muted: #8598b8; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="light"] { 
-      --bg-color: #f4f7f9; 
-      --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), 
-                url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(255, 255, 255, 0.6); 
-      --panel: rgba(255, 255, 255, 0.7); 
-      --border: rgba(225, 229, 235, 0.8); 
-      --text: #1a202c; 
-      --muted: #718096; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="neo-glass"] { 
-      --bg-color: #0f172a; 
-      --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), 
-                radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); 
-      --sidebar: rgba(15, 23, 42, 0.4); 
-      --panel: rgba(17, 24, 39, 0.5); 
-      --border: rgba(255, 255, 255, 0.1); 
-      --text: #ffffff; 
-      --muted: #94a3b8; 
-      --glass-blur: 16px; 
-      --primary: #4f6bf7; 
-      --primary-hover: #3d58e3; 
-    }
-    
-    :root[data-theme="love"] { 
-      --bg-color: #1a050a; 
-      --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), 
-                url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop'); 
-      --sidebar: rgba(40, 10, 20, 0.5); 
-      --panel: rgba(60, 15, 30, 0.6); 
-      --border: rgba(255, 77, 109, 0.25); 
-      --text: #ffe0e6; 
-      --muted: #ffb3c6; 
-      --glass-blur: 16px; 
-      --primary: #ff4d6d; 
-      --primary-hover: #c9184a; 
-    }
-    
-    :root[data-theme="cyberpunk"] { 
-      --bg-color: #0d0221; 
-      --bg-img: linear-gradient(rgba(13, 2, 33, 0.9), rgba(13, 2, 33, 0.9)), 
-                url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000'); 
-      --sidebar: rgba(13, 2, 33, 0.8); 
-      --panel: rgba(26, 9, 51, 0.8); 
-      --border: #00ffcc; 
-      --text: #00ffcc; 
-      --muted: #ff007f; 
-      --glass-blur: 10px; 
-      --primary: #ff007f; 
-      --primary-hover: #e60073; 
-      --green: #00ffcc; 
-      --red: #ff007f; 
-      --warn: #fbc531; 
-    }
-    
-    :root[data-theme="ocean"] { 
-      --bg-color: #001f3f; 
-      --bg-img: linear-gradient(rgba(0, 31, 63, 0.9), rgba(0, 31, 63, 0.9)), 
-                url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000'); 
-      --sidebar: rgba(0, 31, 63, 0.7); 
-      --panel: rgba(0, 43, 86, 0.8); 
-      --border: rgba(0, 116, 217, 0.5); 
-      --text: #7fdbff; 
-      --muted: #39cccc; 
-      --glass-blur: 12px; 
-      --primary: #0074d9; 
-      --primary-hover: #0056b3; 
-      --green: #2ecc40; 
-      --red: #ff4136; 
-      --warn: #ff851b; 
-    }
-    
-    :root[data-theme="forest"] { 
-      --bg-color: #011f10; 
-      --bg-img: linear-gradient(rgba(1, 31, 16, 0.9), rgba(1, 31, 16, 0.9)), 
-                url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2000'); 
-      --sidebar: rgba(1, 31, 16, 0.7); 
-      --panel: rgba(2, 43, 22, 0.8); 
-      --border: rgba(39, 174, 96, 0.5); 
-      --text: #e8f5e9; 
-      --muted: #a5d6a7; 
-      --glass-blur: 12px; 
-      --primary: #27ae60; 
-      --primary-hover: #2ecc71; 
-      --green: #2ecc40; 
-      --red: #e74c3c; 
-      --warn: #f1c40f; 
-    }
-    
-    :root[data-theme="sunset"] { 
-      --bg-color: #2c0e18; 
-      --bg-img: linear-gradient(rgba(44, 14, 24, 0.85), rgba(44, 14, 24, 0.85)), 
-                url('https://images.unsplash.com/photo-1502489597346-bf10f4d5be94?q=80&w=2000'); 
-      --sidebar: rgba(44, 14, 24, 0.6); 
-      --panel: rgba(60, 20, 35, 0.75); 
-      --border: rgba(255, 118, 117, 0.4); 
-      --text: #ffeaa7; 
-      --muted: #fab1a0; 
-      --glass-blur: 16px; 
-      --primary: #ff7675; 
-      --primary-hover: #d63031; 
-      --green: #00b894; 
-      --red: #d63031; 
-      --warn: #fdcb6e; 
-    }
-
-    :root { 
-      --green: #2ed573; 
-      --red: #ff5263; 
-      --warn: #fbc531; 
-    }
-
-    /* 
-    ======================================================================
-    CORE LAYOUT & RESET
-    ======================================================================
-    */
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-    }
-    
-    body { 
-      background-color: var(--bg-color); 
-      background-image: var(--bg-img); 
-      background-attachment: fixed; 
-      background-size: cover; 
-      background-position: center; 
-      color: var(--text); 
-      display: flex; 
-      min-height: 100vh; 
-      overflow-x: hidden; 
-      transition: background 0.3s, color 0.3s; 
-    }
-    
-    .sidebar { 
-      width: 260px; 
-      background: var(--sidebar); 
-      border-right: 1px solid var(--border); 
-      display: flex; 
-      flex-direction: column; 
-      padding: 24px 16px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur)); 
-      transition: 0.3s; 
-      z-index: 1000; 
-    }
-    
-    .main { 
-      flex: 1; 
-      padding: 28px 32px; 
-      overflow-y: auto; 
-      height: 100vh; 
-    }
-    
-    .panel { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      padding: 22px; 
-      margin-bottom: 24px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      -webkit-backdrop-filter: blur(var(--glass-blur)); 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
-    }
-
-    /* 
-    ======================================================================
-    BRANDING & NAVIGATION
-    ======================================================================
-    */
-    .brand-box { 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
-      padding: 0 8px 24px; 
-      border-bottom: 1px solid var(--border); 
-      margin-bottom: 20px; 
-    }
-    
-    .brand-icon { 
-      width: 42px; 
-      height: 42px; 
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover)); 
-      border-radius: 10px; 
-      display: grid; 
-      place-items: center; 
-      font-weight: 800; 
-      font-size: 18px; 
-      color: #fff; 
-      overflow: hidden; 
-      padding: 2px;
-    }
-    
-    .brand-icon img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain; 
-      border-radius: 8px; 
-    }
-    
-    .brand-title { 
-      font-size: 14px; 
-      font-weight: 700; 
-      line-height: 1.2; 
-    }
-    
-    .nav-list { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 6px; 
-      flex: 1; 
-      overflow-y: auto; 
-    }
-    
-    .nav-item { 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
-      padding: 12px 14px; 
-      border-radius: 12px; 
-      color: var(--muted); 
-      font-size: 13.5px; 
-      font-weight: 600; 
-      background: transparent; 
-      border: 1px solid transparent; 
-      cursor: pointer; 
-      text-align: left; 
-      transition: 0.2s; 
-    }
-    
-    .nav-item:hover { 
-      color: var(--text); 
-      background: rgba(255,255,255,0.08); 
-    }
-    
-    .nav-item.active { 
-      background: rgba(255,255,255,0.1); 
-      color: var(--primary); 
-      border-color: var(--border); 
-    }
-
-    /* 
-    ======================================================================
-    BUTTONS & INPUTS
-    ======================================================================
-    */
-    .panel-head { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 18px; 
-    }
-    
-    .btn { 
-      padding: 10px 18px; 
-      border-radius: 10px; 
-      font-weight: 600; 
-      font-size: 13.5px; 
-      border: 1px solid var(--border); 
-      background: rgba(0,0,0,0.2); 
-      color: var(--text); 
-      cursor: pointer; 
-      transition: 0.2s; 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 6px; 
-      white-space: nowrap; 
-    }
-    
-    .btn.primary { 
-      background: var(--primary); 
-      border: none; 
-      color: white; 
-    }
-    
-    .btn:hover:not(:disabled) { 
-      filter: brightness(1.15); 
-    }
-    
-    .btn:disabled { 
-      opacity: 0.5; 
-      cursor: not-allowed; 
-    }
-    
-    .btn.voice-pulse { 
-      background: var(--red) !important; 
-      color: white !important; 
-      border-color: var(--red) !important; 
-      animation: pulseAnim 1.2s infinite; 
-    }
-    
-    @keyframes pulseAnim { 
-        0% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0.7); } 
-        70% { box-shadow: 0 0 0 10px rgba(255, 82, 99, 0); } 
-        100% { box-shadow: 0 0 0 0 rgba(255, 82, 99, 0); } 
-    }
-    
-    .table-controls { 
-      display: flex; 
-      gap: 12px; 
-      margin-bottom: 16px; 
-    }
-    
-    .input-field { 
-      width: 100%; 
-      padding: 10px 14px; 
-      border-radius: 10px; 
-      border: 1px solid var(--border); 
-      background: rgba(0,0,0,0.3); 
-      color: var(--text); 
-      outline: none; 
-      font-size: 14px; 
-      backdrop-filter: blur(4px); 
-    }
-    
-    .input-field:focus { 
-      border-color: var(--primary); 
-    }
-    
-    select.input-field option { 
-      background-color: #0f172a; 
-      color: #fff; 
-    }
-
-    /* 
-    ======================================================================
-    TABLES & BADGES
-    ======================================================================
-    */
-    .table-responsive { 
-      overflow-x: auto; 
-      width: 100%; 
-    }
-    
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      text-align: left; 
-      font-size: 13px; 
-      min-width: 600px; 
-    }
-    
-    th { 
-      color: var(--muted); 
-      padding: 12px 10px; 
-      border-bottom: 1px solid var(--border); 
-      font-size: 11px; 
-      text-transform: uppercase; 
-      cursor: pointer; 
-      user-select: none; 
-    }
-    
-    td { 
-      padding: 14px 10px; 
-      border-bottom: 1px solid var(--border); 
-    }
-    
-    .badge { 
-      padding: 4px 8px; 
-      border-radius: 6px; 
-      font-size: 10.5px; 
-      font-weight: 700; 
-      white-space: nowrap; 
-    }
-    
-    .badge.debit { 
-      background: rgba(255,82,99,0.15); 
-      color: var(--red); 
-    }
-    
-    .badge.credit { 
-      background: rgba(46,213,115,0.15); 
-      color: var(--green); 
-    }
-    
-    .badge.warn { 
-      background: rgba(251,197,49,0.15); 
-      color: var(--warn); 
-    }
-    
-    .badge.primary { 
-      background: rgba(79, 107, 247, 0.15); 
-      color: var(--primary); 
-    }
-
-    /* 
-    ======================================================================
-    WIDGETS & CHARTS
-    ======================================================================
-    */
-    .chart-container { 
-      height: 300px; 
-      width: 100%; 
-      margin-bottom: 20px; 
-    }
-    
-    .modern-clock-box { 
-      border: 1px solid var(--primary); 
-      border-radius: 16px; 
-      padding: 16px 28px; 
-      text-align: right; 
-      background: rgba(0, 0, 0, 0.35); 
-      backdrop-filter: blur(8px); 
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
-    }
-    
-    .modern-time { 
-      font-size: 46px; 
-      font-weight: 800; 
-      letter-spacing: 2px; 
-      font-variant-numeric: tabular-nums; 
-      color: var(--text); 
-      line-height: 1; 
-      margin-bottom: 6px; 
-    }
-    
-    .modern-time span { 
-      font-size: 24px; 
-      font-weight: 700; 
-      text-transform: lowercase; 
-    }
-    
-    .modern-date { 
-      color: var(--primary); 
-      font-weight: 700; 
-      font-size: 14.5px; 
-      letter-spacing: 0.5px; 
-    }
-    
-    .budget-row { 
-      margin-bottom: 16px; 
-    }
-    
-    .budget-info { 
-      display: flex; 
-      justify-content: space-between; 
-      font-size: 13px; 
-      margin-bottom: 6px; 
-    }
-    
-    .bar-bg { 
-      width: 100%; 
-      height: 8px; 
-      background: rgba(255,255,255,0.1); 
-      border-radius: 6px; 
-      overflow: hidden; 
-    }
-    
-    .bar-fill { 
-      height: 100%; 
-      border-radius: 6px; 
-      transition: width 0.3s; 
-    }
-    
-    .grid-2 { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 16px; 
-    }
-    
-    .kpi-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); 
-      gap: 16px; 
-      margin-bottom: 24px; 
-    }
-    
-    .kpi-val { 
-      font-size: 26px; 
-      font-weight: 800; 
-    }
-
-    /* 
-    ======================================================================
-    MODALS & OVERLAYS
-    ======================================================================
-    */
-    .modal-overlay { 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(0,0,0,0.7); 
-      backdrop-filter: blur(8px); 
-      display: none; 
-      place-items: center; 
-      z-index: 2000; 
-    }
-    
-    .modal { 
-      background: var(--panel); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      width: 100%; 
-      max-width: 550px; 
-      padding: 24px; 
-      backdrop-filter: blur(var(--glass-blur)); 
-      max-height: 90vh; 
-      overflow-y: auto; 
-    }
-    
-    .modal-head { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 20px; 
-    }
-    
-    .modal-head h3 { 
-      font-size: 18px; 
-      font-weight: 700; 
-    }
-    
-    .close-btn { 
-      background: none; 
-      border: none; 
-      font-size: 24px; 
-      color: var(--muted); 
-      cursor: pointer; 
-    }
-    
-    .form-group { 
-      margin-bottom: 16px; 
-    }
-    
-    .form-group label { 
-      display: block; 
-      font-size: 11.5px; 
-      color: var(--muted); 
-      margin-bottom: 6px; 
-      text-transform: uppercase; 
-      font-weight: 700; 
-    }
-
-    /* 
-    ======================================================================
-    VAULTS & CARDS
-    ======================================================================
-    */
-    .quick-tile { 
-      background: rgba(255,255,255,0.03); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      padding: 30px 20px; 
-      text-align: center; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      backdrop-filter: blur(var(--glass-blur)); 
-    }
-    
-    .quick-tile:hover { 
-      transform: translateY(-3px); 
-      background: rgba(255,255,255,0.08); 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-    }
-    
-    .reminder-card { 
-      background: rgba(0,0,0,0.25); 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      padding: 14px; 
-      min-width: 220px; 
-      flex-shrink: 0; 
-    }
-    
-    .doc-card { 
-      background: rgba(0,0,0,0.25); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      overflow: hidden; 
-      position: relative; 
-    }
-    
-    .doc-card img { 
-      width: 100%; 
-      height: 180px; 
-      object-fit: cover; 
-    }
-    
-    .doc-card-info { 
-      padding: 12px; 
-    }
-    
-    .pass-card { 
-      background: rgba(0,0,0,0.3); 
-      border: 1px solid var(--primary); 
-      border-radius: 12px; 
-      padding: 16px; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px; 
-    }
-    
-    .pass-val { 
-      background: rgba(0,0,0,0.5); 
-      padding: 8px; 
-      border-radius: 6px; 
-      font-family: monospace; 
-      font-size: 14px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      border: 1px solid var(--border); 
-    }
-
-    /* 
-    ======================================================================
-    RESPONSIVE WEB ADJUSTMENTS
-    ======================================================================
-    */
-    @media (max-width: 850px) {
-      body { flex-direction: column; }
-      .sidebar { position: fixed; bottom: 0; width: 100%; height: 75px; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--border); z-index: 9999;}
-      .brand-box { display: none; }
-      .nav-list { flex-direction: row; width: 100%; overflow-x: auto; padding: 0 10px; align-items: center; justify-content: flex-start; -ms-overflow-style: none; scrollbar-width: none; }
-      .nav-list::-webkit-scrollbar { display: none; }
-      .nav-item { flex-direction: column; font-size: 10px; gap: 6px; padding: 8px 14px; white-space: nowrap; border: none; border-radius: 8px; }
-      .nav-item .nav-text { display: block; }
-      .main { padding: 16px; padding-bottom: 90px; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .kpi-grid { grid-template-columns: 1fr 1fr; gap:10px; }
-      .modern-clock-box { width: 100%; text-align: center; padding: 12px; margin-top: 10px; }
-      .panel-head { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .table-controls { flex-direction: column; }
-      .modal { padding: 16px; margin: 10px; width: calc(100% - 20px); }
-    }
+    :root[data-theme="dark"]{--bg-color:#070b14;--bg-img:linear-gradient(rgba(7,11,20,0.92),rgba(7,11,20,0.92)),url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop');--sidebar:rgba(9,15,29,0.7);--panel:rgba(14,21,38,0.75);--border:rgba(30,46,78,0.8);--text:#f3f7fd;--muted:#8598b8;--glass-blur:16px;--primary:#4f6bf7;--primary-hover:#3d58e3;}:root[data-theme="light"]{--bg-color:#f4f7f9;--bg-img:linear-gradient(rgba(244,247,249,0.88),rgba(244,247,249,0.88)),url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop');--sidebar:rgba(255,255,255,0.6);--panel:rgba(255,255,255,0.7);--border:rgba(225,229,235,0.8);--text:#1a202c;--muted:#718096;--glass-blur:16px;--primary:#4f6bf7;--primary-hover:#3d58e3;}:root[data-theme="neo-glass"]{--bg-color:#0f172a;--bg-img:radial-gradient(at 0% 0%,rgba(56,30,114,0.4) 0px,transparent 50%),radial-gradient(at 100% 100%,rgba(30,58,138,0.4) 0px,transparent 50%);--sidebar:rgba(15,23,42,0.4);--panel:rgba(17,24,39,0.5);--border:rgba(255,255,255,0.1);--text:#ffffff;--muted:#94a3b8;--glass-blur:16px;--primary:#4f6bf7;--primary-hover:#3d58e3;}:root[data-theme="love"]{--bg-color:#1a050a;--bg-img:linear-gradient(rgba(26,5,10,0.88),rgba(26,5,10,0.88)),url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop');--sidebar:rgba(40,10,20,0.5);--panel:rgba(60,15,30,0.6);--border:rgba(255,77,109,0.25);--text:#ffe0e6;--muted:#ffb3c6;--glass-blur:16px;--primary:#ff4d6d;--primary-hover:#c9184a;}:root[data-theme="cyberpunk"]{--bg-color:#0d0221;--bg-img:linear-gradient(rgba(13,2,33,0.9),rgba(13,2,33,0.9)),url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000');--sidebar:rgba(13,2,33,0.8);--panel:rgba(26,9,51,0.8);--border:#00ffcc;--text:#00ffcc;--muted:#ff007f;--glass-blur:10px;--primary:#ff007f;--primary-hover:#e60073;--green:#00ffcc;--red:#ff007f;--warn:#fbc531;}:root[data-theme="ocean"]{--bg-color:#001f3f;--bg-img:linear-gradient(rgba(0,31,63,0.9),rgba(0,31,63,0.9)),url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000');--sidebar:rgba(0,31,63,0.7);--panel:rgba(0,43,86,0.8);--border:rgba(0,116,217,0.5);--text:#7fdbff;--muted:#39cccc;--glass-blur:12px;--primary:#0074d9;--primary-hover:#0056b3;--green:#2ecc40;--red:#ff4136;--warn:#ff851b;}:root[data-theme="forest"]{--bg-color:#011f10;--bg-img:linear-gradient(rgba(1,31,16,0.9),rgba(1,31,16,0.9)),url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2000');--sidebar:rgba(1,31,16,0.7);--panel:rgba(2,43,22,0.8);--border:rgba(39,174,96,0.5);--text:#e8f5e9;--muted:#a5d6a7;--glass-blur:12px;--primary:#27ae60;--primary-hover:#2ecc71;--green:#2ecc40;--red:#e74c3c;--warn:#f1c40f;}:root[data-theme="sunset"]{--bg-color:#2c0e18;--bg-img:linear-gradient(rgba(44,14,24,0.85),rgba(44,14,24,0.85)),url('https://images.unsplash.com/photo-1502489597346-bf10f4d5be94?q=80&w=2000');--sidebar:rgba(44,14,24,0.6);--panel:rgba(60,20,35,0.75);--border:rgba(255,118,117,0.4);--text:#ffeaa7;--muted:#fab1a0;--glass-blur:16px;--primary:#ff7675;--primary-hover:#d63031;--green:#00b894;--red:#d63031;--warn:#fdcb6e;}:root{--green:#2ed573;--red:#ff5263;--warn:#fbc531;}*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}body{background-color:var(--bg-color);background-image:var(--bg-img);background-attachment:fixed;background-size:cover;background-position:center;color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}.sidebar{width:260px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 16px;backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));transition:0.3s;z-index:1000;}.main{flex:1;padding:28px 32px;overflow-y:auto;height:100vh;}.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:24px;backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));box-shadow:0 8px 32px rgba(0,0,0,0.15);}.brand-box{display:flex;align-items:center;gap:12px;padding:0 8px 24px;border-bottom:1px solid var(--border);margin-bottom:20px;}.brand-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--primary),var(--primary-hover));border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff;overflow:hidden;padding:2px;}.brand-icon img{width:100%;height:100%;object-fit:contain;border-radius:8px;}.brand-title{font-size:14px;font-weight:700;line-height:1.2;}.nav-list{display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;}.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--muted);font-size:13.5px;font-weight:600;background:transparent;border:1px solid transparent;cursor:pointer;text-align:left;transition:0.2s;}.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.08);}.nav-item.active{background:rgba(255,255,255,0.1);color:var(--primary);border-color:var(--border);}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}.btn{padding:10px 18px;border-radius:10px;font-weight:600;font-size:13.5px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:var(--text);cursor:pointer;transition:0.2s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}.btn.primary{background:var(--primary);border:none;color:white;}.btn:hover:not(:disabled){filter:brightness(1.15);}.btn:disabled{opacity:0.5;cursor:not-allowed;}.btn.voice-pulse{background:var(--red)!important;color:white!important;border-color:var(--red)!important;animation:pulseAnim 1.2s infinite;}@keyframes pulseAnim{0%{box-shadow:0 0 0 0 rgba(255,82,99,0.7);}70%{box-shadow:0 0 0 10px rgba(255,82,99,0);}100%{box-shadow:0 0 0 0 rgba(255,82,99,0);}}.table-controls{display:flex;gap:12px;margin-bottom:16px;}.input-field{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:var(--text);outline:none;font-size:14px;backdrop-filter:blur(4px);}.input-field:focus{border-color:var(--primary);}select.input-field option{background-color:#0f172a;color:#fff;}.table-responsive{overflow-x:auto;width:100%;}table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;min-width:600px;}th{color:var(--muted);padding:12px 10px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;cursor:pointer;user-select:none;}td{padding:14px 10px;border-bottom:1px solid var(--border);}.badge{padding:4px 8px;border-radius:6px;font-size:10.5px;font-weight:700;white-space:nowrap;}.badge.debit{background:rgba(255,82,99,0.15);color:var(--red);}.badge.credit{background:rgba(46,213,115,0.15);color:var(--green);}.badge.warn{background:rgba(251,197,49,0.15);color:var(--warn);}.badge.primary{background:rgba(79,107,247,0.15);color:var(--primary);}.chart-container{height:300px;width:100%;margin-bottom:20px;}.modern-clock-box{border:1px solid var(--primary);border-radius:16px;padding:16px 28px;text-align:right;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,0.2);}.modern-time{font-size:46px;font-weight:800;letter-spacing:2px;font-variant-numeric:tabular-nums;color:var(--text);line-height:1;margin-bottom:6px;}.modern-time span{font-size:24px;font-weight:700;text-transform:lowercase;}.modern-date{color:var(--primary);font-weight:700;font-size:14.5px;letter-spacing:0.5px;}.budget-row{margin-bottom:16px;}.budget-info{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}.bar-bg{width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:6px;overflow:hidden;}.bar-fill{height:100%;border-radius:6px;transition:width 0.3s;}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:24px;}.kpi-val{font-size:26px;font-weight:800;}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:none;place-items:center;z-index:2000;}.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:550px;padding:24px;backdrop-filter:blur(var(--glass-blur));max-height:90vh;overflow-y:auto;}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}.modal-head h3{font-size:18px;font-weight:700;}.close-btn{background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer;}.form-group{margin-bottom:16px;}.form-group label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;font-weight:700;}.quick-tile{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(var(--glass-blur));}.quick-tile:hover{transform:translateY(-3px);background:rgba(255,255,255,0.08);box-shadow:0 10px 25px rgba(0,0,0,0.2);}.reminder-card{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:10px;padding:14px;min-width:220px;flex-shrink:0;}.doc-card{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;}.doc-card img{width:100%;height:180px;object-fit:cover;}.doc-card-info{padding:12px;}.pass-card{background:rgba(0,0,0,0.3);border:1px solid var(--primary);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;}.pass-val{background:rgba(0,0,0,0.5);padding:8px;border-radius:6px;font-family:monospace;font-size:14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);}@media(max-width:850px){body{flex-direction:column;}.sidebar{position:fixed;bottom:0;width:100%;height:75px;flex-direction:row;padding:0;border-right:none;border-top:1px solid var(--border);z-index:9999;}.brand-box{display:none;}.nav-list{flex-direction:row;width:100%;overflow-x:auto;padding:0 10px;align-items:center;justify-content:flex-start;-ms-overflow-style:none;scrollbar-width:none;}.nav-list::-webkit-scrollbar{display:none;}.nav-item{flex-direction:column;font-size:10px;gap:6px;padding:8px 14px;white-space:nowrap;border:none;border-radius:8px;}.nav-item .nav-text{display:block;}.main{padding:16px;padding-bottom:90px;}.grid-2{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}.modern-clock-box{width:100%;text-align:center;padding:12px;margin-top:10px;}.panel-head{flex-direction:column;align-items:flex-start;gap:12px;}.table-controls{flex-direction:column;}.modal{padding:16px;margin:10px;width:calc(100% - 20px);}}
   </style>
 </head>
 <body>
 
-  <!-- 
-  ======================================================================
-  SIDEBAR NAVIGATION
-  ======================================================================
-  -->
   <aside class="sidebar">
     <div class="brand-box">
       <div class="brand-icon">
@@ -693,11 +35,6 @@
     </nav>
   </aside>
 
-  <!-- 
-  ======================================================================
-  MAIN DASHBOARD VIEW
-  ======================================================================
-  -->
   <main class="main">
     <div style="display:flex; justify-content:space-between; margin-bottom: 24px; align-items:center; flex-wrap:wrap; gap:12px;">
       <div>
@@ -714,11 +51,7 @@
     <div id="view-container"></div>
   </main>
 
-  <!-- 
-  ======================================================================
-  MODALS & OVERLAYS
-  ======================================================================
-  -->
+  <!-- Base Modals -->
   <div id="tx-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -731,315 +64,159 @@
       <form id="tx-form" onsubmit="saveTx(event)">
         <input type="hidden" id="tx-id">
         <div class="grid-2">
-          <div class="form-group">
-            <label>Date & Time</label>
-            <input type="datetime-local" id="tx-date" class="input-field" required>
-          </div>
-          <div class="form-group">
-            <label>Type</label>
-            <select id="tx-type" class="input-field" onchange="updateCatOptions()">
-              <option value="DEBIT">Expense (Debit)</option>
-              <option value="CREDIT">Income (Credit)</option>
-            </select>
-          </div>
+          <div class="form-group"><label>Date & Time</label><input type="datetime-local" id="tx-date" class="input-field" required></div>
+          <div class="form-group"><label>Type</label><select id="tx-type" class="input-field" onchange="updateCatOptions()"><option value="DEBIT">Expense (Debit)</option><option value="CREDIT">Income (Credit)</option></select></div>
         </div>
         <div class="grid-2">
-          <div class="form-group">
-            <label>Category</label>
-            <select id="tx-category" class="input-field" required></select>
-          </div>
-          <div class="form-group">
-            <label>Payment Method</label>
-            <select id="tx-method" class="input-field">
-              <option value="UPI">UPI / NetBanking</option>
-              <option value="Credit Card">Credit Card</option>
-              <option value="Debit Card">Debit Card</option>
-              <option value="Cash">Cash</option>
-            </select>
-          </div>
+          <div class="form-group"><label>Category</label><select id="tx-category" class="input-field" required></select></div>
+          <div class="form-group"><label>Payment Method</label><select id="tx-method" class="input-field"><option value="UPI">UPI / NetBanking</option><option value="Credit Card">Credit Card</option><option value="Debit Card">Debit Card</option><option value="Cash">Cash</option></select></div>
         </div>
-        <div class="form-group">
-          <label>Description</label>
-          <input type="text" id="tx-desc" class="input-field" placeholder="e.g. Supermarket, Salary, Friend Name..." required>
-        </div>
+        <div class="form-group"><label>Description</label><input type="text" id="tx-desc" class="input-field" placeholder="e.g. Supermarket, Salary, Friend Name..." required></div>
         <div class="grid-2">
-          <div class="form-group">
-            <label>Amount (₹)</label>
-            <input type="number" id="tx-amount" step="0.01" class="input-field" required>
-          </div>
-          <div class="form-group">
-            <label>User</label>
-            <select id="tx-user" class="input-field"></select>
-          </div>
+          <div class="form-group"><label>Amount (₹)</label><input type="number" id="tx-amount" step="0.01" class="input-field" required></div>
+          <div class="form-group"><label>User</label><select id="tx-user" class="input-field"></select></div>
         </div>
-        <div class="form-group">
-          <label>Additional Notes</label>
-          <input type="text" id="tx-notes" class="input-field" placeholder="Optional details...">
-        </div>
+        <div class="form-group"><label>Additional Notes</label><input type="text" id="tx-notes" class="input-field" placeholder="Optional details..."></div>
         <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="tx-save-btn">Save Transaction</button>
       </form>
     </div>
   </div>
 
   <div id="budget-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Configure Budget</h3>
-        <button class="close-btn" onclick="closeModal('budget-modal')">×</button>
-      </div>
+    <div class="modal"><div class="modal-head"><h3>Configure Budget</h3><button class="close-btn" onclick="closeModal('budget-modal')">×</button></div>
       <form onsubmit="saveBudget(event)">
-        <div class="form-group">
-          <label>Category</label>
-          <select id="budget-cat" class="input-field"></select>
-        </div>
+        <div class="form-group"><label>Category</label><select id="budget-cat" class="input-field"></select></div>
         <div class="grid-2">
-          <div class="form-group">
-            <label>Limit Type</label>
-            <select id="budget-type" class="input-field">
-              <option value="Fixed">Fixed Amount (₹)</option>
-              <option value="Percentage">Percentage (%) of Income</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Value</label>
-            <input type="number" id="budget-val" class="input-field" required>
-          </div>
-        </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Set Budget</button>
+          <div class="form-group"><label>Limit Type</label><select id="budget-type" class="input-field"><option value="Fixed">Fixed Amount (₹)</option><option value="Percentage">Percentage (%) of Income</option></select></div>
+          <div class="form-group"><label>Value</label><input type="number" id="budget-val" class="input-field" required></div>
+        </div><button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Set Budget</button>
       </form>
     </div>
   </div>
 
   <div id="rem-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Add Reminder</h3>
-        <button class="close-btn" onclick="closeModal('rem-modal')">×</button>
-      </div>
-      <form onsubmit="saveReminder(event)">
-        <input type="hidden" id="rem-id">
-        <div class="form-group">
-          <label>Title</label>
-          <input type="text" id="rem-title" class="input-field" required placeholder="e.g. Car EMI, Anniversary">
-        </div>
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Date & Time</label>
-            <input type="datetime-local" id="rem-date" class="input-field" required>
-          </div>
-          <div class="form-group">
-            <label>Category / Type</label>
-            <select id="rem-type" class="input-field">
-              <option value="Important Date">Important Date</option>
-              <option value="Scheduled Payment">Scheduled Payment</option>
-              <option value="Bill Due">Bill Due</option>
-              <option value="Subscription Renewal">Subscription Renewal</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Expected Amount (Optional)</label>
-          <input type="number" id="rem-amount" class="input-field" placeholder="0.00" step="0.01">
-        </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Save Reminder</button>
+    <div class="modal"><div class="modal-head"><h3>Add Reminder</h3><button class="close-btn" onclick="closeModal('rem-modal')">×</button></div>
+      <form onsubmit="saveReminder(event)"><input type="hidden" id="rem-id">
+        <div class="form-group"><label>Title</label><input type="text" id="rem-title" class="input-field" required placeholder="e.g. Car EMI, Anniversary"></div>
+        <div class="grid-2"><div class="form-group"><label>Date & Time</label><input type="datetime-local" id="rem-date" class="input-field" required></div><div class="form-group"><label>Category / Type</label><select id="rem-type" class="input-field"><option value="Important Date">Important Date</option><option value="Scheduled Payment">Scheduled Payment</option><option value="Bill Due">Bill Due</option><option value="Subscription Renewal">Subscription Renewal</option></select></div></div>
+        <div class="form-group"><label>Expected Amount (Optional)</label><input type="number" id="rem-amount" class="input-field" placeholder="0.00" step="0.01"></div><button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Save Reminder</button>
       </form>
     </div>
   </div>
 
   <div id="fuel-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Add Vehicle Log Entry</h3>
-        <button class="close-btn" onclick="closeModal('fuel-modal')">×</button>
-      </div>
+    <div class="modal"><div class="modal-head"><h3>Add Vehicle Log Entry</h3><button class="close-btn" onclick="closeModal('fuel-modal')">×</button></div>
       <form onsubmit="saveFuelEntry(event)">
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Date & Time</label>
-            <input type="datetime-local" id="fuel-date" class="input-field" required>
-          </div>
-          <div class="form-group">
-            <label>Entry Type</label>
-            <select id="fuel-log-type" class="input-field" onchange="toggleVehicleFields()">
-                <option value="Fuel / Petrol">Fuel / Petrol</option>
-                <option value="Vehicle Service">Vehicle Service</option>
-                <option value="Vehicle Insurance">Vehicle Insurance</option>
-                <option value="Other Expense">Other Accessory</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Vehicle Name</label>
-            <select id="fuel-vehicle" class="input-field" required onchange="updateFuelPrice()">
-              <option value="Jupiter 125">Jupiter 125</option>
-              <option value="Car">Car</option>
-              <option value="Other">Other Vehicle</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Current Odometer (KM)</label>
-            <input type="number" id="fuel-odo" class="input-field" required>
-          </div>
-        </div>
-        
-        <div id="fuel-specific-fields">
-            <div class="grid-2">
-              <div class="form-group">
-                <label>Did you hit Reserve?</label>
-                <select id="fuel-reserve" class="input-field" onchange="toggleReserveOdo()">
-                  <option value="No">No</option>
-                  <option value="Yes">Yes (Hit Reserve)</option>
-                </select>
-              </div>
-              <div class="form-group" id="res-odo-box" style="display:none;">
-                <label>Reserve Hit Odometer (KM)</label>
-                <input type="number" id="fuel-res-odo" class="input-field" placeholder="Exact KM when reserve hit">
-              </div>
-            </div>
-            <div class="grid-2">
-              <div class="form-group">
-                <label>Current Petrol Price (₹/L)</label>
-                <input type="number" id="fuel-price" step="0.01" class="input-field" oninput="calcFuelLiters()">
-              </div>
-              <div class="form-group">
-                <label>Liters Added (Auto-Calc)</label>
-                <input type="number" id="fuel-liters" step="0.01" class="input-field" readonly style="background:rgba(255,255,255,0.05); color:var(--primary); font-weight:bold;">
-              </div>
-            </div>
-        </div>
-
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Total Amount Spent (₹)</label>
-            <input type="number" id="fuel-amount" step="0.01" class="input-field" required oninput="calcFuelLiters()">
-          </div>
-          <div class="form-group">
-            <label>Payment Method</label>
-            <select id="fuel-method" class="input-field">
-              <option value="UPI">UPI / NetBanking</option>
-              <option value="Credit Card">Credit Card</option>
-              <option value="Debit Card">Debit Card</option>
-              <option value="Cash">Cash</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>User</label>
-          <select id="fuel-user" class="input-field"></select>
-        </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Save Vehicle Entry</button>
+        <div class="grid-2"><div class="form-group"><label>Date & Time</label><input type="datetime-local" id="fuel-date" class="input-field" required></div><div class="form-group"><label>Entry Type</label><select id="fuel-log-type" class="input-field" onchange="toggleVehicleFields()"><option value="Fuel / Petrol">Fuel / Petrol</option><option value="Vehicle Service">Vehicle Service</option><option value="Vehicle Insurance">Vehicle Insurance</option><option value="Other Expense">Other Accessory</option></select></div></div>
+        <div class="grid-2"><div class="form-group"><label>Vehicle Name</label><select id="fuel-vehicle" class="input-field" required onchange="updateFuelPrice()"><option value="Jupiter 125">Jupiter 125</option><option value="Car">Car</option><option value="Other">Other Vehicle</option></select></div><div class="form-group"><label>Current Odometer (KM)</label><input type="number" id="fuel-odo" class="input-field" required></div></div>
+        <div id="fuel-specific-fields"><div class="grid-2"><div class="form-group"><label>Did you hit Reserve?</label><select id="fuel-reserve" class="input-field" onchange="toggleReserveOdo()"><option value="No">No</option><option value="Yes">Yes (Hit Reserve)</option></select></div><div class="form-group" id="res-odo-box" style="display:none;"><label>Reserve Hit Odometer (KM)</label><input type="number" id="fuel-res-odo" class="input-field" placeholder="Exact KM when reserve hit"></div></div><div class="grid-2"><div class="form-group"><label>Current Petrol Price (₹/L)</label><input type="number" id="fuel-price" step="0.01" class="input-field" oninput="calcFuelLiters()"></div><div class="form-group"><label>Liters Added (Auto-Calc)</label><input type="number" id="fuel-liters" step="0.01" class="input-field" readonly style="background:rgba(255,255,255,0.05); color:var(--primary); font-weight:bold;"></div></div></div>
+        <div class="grid-2"><div class="form-group"><label>Total Amount Spent (₹)</label><input type="number" id="fuel-amount" step="0.01" class="input-field" required oninput="calcFuelLiters()"></div><div class="form-group"><label>Payment Method</label><select id="fuel-method" class="input-field"><option value="UPI">UPI / NetBanking</option><option value="Credit Card">Credit Card</option><option value="Debit Card">Debit Card</option><option value="Cash">Cash</option></select></div></div><div class="form-group"><label>User</label><select id="fuel-user" class="input-field"></select></div><button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Save Vehicle Entry</button>
       </form>
     </div>
   </div>
 
-  <!-- Document Modal (UPDATED WITH CATEGORY SELECTION) -->
   <div id="doc-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Upload Document</h3>
-        <button class="close-btn" onclick="closeModal('doc-modal')">×</button>
-      </div>
+    <div class="modal"><div class="modal-head"><h3>Upload Document</h3><button class="close-btn" onclick="closeModal('doc-modal')">×</button></div>
       <form onsubmit="saveDoc(event)">
-        <div class="form-group">
-            <label>Category</label>
-            <select id="doc-category" class="input-field" required>
-                <option value="ID Proofs">ID Proofs</option>
-                <option value="Vehicle Docs">Vehicle Docs</option>
-                <option value="Property & Rent">Property & Rent</option>
-                <option value="Medical">Medical</option>
-                <option value="Bills & Receipts">Bills & Receipts</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Select File / Image</label>
-            <input type="file" id="doc-file" class="input-field" accept="image/*" required style="padding: 12px;">
-        </div>
-        <div class="form-group">
-            <label>Document Title</label>
-            <input type="text" id="doc-title" class="input-field" placeholder="e.g. License, RC Book, Bill..." required>
-        </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="doc-btn-save">Encrypt & Upload</button>
+        <div class="form-group"><label>Category</label><select id="doc-category" class="input-field" required><option value="ID Proofs">ID Proofs</option><option value="Vehicle Docs">Vehicle Docs</option><option value="Property & Rent">Property & Rent</option><option value="Medical">Medical</option><option value="Bills & Receipts">Bills & Receipts</option><option value="Other">Other</option></select></div>
+        <div class="form-group"><label>Select File / Image</label><input type="file" id="doc-file" class="input-field" accept="image/*" required style="padding: 12px;"></div>
+        <div class="form-group"><label>Document Title</label><input type="text" id="doc-title" class="input-field" placeholder="e.g. License, RC Book, Bill..." required></div><button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="doc-btn-save">Encrypt & Upload</button>
       </form>
     </div>
   </div>
 
-  <!-- NATIVE IMAGE VIEWER MODAL -->
   <div id="doc-view-modal" class="modal-overlay" style="z-index: 3000;">
     <div class="modal" style="background: transparent; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; padding:0;">
-      <div style="width:100%; display:flex; justify-content:flex-end; margin-bottom:10px;">
-        <button class="btn" style="background: rgba(0,0,0,0.8); color: white; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; display:flex; align-items:center; justify-content:center; padding:0;" onclick="closeModal('doc-view-modal')">×</button>
-      </div>
+      <div style="width:100%; display:flex; justify-content:flex-end; margin-bottom:10px;"><button class="btn" style="background: rgba(0,0,0,0.8); color: white; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; display:flex; align-items:center; justify-content:center; padding:0;" onclick="closeModal('doc-view-modal')">×</button></div>
       <img id="doc-view-image" style="max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
     </div>
   </div>
 
-  <!-- Password Modal -->
   <div id="pass-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Add Encrypted Password</h3>
-        <button class="close-btn" onclick="closeModal('pass-modal')">×</button>
-      </div>
+    <div class="modal"><div class="modal-head"><h3>Add Encrypted Password</h3><button class="close-btn" onclick="closeModal('pass-modal')">×</button></div>
       <form onsubmit="savePass(event)">
-        <div class="form-group">
-          <label>Service / App Name</label>
-          <input type="text" id="pass-service" class="input-field" required placeholder="e.g. Netflix, NetBanking">
-        </div>
-        <div class="form-group">
-          <label>URL (Optional)</label>
-          <input type="url" id="pass-url" class="input-field" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label>Username / Email / User ID</label>
-          <input type="text" id="pass-username" class="input-field" required>
-        </div>
-        <div class="form-group">
-          <label>Secret Password</label>
-          <input type="password" id="pass-secret" class="input-field" required>
-        </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Encrypt & Save</button>
+        <div class="form-group"><label>Service / App Name</label><input type="text" id="pass-service" class="input-field" required placeholder="e.g. Netflix, NetBanking"></div>
+        <div class="form-group"><label>URL (Optional)</label><input type="url" id="pass-url" class="input-field" placeholder="https://..."></div>
+        <div class="form-group"><label>Username / Email / User ID</label><input type="text" id="pass-username" class="input-field" required></div>
+        <div class="form-group"><label>Secret Password</label><input type="password" id="pass-secret" class="input-field" required></div><button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;">Encrypt & Save</button>
       </form>
     </div>
   </div>
 
-  <!-- Admin Password Modal -->
   <div id="admin-pass-modal" class="modal-overlay">
+    <div class="modal"><div class="modal-head"><h3>Reset User App Password</h3><button class="close-btn" onclick="closeModal('admin-pass-modal')">×</button></div>
+      <form onsubmit="saveAdminPassChange(event)">
+        <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Set a new application password for <strong id="admin-pass-target-user"></strong>. It will be securely hashed in Google Sheets.</p><input type="hidden" id="admin-pass-user-hidden">
+        <div class="form-group"><label>New Password</label><input type="password" id="admin-new-pass" class="input-field" required placeholder="Type new password"></div><button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="admin-pass-btn">Hash & Secure</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- LOAN TRACKING MODAL (NEW) -->
+  <div id="al-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
-        <h3>Reset User App Password</h3>
-        <button class="close-btn" onclick="closeModal('admin-pass-modal')">×</button>
+        <h3 id="al-modal-title">Add Active Loan</h3>
+        <button class="close-btn" onclick="closeModal('al-modal')">×</button>
       </div>
-      <form onsubmit="saveAdminPassChange(event)">
-        <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Set a new application password for <strong id="admin-pass-target-user"></strong>. It will be securely hashed in Google Sheets.</p>
-        <input type="hidden" id="admin-pass-user-hidden">
+      <form onsubmit="saveActiveLoan(event)">
+        <input type="hidden" id="al-id">
         <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="admin-new-pass" class="input-field" required placeholder="Type new password">
+          <label>Loan Name / Bank</label>
+          <input type="text" id="al-name" class="input-field" required placeholder="e.g. SBI Home Loan">
         </div>
-        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="admin-pass-btn">Hash & Secure</button>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="al-category" class="input-field">
+              <option value="Gold Loan">Gold Loan</option>
+              <option value="Personal Loan">Personal Loan</option>
+              <option value="Housing Loan">Housing Loan</option>
+              <option value="Car Loan">Car Loan</option>
+              <option value="Bike Loan">Bike Loan</option>
+              <option value="Education Loan">Education Loan</option>
+              <option value="Other Loan">Other Loan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Interest Rate (%)</label>
+            <input type="number" id="al-rate" step="0.01" class="input-field" required>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Total Principal Amount (₹)</label>
+            <input type="number" id="al-total" step="0.01" class="input-field" required>
+          </div>
+          <div class="form-group">
+            <label>Amount Already Paid (₹)</label>
+            <input type="number" id="al-paid" step="0.01" class="input-field" required>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Monthly EMI (₹)</label>
+            <input type="number" id="al-emi" step="0.01" class="input-field" required>
+          </div>
+          <div class="form-group">
+            <label>Expected End Date</label>
+            <input type="date" id="al-end" class="input-field" required>
+          </div>
+        </div>
+        <button type="submit" class="btn primary" style="width: 100%; margin-top: 10px;" id="al-save-btn">Save Active Loan</button>
       </form>
     </div>
   </div>
 
-  <!-- 
-  ======================================================================
-  CORE JAVASCRIPT ENGINE
-  ======================================================================
-  -->
   <script>
-    // --- ENTERPRISE API CONFIGURATION ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
     const API_KEY = "GOBI_FAMILY_SECURE_2026";
 
-    // Cleanly handle missing images without breaking the UI
     document.getElementById('app-logo-sidebar').addEventListener('error', function() {
       this.style.display = 'none';
       this.parentElement.innerHTML = '<span style="font-size:18px; font-weight:800; color:#fff;">A</span>';
     });
 
-    // Master Clock Updater
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -1056,26 +233,14 @@
       }
     }, 1000);
 
-    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
-    // Mathematical Security
-    function encryptData(text) { 
-        return btoa(encodeURIComponent(text)); 
-    }
+    function encryptData(text) { return btoa(encodeURIComponent(text)); }
+    function decryptData(text) { try { return decodeURIComponent(atob(text)); } catch(e){ return "Encryption Error"; } }
     
-    function decryptData(text) { 
-        try { 
-            return decodeURIComponent(atob(text)); 
-        } catch(e) { 
-            return "Encryption Error"; 
-        } 
-    }
-    
-    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -1085,17 +250,13 @@
         document.body.removeChild(a); 
     }
 
-    // Opens Native Image Viewer
     function viewDoc(b64) {
         document.getElementById('doc-view-image').src = b64;
         document.getElementById('doc-view-modal').style.display = 'flex';
     }
 
-    // --------------------------------------------------------------------------
-    // SECURITY TIMEOUT ENGINE
-    // --------------------------------------------------------------------------
     let inactivityTimer; 
-    const TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
+    const TIMEOUT_MS = 10 * 60 * 1000;
     
     function autoLogout() { 
         localStorage.removeItem('gf_user'); 
@@ -1120,12 +281,10 @@
         } 
     }
     
-    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
 
-    // --- STATE INITIALIZATION ---
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
@@ -1143,10 +302,8 @@
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
-    
-    window.currentDocCategory = null; // Track current Vault folder
+    window.currentDocCategory = null; 
 
-    // --- SANITIZATION (CRASH PROTECTION) ---
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1183,7 +340,6 @@
         return Array.from(map.values()).sort((a,b) => String(a.service).localeCompare(String(b.service))); 
     }
 
-    // --- RENDER TABLE FUNCTION ---
     function renderTableHTML(data, title, sortable) {
       try {
           const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
@@ -1206,6 +362,7 @@
                   ${(!data || data.length === 0) ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
                   ${(data || []).map(t => {
                       if (!t) return '';
+                      if (t.type === 'ACTIVE_LOAN') return ''; 
                       const displayDate = t.date ? String(t.date).replace('T', ' ') : 'No Date';
                       const tType = t.type ? String(t.type) : 'DEBIT';
                       const tAmt = parseFloat(t.amount || 0).toLocaleString('en-IN');
@@ -1230,9 +387,6 @@
       }
     }
 
-    // --------------------------------------------------------------------------
-    // CLOUD SYNC ENGINE
-    // --------------------------------------------------------------------------
     let isSyncing = false; 
     window.pauseSync = false; 
 
@@ -1365,7 +519,7 @@
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
               else if(navText.includes('Doc Vault') || (navText.includes('Vault') && !navText.includes('Pass'))) navigate('vault', activeNav);
               else if(navText.includes('Pass Vault') || navText.includes('Pass')) navigate('passwords', activeNav);
-              else if(navText.includes('Sync') || navText.includes('Export')) navigate('statements', activeNav);
+              else if(navText.includes('Sync') || navText.includes('Export') || navText.includes('Import')) navigate('statements', activeNav);
               else if(navText.includes('Settings')) navigate('settings', activeNav);
               else navigate('home');
             } else { navigate('home'); }
@@ -1414,9 +568,6 @@
       }
     }
 
-    // --------------------------------------------------------------------------
-    // USER MANAGEMENT
-    // --------------------------------------------------------------------------
     function logout() {
         if(confirm("Are you sure you want to log out?")) {
             localStorage.removeItem('gf_user');
@@ -1494,9 +645,6 @@
         btn.innerText = "Hash & Secure"; 
     }
 
-    // --------------------------------------------------------------------------
-    // TRANSACTION MANAGEMENT (CRUD)
-    // --------------------------------------------------------------------------
     function openTxModal(type) { 
         document.getElementById('tx-form').reset(); 
         document.getElementById('tx-id').value = ''; 
@@ -1607,9 +755,6 @@
         document.getElementById(modalId).style.display = 'none'; 
     }
 
-    // --------------------------------------------------------------------------
-    // DASHBOARD ROUTING & RENDERING ENGINE
-    // --------------------------------------------------------------------------
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       if (btn) { 
@@ -1626,7 +771,7 @@
       if (view === 'home') { title.innerText = 'Home'; sub.innerText = 'Welcome and quick actions.'; container.innerHTML = renderHome(); }
       else if (view === 'overview') { title.innerText = 'Overview Dashboard'; sub.innerText = 'Executive financial summary.'; container.innerHTML = renderOverview(); renderOverviewChart(); }
       else if (view === 'records') { title.innerText = 'All Records'; sub.innerText = 'Search, sort, and manage ledger entries.'; container.innerHTML = renderAllRecords(); attachSearchLogic(); }
-      else if (view === 'loans') { title.innerText = 'Loan Management'; sub.innerText = 'Track personal, gold, and given loans.'; container.innerHTML = renderLoans(); }
+      else if (view === 'loans') { title.innerText = 'Loan Management'; sub.innerText = 'Track personal, gold, and given loans.'; container.innerHTML = renderLoans(); renderLoanChart(); }
       else if (view === 'analyzer') { title.innerText = 'Spend Analyzer'; sub.innerText = 'Deep dive into spending patterns.'; container.innerHTML = renderAnalyzer(); renderAnalyzerChart(); }
       else if (view === 'budget') { title.innerText = 'Budget Tracker'; sub.innerText = 'Set limits and monitor category spending.'; container.innerHTML = renderBudget(); }
       else if (view === 'vehicle') { title.innerText = 'Vehicle Dashboard'; sub.innerText = 'Fuel consumption & Reserve-to-Reserve mileage calculator.'; container.innerHTML = renderVehicle(); }
@@ -1717,7 +862,7 @@
                 if (isLoan(t.category)) loanRec += (t.amount || 0);
                 else if (!isProxy(t.category)) inc += (t.amount || 0); 
             } 
-            else { 
+            else if (t.type === 'DEBIT') { 
                 if (!isProxy(t.category) && !isLoan(t.category) && t.category !== 'Credit Card Bill') exp += (t.amount || 0); 
                 if (t.method === 'Credit Card') ccSpent += (t.amount || 0);
                 if (t.category === 'Credit Card Bill') ccPaid += (t.amount || 0);
@@ -1757,7 +902,7 @@
               <div class="panel-head"><h3>Trend Overview</h3></div>
               <div class="chart-container"><canvas id="overviewChart"></canvas></div>
           </div>
-          ${renderTableHTML((ledger || []).slice(0, 5), 'Recent 5 Transactions', false)}
+          ${renderTableHTML((ledger || []).filter(t => t.type !== 'ACTIVE_LOAN').slice(0, 5), 'Recent 5 Transactions', false)}
         `;
       } catch (err) {
           return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
@@ -1794,8 +939,9 @@
       });
     }
 
-    function renderAllRecords(data = ledger) {
+    function renderAllRecords() {
       try {
+        const displayLedger = (ledger || []).filter(t => t.type !== 'ACTIVE_LOAN');
         return `
           <div class="panel">
             <div class="table-controls">
@@ -1803,7 +949,7 @@
               <button class="btn primary" onclick="executeSearch()">Find</button>
             </div>
             <div id="records-table-container">
-              ${renderTableHTML(data, '', true)}
+              ${renderTableHTML(displayLedger, '', true)}
             </div>
           </div>`;
       } catch (err) {
@@ -1814,9 +960,10 @@
     function executeSearch() { 
       const q = document.getElementById('search-input').value.toLowerCase(); 
       const filtered = ledger.filter(t => 
+        t.type !== 'ACTIVE_LOAN' && (
         (t.desc || '').toLowerCase().includes(q) || 
         (t.category || '').toLowerCase().includes(q) || 
-        (t.amount || 0).toString().includes(q)
+        (t.amount || 0).toString().includes(q) )
       ); 
       document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
@@ -1828,17 +975,22 @@
     function sortTable(col) { 
       sortAsc = (sortCol === col) ? !sortAsc : true; 
       sortCol = col; 
-      ledger.sort((a, b) => { 
+      
+      const filtered = ledger.filter(t => t.type !== 'ACTIVE_LOAN');
+      filtered.sort((a, b) => { 
         let valA = a[col]; let valB = b[col]; 
         if (col === 'amount') { valA = parseFloat(valA); valB = parseFloat(valB); } 
         return (valA < valB ? -1 : (valA > valB ? 1 : 0)) * (sortAsc ? 1 : -1); 
       }); 
-      document.getElementById('records-table-container').innerHTML = renderTableHTML(ledger, '', true); 
+      document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
 
+    // --- LOAN MANAGEMENT ENGINE ---
     function renderLoans() {
       try {
-        const loanData = (ledger || []).filter(t => (t.category || '').includes('Loan') || (t.category || '').includes('Lent'));
+        const loanData = (ledger || []).filter(t => t.type !== 'ACTIVE_LOAN' && ((t.category || '').includes('Loan') || (t.category || '').includes('Lent')));
+        const activeLoans = (ledger || []).filter(t => t.type === 'ACTIVE_LOAN');
+        
         let assetGiven = 0, assetRepaid = 0, debtReceived = 0, debtRepaid = 0;
         
         loanData.forEach(t => {
@@ -1847,6 +999,44 @@
             if ((t.category || '').includes('Received') && t.category !== 'Received Loan Repayment') debtReceived += (t.amount || 0);
             if ((t.category || '').includes('Paid') && t.category !== 'Rent Paid' && t.category !== 'LIC Payment') debtRepaid += (t.amount || 0);
         });
+
+        let activeLoansHtml = activeLoans.map(al => {
+          let notes = {}; try { notes = JSON.parse(al.notes || '{}'); } catch(e){}
+          let paid = notes.paid || 0;
+          let pending = Math.max(0, (al.amount || 0) - paid);
+          let pct = al.amount > 0 ? Math.min(100, Math.round((paid / al.amount) * 100)) : 0;
+          
+          return `
+            <div class="panel" style="background:rgba(255,255,255,0.02); margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center;">
+                    <h4 style="color:var(--text); font-size:16px; font-weight:800;">${al.desc} <span class="badge" style="background:rgba(255,255,255,0.1); color:var(--muted); font-weight:normal; margin-left:8px;">${al.category}</span></h4>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editActiveLoan('${al.id}')">✎ Edit</button>
+                        <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteActiveLoan('${al.id}')">🗑</button>
+                    </div>
+                </div>
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-bottom:16px; margin-top:16px;">
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">TOTAL AMOUNT</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--primary);">₹${(al.amount || 0).toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PAID AMOUNT</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--green);">₹${paid.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PENDING AMOUNT</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--red);">₹${pending.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">EMI & INTEREST</div>
+                        <div style="font-size:16px; font-weight:bold;">₹${(notes.emi || 0).toLocaleString('en-IN')} <span style="font-size:11px; color:var(--muted); font-weight:normal;">(${notes.rate || 0}%)</span></div>
+                    </div>
+                </div>
+                <div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:var(--green);"></div></div>
+                <div style="font-size:11px; color:var(--muted); text-align:right; margin-top:6px;">Ends on: ${notes.endDate || 'N/A'} <span style="color:var(--green); font-weight:bold; margin-left:4px;">(${pct}% Paid)</span></div>
+            </div>`;
+        }).join('');
 
         return `
         <div class="kpi-grid">
@@ -1861,10 +1051,145 @@
                 <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${debtRepaid.toLocaleString()} | Pending: ₹${(debtReceived - debtRepaid).toLocaleString()}</div>
             </div>
         </div>
-        ${renderTableHTML(loanData, 'Loan Ledger', false)}`;
+        
+        <div class="panel">
+            <div class="panel-head">
+                <h3>Active Loan Portfolios</h3>
+                <button class="btn primary" onclick="openActiveLoanModal()">+ Add Loan Account</button>
+            </div>
+            <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Track your current active loans, pending amounts, EMI, and interest rates.</p>
+            <div class="chart-container" style="height:250px; margin-bottom:24px; display:none;" id="loanChartContainer"><canvas id="loanChart"></canvas></div>
+            ${activeLoansHtml || '<p style="text-align:center; color:var(--muted); padding:20px;">No active loans added.</p>'}
+        </div>
+        
+        ${renderTableHTML(loanData, 'Loan Ledger Transactions', false)}`;
       } catch (err) {
         return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
       }
+    }
+
+    function renderLoanChart() {
+        const ctx = document.getElementById('loanChart');
+        if (!ctx || typeof Chart === 'undefined') return;
+
+        const activeLoans = (ledger || []).filter(t => t.type === 'ACTIVE_LOAN');
+        if (activeLoans.length === 0) {
+            document.getElementById('loanChartContainer').style.display = 'none';
+            return;
+        }
+        document.getElementById('loanChartContainer').style.display = 'block';
+
+        const labels = activeLoans.map(l => l.desc || 'Unknown');
+        const totalData = activeLoans.map(l => l.amount || 0);
+        const paidData = activeLoans.map(l => {
+            try { const n = JSON.parse(l.notes); return n.paid || 0; } catch(e){ return 0; }
+        });
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Total Loan Amount', data: totalData, backgroundColor: '#4f6bf7' },
+                    { label: 'Amount Paid', data: paidData, backgroundColor: '#2ed573' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function openActiveLoanModal() {
+        document.getElementById('al-id').value = '';
+        document.getElementById('al-name').value = '';
+        document.getElementById('al-total').value = '';
+        document.getElementById('al-paid').value = '0';
+        document.getElementById('al-rate').value = '';
+        document.getElementById('al-emi').value = '';
+        document.getElementById('al-end').value = '';
+        document.getElementById('al-modal-title').innerText = 'Add Active Loan';
+        document.getElementById('al-modal').style.display = 'grid';
+    }
+
+    function editActiveLoan(id) {
+        const t = ledger.find(x => String(x.id).trim() === String(id).trim());
+        if (!t) return;
+        let notes = {};
+        try { notes = JSON.parse(t.notes || '{}'); } catch(e){}
+        
+        document.getElementById('al-id').value = t.id;
+        document.getElementById('al-name').value = t.desc;
+        document.getElementById('al-category').value = t.category;
+        document.getElementById('al-total').value = t.amount;
+        document.getElementById('al-paid').value = notes.paid || 0;
+        document.getElementById('al-rate').value = notes.rate || 0;
+        document.getElementById('al-emi').value = notes.emi || 0;
+        document.getElementById('al-end').value = notes.endDate || '';
+        
+        document.getElementById('al-modal-title').innerText = 'Edit Active Loan';
+        document.getElementById('al-modal').style.display = 'grid';
+    }
+
+    async function deleteActiveLoan(id) {
+        if (!confirm('Delete this loan account permanently?')) return;
+        ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim());
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        navigate('loans');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              window.pauseSync = true;
+              await apiPost('deleteTransaction', { id: id }); 
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
+            } catch (err) { window.pauseSync = false; } 
+        } 
+    }
+
+    async function saveActiveLoan(e) {
+        e.preventDefault();
+        const btn = document.getElementById('al-save-btn');
+        btn.disabled = true; btn.innerText = 'Saving...';
+        
+        const id = document.getElementById('al-id').value || 'al_' + String(Date.now());
+        const isEdit = document.getElementById('al-id').value !== '';
+        
+        const notesObj = {
+            paid: parseFloat(document.getElementById('al-paid').value) || 0,
+            rate: parseFloat(document.getElementById('al-rate').value) || 0,
+            emi: parseFloat(document.getElementById('al-emi').value) || 0,
+            endDate: document.getElementById('al-end').value
+        };
+        
+        let sessionData = {}; try { sessionData = JSON.parse(localStorage.getItem('gf_user') || '{}'); } catch(e){}
+        
+        const record = {
+            id: id,
+            date: getLocalISOTime(),
+            type: 'ACTIVE_LOAN',
+            category: document.getElementById('al-category').value,
+            method: 'System',
+            desc: document.getElementById('al-name').value,
+            notes: JSON.stringify(notesObj),
+            amount: parseFloat(document.getElementById('al-total').value) || 0,
+            user: sessionData.name || 'User'
+        };
+        
+        const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim());
+        if (idx >= 0) ledger[idx] = record; else ledger.unshift(record);
+        
+        ledger = deduplicateLedger(ledger);
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger));
+        closeModal('al-modal');
+        btn.disabled = false; btn.innerText = 'Save Active Loan';
+        
+        navigate('loans');
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              window.pauseSync = true;
+              await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
+            } catch (err) { window.pauseSync = false; } 
+        } 
     }
 
     function renderAnalyzer() {
@@ -2235,8 +1560,126 @@
       }
     }
 
+    function renderReminders() {
+      try {
+        let pending = (reminders || []).filter(r => r && r.status === 'Pending').sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0)); 
+        let done = (reminders || []).filter(r => r && r.status === 'Done').sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+        
+        const rowHtml = (r) => { 
+          const displayDate = r.date ? String(r.date).replace('T', ' ') : ''; 
+          const rType = r.type || '';
+          return `<tr>
+            <td>${displayDate}</td>
+            <td><span class="badge ${r.status === 'Pending' ? 'warn' : 'credit'}">${r.status || ''}</span></td>
+            <td><span class="badge ${rType.includes('Date') ? 'primary' : 'debit'}">${rType}</span></td>
+            <td style="font-weight:700;">${r.title || ''}</td>
+            <td>${r.amount ? '₹' + parseFloat(r.amount).toLocaleString('en-IN') : '-'}</td>
+            <td>
+              ${r.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Mark Done</button>` : ''} 
+              <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
+            </td>
+          </tr>`; 
+        };
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Scheduled Tracker</h3>
+              <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead><tr><th>Date & Time</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr></thead>
+                <tbody>${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No pending reminders.</td></tr>'}</tbody>
+              </table>
+            </div>
+            <br>
+            <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
+            <div class="table-responsive">
+              <table>
+                <tbody style="opacity: 0.6;">${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No completed history.</td></tr>'}</tbody>
+              </table>
+            </div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+    
+    function openRemModal() { 
+      document.getElementById('rem-id').value = ''; 
+      document.getElementById('rem-title').value = ''; 
+      document.getElementById('rem-date').value = getLocalISOTime(); 
+      document.getElementById('rem-amount').value = ''; 
+      document.getElementById('rem-modal').style.display = 'grid'; 
+    }
+    
+    async function saveReminder(e) { 
+      e.preventDefault(); 
+      const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
+      const isEdit = document.getElementById('rem-id').value !== ''; 
+      
+      const record = { 
+        id: id, 
+        date: document.getElementById('rem-date').value, 
+        title: document.getElementById('rem-title').value, 
+        type: document.getElementById('rem-type').value, 
+        amount: parseFloat(document.getElementById('rem-amount').value) || null, 
+        status: 'Pending' 
+      }; 
+      
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) reminders[idx] = record; else reminders.push(record); 
+      
+      reminders = deduplicateReminders(reminders); 
+      localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+      closeModal('rem-modal'); 
+      navigate('reminders'); 
+      
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+        try { 
+          window.pauseSync = true;
+          await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+        } catch(err) { window.pauseSync = false; } 
+      } 
+    }
+    
+    async function markRemDone(id) { 
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) { 
+        reminders[idx].status = 'Done'; 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            window.pauseSync = true;
+            await apiPost('editReminder', reminders[idx]); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+          } catch(err) { window.pauseSync = false; } 
+        } 
+      } 
+    }
+    
+    async function deleteRem(id) { 
+      if(confirm('Delete this reminder?')) { 
+        reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            window.pauseSync = true;
+            await apiPost('deleteReminder', { id }); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+          } catch(err) { window.pauseSync = false; } 
+        } 
+      } 
+    }
+
     // --------------------------------------------------------------------------
-    // VAULT ENGINE (WITH CATEGORY FOLDERS & NATIVE VIEWER)
+    // VAULT ENGINE (WITH FOLDERS AND VIEWER)
     // --------------------------------------------------------------------------
     function openDocCategory(cat) {
         window.currentDocCategory = cat;
@@ -2342,7 +1785,7 @@
       const rawTitle = document.getElementById('doc-title').value.trim();
       const catSelect = document.getElementById('doc-category');
       const cat = catSelect ? catSelect.value : 'Other';
-      const finalTitle = cat + '::' + rawTitle; // Merges category into title invisibly
+      const finalTitle = cat + '::' + rawTitle;
       
       if(!file) return;
       
@@ -2351,7 +1794,7 @@
           const img = new Image();
           img.onload = async () => {
               const canvas = document.createElement('canvas'); 
-              const MAX_WIDTH = 800; // Increased resolution for readability
+              const MAX_WIDTH = 800; // Increased resolution
               const scale = MAX_WIDTH / img.width;
               canvas.width = MAX_WIDTH; 
               canvas.height = img.height * scale;
@@ -2370,7 +1813,6 @@
               document.getElementById('doc-file').value=''; 
               document.getElementById('doc-title').value=''; 
               
-              // Return to the current folder after upload
               if (window.currentDocCategory) {
                   document.getElementById('view-container').innerHTML = renderVaultCategory(window.currentDocCategory);
               } else {
