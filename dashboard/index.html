@@ -646,78 +646,20 @@
     ======================================================================
     */
     @media (max-width: 850px) {
-      body { 
-        flex-direction: column; 
-      }
-      .sidebar { 
-        position: fixed; 
-        bottom: 0; 
-        width: 100%; 
-        height: 75px; 
-        flex-direction: row; 
-        padding: 0; 
-        border-right: none; 
-        border-top: 1px solid var(--border); 
-        z-index: 9999;
-      }
-      .brand-box { 
-        display: none; 
-      }
-      .nav-list { 
-        flex-direction: row; 
-        width: 100%; 
-        overflow-x: auto; 
-        padding: 0 10px; 
-        align-items: center; 
-        justify-content: flex-start; 
-        -ms-overflow-style: none; 
-        scrollbar-width: none; 
-      }
-      .nav-list::-webkit-scrollbar { 
-        display: none; 
-      }
-      .nav-item { 
-        flex-direction: column; 
-        font-size: 10px; 
-        gap: 6px; 
-        padding: 8px 14px; 
-        white-space: nowrap; 
-        border: none; 
-        border-radius: 8px; 
-      }
-      .nav-item .nav-text { 
-        display: block; 
-      }
-      .main { 
-        padding: 16px; 
-        padding-bottom: 90px; 
-      }
-      .grid-2 { 
-        grid-template-columns: 1fr; 
-      }
-      .kpi-grid { 
-        grid-template-columns: 1fr 1fr; 
-        gap: 10px; 
-      }
-      .modern-clock-box { 
-        width: 100%; 
-        text-align: center; 
-        padding: 12px; 
-        margin-top: 10px; 
-      }
-      .panel-head { 
-        flex-direction: column; 
-        align-items: flex-start; 
-        gap: 12px; 
-      }
-      .table-controls { 
-        flex-direction: column; 
-      }
-      .modal { 
-        padding: 16px; 
-        margin: 10px; 
-        width: calc(100% - 20px); 
-      }
+      body { flex-direction: column; }
+      .sidebar { position: fixed; bottom: 0; width: 100%; height: 75px; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--border); z-index: 9999;}
+      .brand-box { display: none; }
+      .nav-list { flex-direction: row; width: 100%; overflow-x: auto; padding: 0 10px; align-items: center; justify-content: flex-start; -ms-overflow-style: none; scrollbar-width: none; }
+      .nav-list::-webkit-scrollbar { display: none; }
+      .nav-item { flex-direction: column; font-size: 10px; gap: 6px; padding: 8px 14px; white-space: nowrap; border: none; border-radius: 8px; }
+      .nav-item .nav-text { display: block; }
+      .main { padding: 16px; padding-bottom: 90px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap:10px; }
+      .modern-clock-box { width: 100%; text-align: center; padding: 12px; margin-top: 10px; }
+      .panel-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .table-controls { flex-direction: column; }
+      .modal { padding: 16px; margin: 10px; width: calc(100% - 20px); }
     }
   </style>
 </head>
@@ -991,6 +933,7 @@
     </div>
   </div>
 
+  <!-- Document Modal (UPDATED WITH CATEGORY SELECTION) -->
   <div id="doc-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -998,6 +941,17 @@
         <button class="close-btn" onclick="closeModal('doc-modal')">×</button>
       </div>
       <form onsubmit="saveDoc(event)">
+        <div class="form-group">
+            <label>Category</label>
+            <select id="doc-category" class="input-field" required>
+                <option value="ID Proofs">ID Proofs</option>
+                <option value="Vehicle Docs">Vehicle Docs</option>
+                <option value="Property & Rent">Property & Rent</option>
+                <option value="Medical">Medical</option>
+                <option value="Bills & Receipts">Bills & Receipts</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
         <div class="form-group">
             <label>Select File / Image</label>
             <input type="file" id="doc-file" class="input-field" accept="image/*" required style="padding: 12px;">
@@ -1011,6 +965,17 @@
     </div>
   </div>
 
+  <!-- NATIVE IMAGE VIEWER MODAL -->
+  <div id="doc-view-modal" class="modal-overlay" style="z-index: 3000;">
+    <div class="modal" style="background: transparent; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; padding:0;">
+      <div style="width:100%; display:flex; justify-content:flex-end; margin-bottom:10px;">
+        <button class="btn" style="background: rgba(0,0,0,0.8); color: white; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; display:flex; align-items:center; justify-content:center; padding:0;" onclick="closeModal('doc-view-modal')">×</button>
+      </div>
+      <img id="doc-view-image" style="max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+    </div>
+  </div>
+
+  <!-- Password Modal -->
   <div id="pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -1039,6 +1004,7 @@
     </div>
   </div>
 
+  <!-- Admin Password Modal -->
   <div id="admin-pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -1096,6 +1062,7 @@
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
+    // Mathematical Security
     function encryptData(text) { 
         return btoa(encodeURIComponent(text)); 
     }
@@ -1108,6 +1075,7 @@
         } 
     }
     
+    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -1115,6 +1083,12 @@
         document.body.appendChild(a); 
         a.click(); 
         document.body.removeChild(a); 
+    }
+
+    // Opens Native Image Viewer
+    function viewDoc(b64) {
+        document.getElementById('doc-view-image').src = b64;
+        document.getElementById('doc-view-modal').style.display = 'flex';
     }
 
     // --------------------------------------------------------------------------
@@ -1146,6 +1120,7 @@
         } 
     }
     
+    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
@@ -1168,8 +1143,10 @@
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
+    
+    window.currentDocCategory = null; // Track current Vault folder
 
-    // --- SANITIZATION ---
+    // --- SANITIZATION (CRASH PROTECTION) ---
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1257,8 +1234,6 @@
     // CLOUD SYNC ENGINE
     // --------------------------------------------------------------------------
     let isSyncing = false; 
-    
-    // FIX 1: Master lock to prevent backgroundSync from running right after you make an edit!
     window.pauseSync = false; 
 
     function apiGetJSONP(action) {
@@ -1293,7 +1268,7 @@
        try { 
            await fetch(APPS_SCRIPT_URL, { 
                method: 'POST', 
-               mode: 'no-cors', // FIX 2: Added to prevent CORS errors from silently crashing the sync lock
+               mode: 'no-cors', 
                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                body: JSON.stringify({ action: action, data: data, apiKey: API_KEY }) 
            }); 
@@ -1321,8 +1296,6 @@
 
         const cloudData = await apiGetJSONP('getDashboard');
         
-        // FIX 3: If you started editing something during the exact 2 seconds it took to download the data, 
-        // abort the overwrite completely to protect your edit!
         if (window.pauseSync) {
             isSyncing = false;
             return; 
@@ -1379,7 +1352,6 @@
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
-        // FIX 4: Explicitly map EVERY tab name so backgroundSync NEVER kicks you back to the home screen!
         if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
@@ -1624,11 +1596,8 @@
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
             try { 
-              window.pauseSync = true; // Lock the background sync from reverting edits
+              window.pauseSync = true; 
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
-              
-              // Wait 8 FULL seconds for Google Sheets to execute and confirm database update 
-              // before we permit the app to sync with the cloud again.
               setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
             } catch (err) { window.pauseSync = false; } 
         } 
@@ -1662,7 +1631,12 @@
       else if (view === 'budget') { title.innerText = 'Budget Tracker'; sub.innerText = 'Set limits and monitor category spending.'; container.innerHTML = renderBudget(); }
       else if (view === 'vehicle') { title.innerText = 'Vehicle Dashboard'; sub.innerText = 'Fuel consumption & Reserve-to-Reserve mileage calculator.'; container.innerHTML = renderVehicle(); }
       else if (view === 'reminders') { title.innerText = 'Reminders & Important Dates'; sub.innerText = 'Track upcoming bills, scheduled payments, and events.'; container.innerHTML = renderReminders(); }
-      else if (view === 'vault') { title.innerText = 'Encrypted Doc Vault'; sub.innerText = 'Securely store documents and screenshots.'; container.innerHTML = renderVault(); }
+      else if (view === 'vault') { 
+          window.currentDocCategory = null; 
+          title.innerText = 'Encrypted Doc Vault'; 
+          sub.innerText = 'Securely store documents and screenshots.'; 
+          container.innerHTML = renderVault(); 
+      }
       else if (view === 'passwords') { title.innerText = 'Encrypted Password Vault'; sub.innerText = 'Store app credentials securely with client-side encryption.'; container.innerHTML = renderPasswords(); }
       else if (view === 'statements') { title.innerText = 'Statements (Import / Export)'; sub.innerText = 'Move your data across devices or download CSV reports.'; container.innerHTML = renderStatements(); }
       else if (view === 'settings') { title.innerText = 'Settings & Security'; sub.innerText = 'Manage preferences, user access, and theme.'; container.innerHTML = renderSettings(); }
@@ -2261,156 +2235,101 @@
       }
     }
 
-    function renderReminders() {
-      try {
-        let pending = (reminders || []).filter(r => r && r.status === 'Pending').sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0)); 
-        let done = (reminders || []).filter(r => r && r.status === 'Done').sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
-        
-        const rowHtml = (r) => { 
-          const displayDate = r.date ? String(r.date).replace('T', ' ') : ''; 
-          const rType = r.type || '';
-          return `<tr>
-            <td>${displayDate}</td>
-            <td><span class="badge ${r.status === 'Pending' ? 'warn' : 'credit'}">${r.status || ''}</span></td>
-            <td><span class="badge ${rType.includes('Date') ? 'primary' : 'debit'}">${rType}</span></td>
-            <td style="font-weight:700;">${r.title || ''}</td>
-            <td>${r.amount ? '₹' + parseFloat(r.amount).toLocaleString('en-IN') : '-'}</td>
-            <td>
-              ${r.status === 'Pending' ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Mark Done</button>` : ''} 
-              <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
-            </td>
-          </tr>`; 
-        };
-        
-        return `
-          <div class="panel">
-            <div class="panel-head">
-              <h3>Scheduled Tracker</h3>
-              <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
-            </div>
-            <div class="table-responsive">
-              <table>
-                <thead><tr><th>Date & Time</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr></thead>
-                <tbody>${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No pending reminders.</td></tr>'}</tbody>
-              </table>
-            </div>
-            <br>
-            <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
-            <div class="table-responsive">
-              <table>
-                <tbody style="opacity: 0.6;">${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;">No completed history.</td></tr>'}</tbody>
-              </table>
-            </div>
-          </div>`;
-      } catch (err) {
-        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
-      }
+    // --------------------------------------------------------------------------
+    // VAULT ENGINE (WITH CATEGORY FOLDERS & NATIVE VIEWER)
+    // --------------------------------------------------------------------------
+    function openDocCategory(cat) {
+        window.currentDocCategory = cat;
+        document.getElementById('view-container').innerHTML = renderVaultCategory(cat);
     }
     
-    function openRemModal() { 
-      document.getElementById('rem-id').value = ''; 
-      document.getElementById('rem-title').value = ''; 
-      document.getElementById('rem-date').value = getLocalISOTime(); 
-      document.getElementById('rem-amount').value = ''; 
-      document.getElementById('rem-modal').style.display = 'grid'; 
-    }
-    
-    async function saveReminder(e) { 
-      e.preventDefault(); 
-      const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
-      const isEdit = document.getElementById('rem-id').value !== ''; 
-      
-      const record = { 
-        id: id, 
-        date: document.getElementById('rem-date').value, 
-        title: document.getElementById('rem-title').value, 
-        type: document.getElementById('rem-type').value, 
-        amount: parseFloat(document.getElementById('rem-amount').value) || null, 
-        status: 'Pending' 
-      }; 
-      
-      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
-      if (idx >= 0) reminders[idx] = record; else reminders.push(record); 
-      
-      reminders = deduplicateReminders(reminders); 
-      localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-      closeModal('rem-modal'); 
-      navigate('reminders'); 
-      
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-        try { 
-          window.pauseSync = true;
-          await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
-          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
-        } catch(err) { window.pauseSync = false; } 
-      } 
-    }
-    
-    async function markRemDone(id) { 
-      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
-      if (idx >= 0) { 
-        reminders[idx].status = 'Done'; 
-        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-        navigate('reminders'); 
-        
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { 
-            window.pauseSync = true;
-            await apiPost('editReminder', reminders[idx]); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
-          } catch(err) { window.pauseSync = false; } 
-        } 
-      } 
-    }
-    
-    async function deleteRem(id) { 
-      if(confirm('Delete this reminder?')) { 
-        reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
-        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-        navigate('reminders'); 
-        
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { 
-            window.pauseSync = true;
-            await apiPost('deleteReminder', { id }); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
-          } catch(err) { window.pauseSync = false; } 
-        } 
-      } 
+    function renderVaultCategory(cat) {
+        try {
+            const filteredDocs = (docs || []).filter(d => {
+                if(!d) return false;
+                const parts = (d.title || '').split('::');
+                const dCat = parts.length > 1 ? parts[0] : 'Other';
+                return dCat === cat;
+            });
+
+            const docHtml = filteredDocs.map(d => {
+                const parts = (d.title || '').split('::');
+                const actualTitle = parts.length > 1 ? parts.slice(1).join('::') : d.title;
+                
+                return `
+                <div class="doc-card">
+                  <img src="${d.b64 || ''}" onclick="viewDoc('${d.b64 || ''}')" style="cursor:pointer;">
+                  <div class="doc-card-info">
+                    <h4 style="font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${actualTitle || ''}</h4>
+                    <p style="font-size:11px; color:var(--muted);">${(d.date || '').split('T')[0]}</p>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                      <button class="btn" style="flex:1; font-size:11px;" onclick="viewDoc('${d.b64 || ''}')">👁️ View</button>
+                      <button class="btn primary" style="flex:1; font-size:11px;" onclick="downloadDoc('${d.b64 || ''}', '${actualTitle.replace(/'/g,"\\'")}')">⬇ Save</button>
+                    </div>
+                  </div>
+                </div>`;
+            }).join('');
+
+            return `
+              <div class="panel">
+                <div class="panel-head">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                      <button class="btn" onclick="navigate('vault')" style="padding: 6px 12px;">← Back</button>
+                      <h3>${cat}</h3>
+                  </div>
+                  <button class="btn primary" onclick="openDocModal('${cat}')">+ Upload Here</button>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+                  ${docHtml || '<p style="color:var(--muted);">No documents in this category.</p>'}
+                </div>
+              </div>`;
+        } catch (err) {
+            return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+        }
     }
 
     function renderVault() {
       try {
-        const docHtml = (docs || []).map(d => {
-          if (!d) return '';
-          return `
-            <div class="doc-card">
-              <img src="${d.b64 || ''}">
-              <div class="doc-card-info">
-                <h4 style="font-size:14px;">${d.title || ''}</h4>
-                <p style="font-size:11px; color:var(--muted);">${(d.date || '').split('T')[0]}</p>
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                  <button class="btn" style="flex:1; font-size:11px;" onclick="window.open('${d.b64 || ''}', '_blank')">View</button>
-                  <button class="btn primary" style="flex:1; font-size:11px;" onclick="downloadDoc('${d.b64 || ''}', '${(d.title || '').replace(/'/g,"\\'")}')">⬇ Save</button>
-                </div>
-              </div>
-            </div>`;
-        }).join('');
+        const categories = { 'ID Proofs': 0, 'Vehicle Docs': 0, 'Property & Rent': 0, 'Medical': 0, 'Bills & Receipts': 0, 'Other': 0 };
         
+        (docs || []).forEach(d => {
+            if(!d) return;
+            const parts = (d.title || '').split('::');
+            const cat = parts.length > 1 ? parts[0] : 'Other';
+            if (categories[cat] !== undefined) categories[cat]++;
+            else categories['Other']++;
+        });
+
+        let folderHtml = Object.keys(categories).map(cat => `
+          <div class="quick-tile" onclick="openDocCategory('${cat}')" style="padding: 20px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
+            <h3 style="font-size: 15px; font-weight: 700;">${cat}</h3>
+            <p style="font-size: 12px; color: var(--muted);">${categories[cat]} items</p>
+          </div>
+        `).join('');
+
         return `
           <div class="panel">
             <div class="panel-head">
               <h3>Encrypted Doc Vault</h3>
-              <button class="btn primary" onclick="document.getElementById('doc-modal').style.display='grid'">+ Upload Document</button>
+              <button class="btn primary" onclick="openDocModal()">+ Upload Document</button>
             </div>
-            <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Store important bills, screenshots, and RC books. Images are mathematically compressed and encrypted into Base64 to sync with your Cloud Storage.</p>
-            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
-              ${docHtml || '<p style="color:var(--muted);">Vault is empty.</p>'}
+            <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Select a category to view your securely stored documents.</p>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px;">
+              ${folderHtml}
             </div>
           </div>`;
       } catch (err) {
         return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
       }
+    }
+    
+    function openDocModal(cat = 'ID Proofs') {
+        document.getElementById('doc-title').value = '';
+        document.getElementById('doc-file').value = '';
+        const catSelect = document.getElementById('doc-category');
+        if(catSelect) catSelect.value = cat;
+        document.getElementById('doc-modal').style.display = 'grid';
     }
 
     function saveDoc(e) {
@@ -2420,7 +2339,11 @@
       btn.innerText = "Encrypting...";
       
       const file = document.getElementById('doc-file').files[0]; 
-      const title = document.getElementById('doc-title').value;
+      const rawTitle = document.getElementById('doc-title').value.trim();
+      const catSelect = document.getElementById('doc-category');
+      const cat = catSelect ? catSelect.value : 'Other';
+      const finalTitle = cat + '::' + rawTitle; // Merges category into title invisibly
+      
       if(!file) return;
       
       const reader = new FileReader();
@@ -2428,15 +2351,15 @@
           const img = new Image();
           img.onload = async () => {
               const canvas = document.createElement('canvas'); 
-              const MAX_WIDTH = 400; 
+              const MAX_WIDTH = 800; // Increased resolution for readability
               const scale = MAX_WIDTH / img.width;
               canvas.width = MAX_WIDTH; 
               canvas.height = img.height * scale;
               const ctx = canvas.getContext('2d'); 
               ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
               
-              const b64 = canvas.toDataURL('image/jpeg', 0.4); 
-              const docObj = { id: 'doc_' + Date.now(), date: new Date().toISOString(), title: title, b64: b64 };
+              const b64 = canvas.toDataURL('image/jpeg', 0.6); 
+              const docObj = { id: 'doc_' + Date.now(), date: new Date().toISOString(), title: finalTitle, b64: b64 };
               
               docs.unshift(docObj); 
               localStorage.setItem('gf_docs', JSON.stringify(docs));
@@ -2446,7 +2369,13 @@
               btn.innerText = "Encrypt & Upload"; 
               document.getElementById('doc-file').value=''; 
               document.getElementById('doc-title').value=''; 
-              navigate('vault');
+              
+              // Return to the current folder after upload
+              if (window.currentDocCategory) {
+                  document.getElementById('view-container').innerHTML = renderVaultCategory(window.currentDocCategory);
+              } else {
+                  navigate('vault');
+              }
               
               if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
                 try { 
