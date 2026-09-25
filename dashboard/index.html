@@ -642,7 +642,7 @@
 
     /* 
     ======================================================================
-    RESPONSIVE MEDIA QUERIES
+    RESPONSIVE WEB ADJUSTMENTS
     ======================================================================
     */
     @media (max-width: 850px) {
@@ -1073,7 +1073,7 @@
       this.parentElement.innerHTML = '<span style="font-size:18px; font-weight:800; color:#fff;">A</span>';
     });
 
-    // Master Clock
+    // Master Clock Updater
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -1090,23 +1090,27 @@
       }
     }, 1000);
 
+    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
+    // Mathematical Password Encryption
     function encryptData(text) { 
         return btoa(encodeURIComponent(text)); 
     }
     
+    // Mathematical Password Decryption
     function decryptData(text) { 
         try { 
             return decodeURIComponent(atob(text)); 
-        } catch(e) { 
+        } catch(e){ 
             return "Encryption Error"; 
         } 
     }
     
+    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -1116,9 +1120,11 @@
         document.body.removeChild(a); 
     }
 
-    // --- SECURITY TIMEOUT ---
+    // --------------------------------------------------------------------------
+    // SECURITY: INACTIVITY TIMEOUT ENGINE
+    // --------------------------------------------------------------------------
     let inactivityTimer; 
-    const TIMEOUT_MS = 10 * 60 * 1000;
+    const TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
     
     function autoLogout() { 
         localStorage.removeItem('gf_user'); 
@@ -1143,17 +1149,20 @@
         } 
     }
     
+    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
 
-    // --- STATE INITIALIZATION ---
+    // Theme Instantiation
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
+    // Base Category Configurations
     const expCategories = ['Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 'Credit Card Proxy Spend', 'Given Loan (Asset)', 'Gold Loan Paid', 'Personal Loan Paid', 'Vehicle Service', 'Vehicle Insurance', 'Home Maintenance', 'Saloon / Parlour', 'LIC Payment', 'Utility Bills', 'Shopping', 'Travel', 'Other Expense'];
     const incCategories = ['Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Credit Card Proxy Refund', 'Received Loan Repayment', 'Gold Loan Received', 'Personal Loan Received', 'Received Individual Loan'];
 
+    // Core Database Variables
     let ledger = []; 
     let users = JSON.parse(localStorage.getItem('gf_users')) || ['Admin', 'User 2'];
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 'Groceries': { type: 'Fixed', val: 15000 }, 'Credit Card Bill': { type: 'Percentage', val: 15 } };
@@ -1161,12 +1170,15 @@
     let docs = JSON.parse(localStorage.getItem('gf_docs')) || []; 
     let passwords = JSON.parse(localStorage.getItem('gf_passwords')) || [];
 
+    // Sorting State Variables
     let sortCol = 'date'; 
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
 
-    // --- SANITIZATION (CRASH PROTECTION) ---
+    // --------------------------------------------------------------------------
+    // DATABASE SANITIZATION ENGINE (Prevents Blank Screen Errors)
+    // --------------------------------------------------------------------------
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1203,8 +1215,9 @@
         return Array.from(map.values()).sort((a,b) => String(a.service).localeCompare(String(b.service))); 
     }
 
-    // --- CORE RENDERING ENGINE (THE MISSING FUNCTION) ---
-    // This perfectly formats all tables and guarantees no "undefined" crashes.
+    // --------------------------------------------------------------------------
+    // GLOBAL RENDER TABLE FUNCTION (Fixes ReferenceError across all tabs)
+    // --------------------------------------------------------------------------
     function renderTableHTML(data, title, sortable) {
       try {
           const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
@@ -1251,7 +1264,9 @@
       }
     }
 
-    // --- CLOUD SYNC ENGINE ---
+    // --------------------------------------------------------------------------
+    // CLOUD SYNC ENGINE
+    // --------------------------------------------------------------------------
     let isSyncing = false; 
 
     function apiGetJSONP(action) {
@@ -1381,6 +1396,7 @@
             } else { navigate('home'); }
         }
       } catch(e) { 
+          // Revert to displaying Home if API fails
           if (isBoot) navigate('home'); 
       } finally { 
           isSyncing = false; 
@@ -1406,6 +1422,7 @@
       }
       
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
+          // If no local data, wait for Cloud connection
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
                   <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
@@ -1413,6 +1430,7 @@
               </div>`;
           await backgroundSync(true);
       } else {
+          // If local data exists, load immediately, then background sync
           ledger = deduplicateLedger(JSON.parse(localData) || []);
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
           navigate('home');
@@ -1424,7 +1442,195 @@
       }
     }
 
-    // --- NAVIGATION ENGINE ---
+    // --------------------------------------------------------------------------
+    // USER MANAGEMENT & SECURITY CONTROLS
+    // --------------------------------------------------------------------------
+    function logout() {
+        if(confirm("Are you sure you want to log out?")) {
+            localStorage.removeItem('gf_user');
+            window.location.href = '../index.html'; 
+        }
+    }
+
+    async function addNewUser() {
+        const input = document.getElementById('new-username'); 
+        const name = input.value.trim();
+        if(name && !users.includes(name)) {
+            users.push(name); 
+            localStorage.setItem('gf_users', JSON.stringify(users)); 
+            input.value = ''; 
+            navigate('settings');
+            
+            if (APPS_SCRIPT_URL) { 
+                try { 
+                    await apiPost('addUser', { name: name }); 
+                } catch(err) {} 
+            }
+        }
+    }
+
+    async function removeUser(name) {
+        if(confirm(`Remove user ${name}?`)) {
+            users = users.filter(u => u !== name); 
+            localStorage.setItem('gf_users', JSON.stringify(users)); 
+            navigate('settings');
+            
+            if (APPS_SCRIPT_URL) { 
+                try { 
+                    await apiPost('removeUser', { name: name }); 
+                } catch(err) {} 
+            }
+        }
+    }
+
+    function openPasswordChange(uid) { 
+        document.getElementById('admin-pass-target-user').innerText = uid; 
+        document.getElementById('admin-pass-user-hidden').value = uid; 
+        document.getElementById('admin-new-pass').value = ''; 
+        document.getElementById('admin-pass-modal').style.display = 'grid'; 
+    }
+    
+    async function saveAdminPassChange(e) { 
+        e.preventDefault(); 
+        const btn = document.getElementById('admin-pass-btn'); 
+        btn.disabled = true; 
+        btn.innerText = "Hashing..."; 
+        
+        const uid = document.getElementById('admin-pass-user-hidden').value; 
+        const newPass = document.getElementById('admin-new-pass').value; 
+        
+        if (APPS_SCRIPT_URL) { 
+            try { 
+                await apiPost('changeUserPassword', { user: uid, newPass: newPass }); 
+                
+                // Update Local Device Cache simultaneously to prevent lockout
+                let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; 
+                authDB[uid.toLowerCase()] = btoa(newPass); 
+                localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
+                
+                alert(`Password successfully securely hashed and updated for ${uid}.`); 
+            } catch(err) { 
+                alert("Error changing password."); 
+            } 
+        } 
+        
+        closeModal('admin-pass-modal'); 
+        btn.disabled = false; 
+        btn.innerText = "Hash & Secure"; 
+    }
+
+    // --------------------------------------------------------------------------
+    // TRANSACTION MANAGEMENT (CRUD)
+    // --------------------------------------------------------------------------
+    function openTxModal(type) { 
+        document.getElementById('tx-form').reset(); 
+        document.getElementById('tx-id').value = ''; 
+        document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; 
+        document.getElementById('tx-type').value = type; 
+        document.getElementById('tx-date').value = getLocalISOTime(); 
+        document.getElementById('tx-save-btn').innerText = 'Save Transaction'; 
+        updateCatOptions(); 
+        document.getElementById('tx-modal').style.display = 'grid'; 
+    }
+    
+    function updateCatOptions() { 
+        const type = document.getElementById('tx-type').value; 
+        const catSelect = document.getElementById('tx-category'); 
+        const list = type === 'DEBIT' ? expCategories : incCategories; 
+        catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); 
+        
+        const userSelect = document.getElementById('tx-user'); 
+        if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join(''); 
+    }
+    
+    function editTx(id) { 
+        const t = ledger.find(x => String(x.id).trim() === String(id).trim()); 
+        if (!t) return; 
+        
+        document.getElementById('tx-id').value = t.id; 
+        document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; 
+        document.getElementById('tx-date').value = t.date; 
+        document.getElementById('tx-type').value = t.type; 
+        updateCatOptions(); 
+        document.getElementById('tx-category').value = t.category; 
+        document.getElementById('tx-desc').value = t.desc; 
+        document.getElementById('tx-amount').value = t.amount; 
+        document.getElementById('tx-user').value = t.user; 
+        document.getElementById('tx-method').value = t.method || 'UPI'; 
+        document.getElementById('tx-notes').value = t.notes || ''; 
+        document.getElementById('tx-save-btn').innerText = 'Update Transaction'; 
+        document.getElementById('tx-modal').style.display = 'grid'; 
+    }
+    
+    async function deleteTx(id) { 
+        if (!confirm('Delete this transaction permanently?')) return; 
+        
+        ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim()); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+        
+        const activeNav = document.querySelector('.nav-item.active').innerText; 
+        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              await apiPost('deleteTransaction', { id: id }); 
+            } catch (err) {} 
+        } 
+    }
+
+    async function saveTx(e) { 
+        e.preventDefault(); 
+        const btn = document.getElementById('tx-save-btn'); 
+        btn.disabled = true; 
+        btn.innerText = 'Saving...'; 
+        
+        const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now()); 
+        const isEdit = document.getElementById('tx-id').value !== ''; 
+        const rawDate = document.getElementById('tx-date').value || new Date().toISOString(); 
+        
+        const record = { 
+            id: id, 
+            date: rawDate, 
+            type: document.getElementById('tx-type').value, 
+            category: document.getElementById('tx-category').value || 'Other', 
+            method: document.getElementById('tx-method').value || 'UPI', 
+            desc: document.getElementById('tx-desc').value || 'Transaction', 
+            notes: document.getElementById('tx-notes').value || '', 
+            amount: parseFloat(document.getElementById('tx-amount').value) || 0, 
+            user: document.getElementById('tx-user').value || 'User' 
+        }; 
+        
+        const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim()); 
+        if (idx >= 0) {
+            ledger[idx] = record; 
+        } else {
+            ledger.unshift(record); 
+        }
+        
+        ledger = deduplicateLedger(ledger); 
+        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
+        closeModal('tx-modal'); 
+        
+        btn.disabled = false; 
+        btn.innerText = 'Save Transaction'; 
+        
+        const activeNav = document.querySelector('.nav-item.active').innerText; 
+        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+            try { 
+              await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
+            } catch (err) {} 
+        } 
+    }
+    
+    function closeModal(modalId) { 
+        document.getElementById(modalId).style.display = 'none'; 
+    }
+
+    // --------------------------------------------------------------------------
+    // DASHBOARD ROUTING & RENDERING ENGINE
+    // --------------------------------------------------------------------------
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       if (btn) { 
@@ -1452,7 +1658,6 @@
       else if (view === 'settings') { title.innerText = 'Settings & Security'; sub.innerText = 'Manage preferences, user access, and theme.'; container.innerHTML = renderSettings(); }
     }
 
-    // --- DASHBOARD RENDERERS (CRASH-PROOFED) ---
     function renderHome() {
       try {
         const currentHour = new Date().getHours(); 
@@ -1624,7 +1829,11 @@
     
     function executeSearch() { 
       const q = document.getElementById('search-input').value.toLowerCase(); 
-      const filtered = ledger.filter(t => (t.desc || '').toLowerCase().includes(q) || (t.category || '').toLowerCase().includes(q) || (t.amount || 0).toString().includes(q)); 
+      const filtered = ledger.filter(t => 
+        (t.desc || '').toLowerCase().includes(q) || 
+        (t.category || '').toLowerCase().includes(q) || 
+        (t.amount || 0).toString().includes(q)
+      ); 
       document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
     
