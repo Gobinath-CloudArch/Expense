@@ -1073,7 +1073,7 @@
       this.parentElement.innerHTML = '<span style="font-size:18px; font-weight:800; color:#fff;">A</span>';
     });
 
-    // Master Clock Updater
+    // Master Clock
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -1090,27 +1090,23 @@
       }
     }, 1000);
 
-    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
-    // Mathematical Password Encryption
     function encryptData(text) { 
         return btoa(encodeURIComponent(text)); 
     }
     
-    // Mathematical Password Decryption
     function decryptData(text) { 
         try { 
             return decodeURIComponent(atob(text)); 
-        } catch(e){ 
+        } catch(e) { 
             return "Encryption Error"; 
         } 
     }
     
-    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -1120,11 +1116,9 @@
         document.body.removeChild(a); 
     }
 
-    // --------------------------------------------------------------------------
-    // SECURITY: INACTIVITY TIMEOUT ENGINE
-    // --------------------------------------------------------------------------
+    // --- SECURITY TIMEOUT ---
     let inactivityTimer; 
-    const TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
+    const TIMEOUT_MS = 10 * 60 * 1000;
     
     function autoLogout() { 
         localStorage.removeItem('gf_user'); 
@@ -1149,20 +1143,17 @@
         } 
     }
     
-    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
 
-    // Theme Instantiation
+    // --- STATE INITIALIZATION ---
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
-    // Base Category Configurations
     const expCategories = ['Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 'Credit Card Proxy Spend', 'Given Loan (Asset)', 'Gold Loan Paid', 'Personal Loan Paid', 'Vehicle Service', 'Vehicle Insurance', 'Home Maintenance', 'Saloon / Parlour', 'LIC Payment', 'Utility Bills', 'Shopping', 'Travel', 'Other Expense'];
     const incCategories = ['Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Credit Card Proxy Refund', 'Received Loan Repayment', 'Gold Loan Received', 'Personal Loan Received', 'Received Individual Loan'];
 
-    // Core Database Variables
     let ledger = []; 
     let users = JSON.parse(localStorage.getItem('gf_users')) || ['Admin', 'User 2'];
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 'Groceries': { type: 'Fixed', val: 15000 }, 'Credit Card Bill': { type: 'Percentage', val: 15 } };
@@ -1170,15 +1161,12 @@
     let docs = JSON.parse(localStorage.getItem('gf_docs')) || []; 
     let passwords = JSON.parse(localStorage.getItem('gf_passwords')) || [];
 
-    // Sorting State Variables
     let sortCol = 'date'; 
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
 
-    // --------------------------------------------------------------------------
-    // DATABASE SANITIZATION ENGINE (Prevents Blank Screen Errors)
-    // --------------------------------------------------------------------------
+    // --- SANITIZATION ---
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1215,9 +1203,7 @@
         return Array.from(map.values()).sort((a,b) => String(a.service).localeCompare(String(b.service))); 
     }
 
-    // --------------------------------------------------------------------------
-    // GLOBAL RENDER TABLE FUNCTION (Fixes ReferenceError across all tabs)
-    // --------------------------------------------------------------------------
+    // --- RENDER TABLE FUNCTION ---
     function renderTableHTML(data, title, sortable) {
       try {
           const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
@@ -1264,18 +1250,17 @@
       }
     }
 
-    // --------------------------------------------------------------------------
-    // CLOUD SYNC ENGINE
-    // --------------------------------------------------------------------------
+    // --- CLOUD SYNC ENGINE ---
     let isSyncing = false; 
+    
+    // FIX: Master sync block to prevent reverting edits!
+    window.pauseSync = false; 
 
     function apiGetJSONP(action) {
       return new Promise((resolve, reject) => {
         if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return reject(new Error("Missing URL"));
         
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
-        
-        // Timeout Failsafe: Kills infinite spinners if network fails
         const timeoutId = setTimeout(() => {
             reject(new Error("Timeout: Master Storage did not respond."));
         }, 15000);
@@ -1314,7 +1299,9 @@
 
     async function backgroundSync(isBoot = false) {
       if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PASTE")) return;
-      if (isSyncing) return; 
+      
+      // FIX: If we just edited something, abort background sync so it doesn't revert your data!
+      if (isSyncing || window.pauseSync) return; 
       isSyncing = true;
 
       try {
@@ -1351,6 +1338,7 @@
 
         let requiresRefresh = false;
 
+        // If we have local data that isn't in the cloud yet, push it up first
         if (missingInCloud.length > 0 || missingRems.length > 0 || missingDocs.length > 0 || missingPass.length > 0) {
            for (const tx of missingInCloud) { await apiPost('addTransaction', tx); }
            for (const r of missingRems) { await apiPost('addReminder', r); }
@@ -1396,7 +1384,6 @@
             } else { navigate('home'); }
         }
       } catch(e) { 
-          // Revert to displaying Home if API fails
           if (isBoot) navigate('home'); 
       } finally { 
           isSyncing = false; 
@@ -1422,7 +1409,6 @@
       }
       
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
-          // If no local data, wait for Cloud connection
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
                   <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
@@ -1430,7 +1416,6 @@
               </div>`;
           await backgroundSync(true);
       } else {
-          // If local data exists, load immediately, then background sync
           ledger = deduplicateLedger(JSON.parse(localData) || []);
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
           navigate('home');
@@ -1443,7 +1428,7 @@
     }
 
     // --------------------------------------------------------------------------
-    // USER MANAGEMENT & SECURITY CONTROLS
+    // USER MANAGEMENT
     // --------------------------------------------------------------------------
     function logout() {
         if(confirm("Are you sure you want to log out?")) {
@@ -1463,8 +1448,10 @@
             
             if (APPS_SCRIPT_URL) { 
                 try { 
+                    window.pauseSync = true;
                     await apiPost('addUser', { name: name }); 
-                } catch(err) {} 
+                    setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+                } catch(err) { window.pauseSync = false; } 
             }
         }
     }
@@ -1477,8 +1464,10 @@
             
             if (APPS_SCRIPT_URL) { 
                 try { 
+                    window.pauseSync = true;
                     await apiPost('removeUser', { name: name }); 
-                } catch(err) {} 
+                    setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+                } catch(err) { window.pauseSync = false; } 
             }
         }
     }
@@ -1503,7 +1492,6 @@
             try { 
                 await apiPost('changeUserPassword', { user: uid, newPass: newPass }); 
                 
-                // Update Local Device Cache simultaneously to prevent lockout
                 let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; 
                 authDB[uid.toLowerCase()] = btoa(newPass); 
                 localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
@@ -1562,6 +1550,7 @@
         document.getElementById('tx-modal').style.display = 'grid'; 
     }
     
+    // FIX: Added pauseSync to prevent data reverting during deletion
     async function deleteTx(id) { 
         if (!confirm('Delete this transaction permanently?')) return; 
         
@@ -1573,11 +1562,14 @@
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
             try { 
+              window.pauseSync = true;
               await apiPost('deleteTransaction', { id: id }); 
-            } catch (err) {} 
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+            } catch (err) { window.pauseSync = false; } 
         } 
     }
 
+    // FIX: Added pauseSync to prevent the "revert back" issue seen in the video
     async function saveTx(e) { 
         e.preventDefault(); 
         const btn = document.getElementById('tx-save-btn'); 
@@ -1619,8 +1611,11 @@
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
             try { 
+              window.pauseSync = true; // Lock the sync
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
-            } catch (err) {} 
+              // Wait 5 seconds for Google Sheets to finish writing before we allow it to sync again
+              setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000); 
+            } catch (err) { window.pauseSync = false; } 
         } 
     }
     
@@ -2021,8 +2016,10 @@
       
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
         try { 
+          window.pauseSync = true;
           apiPost('updateBudget', { category: cat, type: type, val: val }); 
-        } catch(err) {} 
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+        } catch(err) { window.pauseSync = false; } 
       } 
     }
 
@@ -2116,8 +2113,10 @@
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
           try { 
+            window.pauseSync = true;
             await apiPost('addTransaction', record); 
-          } catch (err) { } 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+          } catch (err) { window.pauseSync = false; } 
         }
     }
 
@@ -2325,8 +2324,10 @@
       
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
         try { 
+          window.pauseSync = true;
           await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
-        } catch(err) {} 
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+        } catch(err) { window.pauseSync = false; } 
       } 
     }
     
@@ -2338,7 +2339,11 @@
         navigate('reminders'); 
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { await apiPost('editReminder', reminders[idx]); } catch(err) {} 
+          try { 
+            window.pauseSync = true;
+            await apiPost('editReminder', reminders[idx]); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+          } catch(err) { window.pauseSync = false; } 
         } 
       } 
     }
@@ -2350,7 +2355,11 @@
         navigate('reminders'); 
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { await apiPost('deleteReminder', { id }); } catch(err) {} 
+          try { 
+            window.pauseSync = true;
+            await apiPost('deleteReminder', { id }); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+          } catch(err) { window.pauseSync = false; } 
         } 
       } 
     }
@@ -2425,7 +2434,11 @@
               navigate('vault');
               
               if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-                try { await apiPost('addDoc', docObj); } catch(err){} 
+                try { 
+                  window.pauseSync = true;
+                  await apiPost('addDoc', docObj); 
+                  setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+                } catch(err){ window.pauseSync = false; } 
               }
           };
           img.src = ev.target.result;
@@ -2494,7 +2507,11 @@
         navigate('passwords');
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { await apiPost('addPassword', passObj); } catch(err){} 
+          try { 
+            window.pauseSync = true;
+            await apiPost('addPassword', passObj); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+          } catch(err){ window.pauseSync = false; } 
         }
     }
 
@@ -2505,7 +2522,11 @@
             navigate('passwords');
             
             if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-              try { await apiPost('deletePassword', { id }); } catch(err) {} 
+              try { 
+                window.pauseSync = true;
+                await apiPost('deletePassword', { id }); 
+                setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 5000);
+              } catch(err) { window.pauseSync = false; } 
             }
         }
     }
@@ -2640,7 +2661,10 @@
             alert(`✅ Backup Restored: Merged ${added} new transactions.`); 
             navigate('records'); 
             
-            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); 
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+              window.pauseSync = false;
+              backgroundSync(); 
+            }
           } else { 
             alert("Invalid backup file format."); 
           } 
@@ -2768,7 +2792,10 @@
         localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
         alert(`Successfully imported ${addedCount} transactions locally.`); 
         document.getElementById('import-text').value = ''; 
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) backgroundSync(); 
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) {
+          window.pauseSync = false;
+          backgroundSync(); 
+        }
       } else { 
         alert('Could not find recognizable dates or amounts. Ensure text contains dates (DD/MM/YYYY) and numbers.'); 
       } 
