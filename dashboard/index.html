@@ -1104,24 +1104,34 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Interest Rate (%) <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
-            <input type="number" id="al-rate" step="0.01" class="input-field" placeholder="e.g. 10.5">
+            <label>Interest Rate (% / Year) <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="number" id="al-rate" step="0.01" class="input-field" placeholder="e.g. 9.5">
           </div>
         </div>
         <div class="grid-2">
           <div class="form-group">
             <label>Total Principal Amount (₹)</label>
-            <input type="number" id="al-total" step="0.01" class="input-field" required>
+            <input type="number" id="al-total" step="0.01" class="input-field" required placeholder="e.g. 100000">
           </div>
           <div class="form-group">
-            <label>Amount Already Paid (₹)</label>
-            <input type="number" id="al-paid" step="0.01" class="input-field" required>
+            <label>Principal Already Paid (₹)</label>
+            <input type="number" id="al-paid" step="0.01" class="input-field" required placeholder="0">
           </div>
         </div>
         <div class="grid-2">
           <div class="form-group">
-            <label>Monthly EMI (₹) <span style="font-size:9px;color:var(--muted)">(Flexible if empty)</span></label>
-            <input type="number" id="al-emi" step="0.01" class="input-field" placeholder="Leave empty for flexible payments">
+            <label>Monthly EMI (₹) <span style="font-size:9px;color:var(--muted)">(Leave blank if Flexible/Gold)</span></label>
+            <input type="number" id="al-emi" step="0.01" class="input-field" placeholder="Flexible if left blank">
+          </div>
+          <div class="form-group">
+            <label>Interest Paid So Far (₹) <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="number" id="al-interest-paid" step="0.01" class="input-field" placeholder="0.00">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Loan Start Date <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
+            <input type="date" id="al-start" class="input-field">
           </div>
           <div class="form-group">
             <label>Expected End Date <span style="font-size:9px;color:var(--muted)">(Optional)</span></label>
@@ -1258,9 +1268,9 @@
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
     
-    window.currentDocCategory = null; // Track current Vault folder
+    window.currentDocCategory = null; 
 
-    // --- SANITIZATION (CRASH PROTECTION) ---
+    // --- SANITIZATION ---
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1480,7 +1490,7 @@
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
               else if(navText.includes('Doc Vault') || (navText.includes('Vault') && !navText.includes('Pass'))) navigate('vault', activeNav);
               else if(navText.includes('Pass Vault') || navText.includes('Pass')) navigate('passwords', activeNav);
-              else if(navText.includes('Sync') || navText.includes('Export') || navText.includes('Import')) navigate('statements', activeNav);
+              else if(navText.includes('Sync') || navText.includes('Export')) navigate('statements', activeNav);
               else if(navText.includes('Settings')) navigate('settings', activeNav);
               else navigate('home');
             } else { navigate('home'); }
@@ -1881,7 +1891,7 @@
 
     function renderOverviewChart() {
       const ctx = document.getElementById('overviewChart'); 
-      if (!ctx || typeof Chart === 'undefined') return;
+      if (!ctx || typeof Chart === 'undefined') return; 
       
       let m1 = 0, m1_e = 0, m2 = 0, m2_e = 0;
       
@@ -1955,7 +1965,7 @@
       document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
 
-    // --- LOAN MANAGEMENT ENGINE ---
+    // --- LOAN MANAGEMENT ENGINE (WITH ADVANCED INTEREST & TOTAL OUTSTANDING) ---
     function renderLoans() {
       try {
         const loanData = (ledger || []).filter(t => t.type !== 'ACTIVE_LOAN' && ((t.category || '').includes('Loan') || (t.category || '').includes('Lent')));
@@ -1970,59 +1980,108 @@
             if ((t.category || '').includes('Paid') && t.category !== 'Rent Paid' && t.category !== 'LIC Payment') debtRepaid += (t.amount || 0);
         });
 
+        // Totals for Active Loan Portfolio
+        let totalActivePrincipal = 0;
+        let totalActivePaid = 0;
+        let totalActivePending = 0;
+        let totalActiveInterestPaid = 0;
+
         let activeLoansHtml = activeLoans.map(al => {
           let notes = {}; try { notes = JSON.parse(al.notes || '{}'); } catch(e){}
+          let principal = al.amount || 0;
           let paid = notes.paid || 0;
-          let pending = Math.max(0, (al.amount || 0) - paid);
-          let pct = al.amount > 0 ? Math.min(100, Math.round((paid / al.amount) * 100)) : 0;
+          let pending = Math.max(0, principal - paid);
+          let rate = notes.rate || 0;
+          let emi = notes.emi || 0;
+          let interestPaid = notes.interestPaid || 0;
+          let fee = notes.fee || 0;
+          let startDate = notes.startDate || '';
+          let endDate = notes.endDate || '';
           
-          let emiDisplay = notes.emi > 0 ? '₹' + notes.emi.toLocaleString('en-IN') : 'Flexible';
-          let rateDisplay = notes.rate > 0 ? `(${notes.rate}%)` : '';
-          let feeDisplay = notes.fee > 0 ? ` | Fee: ₹${notes.fee.toLocaleString('en-IN')}` : '';
+          totalActivePrincipal += principal;
+          totalActivePaid += paid;
+          totalActivePending += pending;
+          totalActiveInterestPaid += interestPaid;
+
+          let pct = principal > 0 ? Math.min(100, Math.round((paid / principal) * 100)) : 0;
           
+          // Monthly Interest calculation based on remaining balance
+          let monthlyInterest = rate > 0 ? Math.round((pending * (rate / 100)) / 12) : 0;
+          
+          // Accrued interest estimation if Start Date provided
+          let accruedInterestInfo = '';
+          if (startDate && rate > 0) {
+            let start = new Date(startDate);
+            let now = new Date();
+            let daysElapsed = Math.max(0, Math.round((now - start) / (1000 * 60 * 60 * 24)));
+            let monthsElapsed = (daysElapsed / 30.44).toFixed(1);
+            let approxAccrued = Math.round(principal * (rate / 100) * (daysElapsed / 365.25));
+            accruedInterestInfo = `<div style="font-size:11px; color:var(--muted); margin-top:4px;">Tenure: <strong>${daysElapsed} days (~${monthsElapsed} mos)</strong> elapsed | Est. Accrued Interest: <strong style="color:var(--warn);">₹${approxAccrued.toLocaleString('en-IN')}</strong></div>`;
+          }
+
+          let emiDisplay = emi > 0 ? `₹${emi.toLocaleString('en-IN')}/mo` : `<span style="color:var(--primary); font-weight:bold;">Flexible (No Fixed EMI)</span>`;
+          let rateDisplay = rate > 0 ? `${rate}% / yr (~₹${monthlyInterest.toLocaleString('en-IN')}/mo)` : 'Not specified';
+          let feeDisplay = fee > 0 ? ` | Fee: ₹${fee.toLocaleString('en-IN')}` : '';
+
           return `
             <div class="panel" style="background:rgba(255,255,255,0.02); margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center; flex-wrap:wrap; gap:8px;">
                     <h4 style="color:var(--text); font-size:16px; font-weight:800;">${al.desc} <span class="badge" style="background:rgba(255,255,255,0.1); color:var(--muted); font-weight:normal; margin-left:8px;">${al.category}</span></h4>
                     <div style="display:flex; gap:6px;">
                         <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editActiveLoan('${al.id}')">✎ Edit</button>
                         <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteActiveLoan('${al.id}')">🗑</button>
                     </div>
                 </div>
-                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-bottom:16px; margin-top:16px;">
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px; margin-top:12px;">
                     <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
-                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">TOTAL AMOUNT</div>
-                        <div style="font-size:16px; font-weight:bold; color:var(--primary);">₹${(al.amount || 0).toLocaleString('en-IN')}</div>
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PRINCIPAL AMOUNT</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--primary);">₹${principal.toLocaleString('en-IN')}</div>
                     </div>
                     <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
-                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PAID AMOUNT</div>
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PRINCIPAL PAID</div>
                         <div style="font-size:16px; font-weight:bold; color:var(--green);">₹${paid.toLocaleString('en-IN')}</div>
                     </div>
                     <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
-                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">PENDING AMOUNT</div>
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">OUTSTANDING (PENDING)</div>
                         <div style="font-size:16px; font-weight:bold; color:var(--red);">₹${pending.toLocaleString('en-IN')}</div>
                     </div>
                     <div style="padding:10px; border:1px solid var(--border); border-radius:10px; background:rgba(0,0,0,0.2);">
-                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">EMI / PAYMENT PLAN</div>
-                        <div style="font-size:16px; font-weight:bold;">${emiDisplay} <span style="font-size:11px; color:var(--muted); font-weight:normal;">${rateDisplay}${feeDisplay}</span></div>
+                        <div style="font-size:10px; color:var(--muted); margin-bottom:4px;">INTEREST PAID</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--warn);">₹${interestPaid.toLocaleString('en-IN')}</div>
                     </div>
                 </div>
+                
+                <div style="padding:10px 14px; background:rgba(0,0,0,0.2); border-radius:10px; border:1px solid var(--border); margin-bottom:12px; font-size:12px;">
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                      <div><strong>Plan:</strong> ${emiDisplay}</div>
+                      <div><strong>Interest Rate:</strong> ${rateDisplay}${feeDisplay}</div>
+                      <div><strong>Start:</strong> ${startDate || 'N/A'} | <strong>End:</strong> ${endDate || 'Flexible'}</div>
+                    </div>
+                    ${accruedInterestInfo}
+                </div>
+
                 <div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:var(--green);"></div></div>
-                <div style="font-size:11px; color:var(--muted); text-align:right; margin-top:6px;">Ends on: ${notes.endDate || 'Flexible'} <span style="color:var(--green); font-weight:bold; margin-left:4px;">(${pct}% Paid)</span></div>
+                <div style="font-size:11px; color:var(--muted); text-align:right; margin-top:6px;">Principal Repaid: <span style="color:var(--green); font-weight:bold;">${pct}%</span></div>
             </div>`;
         }).join('');
 
         return `
-        <div class="kpi-grid">
+        <!-- Main Top KPI Cards -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
+            <div class="panel" style="margin:0; padding:20px; border-color:var(--red); box-shadow: 0 0 15px rgba(255,82,99,0.15);">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">TOTAL LOAN OUTSTANDING</div>
+                <div style="font-size:26px; font-weight:bold; color:var(--red);">₹${totalActivePending.toLocaleString('en-IN')}</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:6px;">Borrowed: ₹${totalActivePrincipal.toLocaleString('en-IN')} | Principal Paid: ₹${totalActivePaid.toLocaleString('en-IN')} | Interest Paid: ₹${totalActiveInterestPaid.toLocaleString('en-IN')}</div>
+            </div>
             <div class="panel" style="margin:0; padding:20px; border-color:var(--green);">
                 <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">LOANS GIVEN (ASSETS)</div>
-                <div style="font-size:22px; font-weight:bold; color:var(--green);">₹${assetGiven.toLocaleString()}</div>
-                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${assetRepaid.toLocaleString()} | Pending: ₹${(assetGiven - assetRepaid).toLocaleString()}</div>
+                <div style="font-size:24px; font-weight:bold; color:var(--green);">₹${assetGiven.toLocaleString()}</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:6px;">Repaid: ₹${assetRepaid.toLocaleString()} | Pending: ₹${(assetGiven - assetRepaid).toLocaleString()}</div>
             </div>
-            <div class="panel" style="margin:0; padding:20px; border-color:var(--red);">
-                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">LOANS TAKEN (DEBTS)</div>
-                <div style="font-size:22px; font-weight:bold; color:var(--red);">₹${debtReceived.toLocaleString()}</div>
-                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Repaid: ₹${debtRepaid.toLocaleString()} | Pending: ₹${(debtReceived - debtRepaid).toLocaleString()}</div>
+            <div class="panel" style="margin:0; padding:20px; border-color:var(--warn);">
+                <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">RECORDED TAKEN LOANS</div>
+                <div style="font-size:24px; font-weight:bold; color:var(--warn);">₹${debtReceived.toLocaleString()}</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:6px;">Repaid: ₹${debtRepaid.toLocaleString()} | Pending: ₹${(debtReceived - debtRepaid).toLocaleString()}</div>
             </div>
         </div>
         
@@ -2031,7 +2090,7 @@
                 <h3>Active Loan Portfolios</h3>
                 <button class="btn primary" onclick="openActiveLoanModal()">+ Add Loan Account</button>
             </div>
-            <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Track your current active loans, pending amounts, EMI, and interest rates.</p>
+            <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">Track your current active loans, month-on-month flexible repayments, interest rates, and total outstanding balances.</p>
             <div class="chart-container" style="height:250px; margin-bottom:24px; display:none;" id="loanChartContainer"><canvas id="loanChart"></canvas></div>
             ${activeLoansHtml || '<p style="text-align:center; color:var(--muted); padding:20px;">No active loans added.</p>'}
         </div>
@@ -2058,14 +2117,16 @@
         const paidData = activeLoans.map(l => {
             try { const n = JSON.parse(l.notes); return n.paid || 0; } catch(e){ return 0; }
         });
+        const pendingData = activeLoans.map((l, i) => Math.max(0, totalData[i] - paidData[i]));
 
         new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Total Loan Amount', data: totalData, backgroundColor: '#4f6bf7' },
-                    { label: 'Amount Paid', data: paidData, backgroundColor: '#2ed573' }
+                    { label: 'Outstanding (Pending)', data: pendingData, backgroundColor: '#ff5263' },
+                    { label: 'Principal Paid', data: paidData, backgroundColor: '#2ed573' },
+                    { label: 'Total Principal', data: totalData, backgroundColor: '#4f6bf7' }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false }
@@ -2079,8 +2140,10 @@
         document.getElementById('al-paid').value = '0';
         document.getElementById('al-rate').value = '';
         document.getElementById('al-emi').value = '';
-        document.getElementById('al-fee').value = '';
+        document.getElementById('al-interest-paid').value = '';
+        document.getElementById('al-start').value = '';
         document.getElementById('al-end').value = '';
+        document.getElementById('al-fee').value = '';
         document.getElementById('al-modal-title').innerText = 'Add Active Loan';
         document.getElementById('al-modal').style.display = 'grid';
     }
@@ -2098,8 +2161,10 @@
         document.getElementById('al-paid').value = notes.paid || 0;
         document.getElementById('al-rate').value = notes.rate || '';
         document.getElementById('al-emi').value = notes.emi || '';
-        document.getElementById('al-fee').value = notes.fee || '';
+        document.getElementById('al-interest-paid').value = notes.interestPaid || '';
+        document.getElementById('al-start').value = notes.startDate || '';
         document.getElementById('al-end').value = notes.endDate || '';
+        document.getElementById('al-fee').value = notes.fee || '';
         
         document.getElementById('al-modal-title').innerText = 'Edit Active Loan';
         document.getElementById('al-modal').style.display = 'grid';
@@ -2132,7 +2197,9 @@
             paid: parseFloat(document.getElementById('al-paid').value) || 0,
             rate: parseFloat(document.getElementById('al-rate').value) || 0,
             emi: parseFloat(document.getElementById('al-emi').value) || 0,
+            interestPaid: parseFloat(document.getElementById('al-interest-paid').value) || 0,
             fee: parseFloat(document.getElementById('al-fee').value) || 0,
+            startDate: document.getElementById('al-start').value || '',
             endDate: document.getElementById('al-end').value || ''
         };
         
@@ -2653,7 +2720,7 @@
           const img = new Image();
           img.onload = async () => {
               const canvas = document.createElement('canvas'); 
-              const MAX_WIDTH = 800; // Increased resolution for high-definition document view
+              const MAX_WIDTH = 800; 
               const scale = MAX_WIDTH / img.width;
               canvas.width = MAX_WIDTH; 
               canvas.height = img.height * scale;
@@ -3095,33 +3162,9 @@
 
     // --- STANDARD WEB VOICE BROWSER SUPPORT ---
     async function startVoiceAssistant() { 
-        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SpeechRecognition) {
-            try {
-                const { SpeechRecognition } = Capacitor.Plugins;
-                const hasPerm = await SpeechRecognition.checkPermissions();
-                if (hasPerm.speechRecognition !== 'granted') await SpeechRecognition.requestPermissions();
-                
-                const topBtn = document.getElementById('voice-top-btn'); 
-                const modalBtn = document.getElementById('voice-modal-btn'); 
-                
-                if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; } 
-                if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; } 
-                
-                const result = await SpeechRecognition.start({ language: "en-IN", maxResults: 1, prompt: "Say your expense..." });
-                resetVoiceUI();
-                
-                if (result && result.matches && result.matches.length > 0) {
-                    processVoiceCommand(result.matches[0]);
-                }
-                return;
-            } catch(err) {
-                resetVoiceUI();
-            }
-        }
-    
         const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; 
         if (!WebSpeech) { 
-            alert("Voice recognition is restricted. Install the Native App."); 
+            alert("Voice recognition is restricted in this browser."); 
             return; 
         } 
         try { 
