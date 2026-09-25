@@ -11,12 +11,15 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
-    /* ==========================================================================
-       ENTERPRISE THEMING SYSTEM
-       ========================================================================== */
+    /* 
+    ======================================================================
+    ENTERPRISE THEMING SYSTEM
+    ======================================================================
+    */
     :root[data-theme="dark"] { 
       --bg-color: #070b14; 
-      --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
+      --bg-img: linear-gradient(rgba(7, 11, 20, 0.92), rgba(7, 11, 20, 0.92)), 
+                url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop'); 
       --sidebar: rgba(9, 15, 29, 0.7); 
       --panel: rgba(14, 21, 38, 0.75); 
       --border: rgba(30, 46, 78, 0.8); 
@@ -29,7 +32,8 @@
     
     :root[data-theme="light"] { 
       --bg-color: #f4f7f9; 
-      --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); 
+      --bg-img: linear-gradient(rgba(244, 247, 249, 0.88), rgba(244, 247, 249, 0.88)), 
+                url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop'); 
       --sidebar: rgba(255, 255, 255, 0.6); 
       --panel: rgba(255, 255, 255, 0.7); 
       --border: rgba(225, 229, 235, 0.8); 
@@ -42,7 +46,8 @@
     
     :root[data-theme="neo-glass"] { 
       --bg-color: #0f172a; 
-      --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); 
+      --bg-img: radial-gradient(at 0% 0%, rgba(56, 30, 114, 0.4) 0px, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0px, transparent 50%); 
       --sidebar: rgba(15, 23, 42, 0.4); 
       --panel: rgba(17, 24, 39, 0.5); 
       --border: rgba(255, 255, 255, 0.1); 
@@ -55,7 +60,8 @@
     
     :root[data-theme="love"] { 
       --bg-color: #1a050a; 
-      --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop'); 
+      --bg-img: linear-gradient(rgba(26, 5, 10, 0.88), rgba(26, 5, 10, 0.88)), 
+                url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop'); 
       --sidebar: rgba(40, 10, 20, 0.5); 
       --panel: rgba(60, 15, 30, 0.6); 
       --border: rgba(255, 77, 109, 0.25); 
@@ -68,7 +74,8 @@
     
     :root[data-theme="cyberpunk"] { 
       --bg-color: #0d0221; 
-      --bg-img: linear-gradient(rgba(13, 2, 33, 0.9), rgba(13, 2, 33, 0.9)), url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000'); 
+      --bg-img: linear-gradient(rgba(13, 2, 33, 0.9), rgba(13, 2, 33, 0.9)), 
+                url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2000'); 
       --sidebar: rgba(13, 2, 33, 0.8); 
       --panel: rgba(26, 9, 51, 0.8); 
       --border: #00ffcc; 
@@ -84,7 +91,8 @@
     
     :root[data-theme="ocean"] { 
       --bg-color: #001f3f; 
-      --bg-img: linear-gradient(rgba(0, 31, 63, 0.9), rgba(0, 31, 63, 0.9)), url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000'); 
+      --bg-img: linear-gradient(rgba(0, 31, 63, 0.9), rgba(0, 31, 63, 0.9)), 
+                url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000'); 
       --sidebar: rgba(0, 31, 63, 0.7); 
       --panel: rgba(0, 43, 86, 0.8); 
       --border: rgba(0, 116, 217, 0.5); 
@@ -100,7 +108,8 @@
     
     :root[data-theme="forest"] { 
       --bg-color: #011f10; 
-      --bg-img: linear-gradient(rgba(1, 31, 16, 0.9), rgba(1, 31, 16, 0.9)), url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2000'); 
+      --bg-img: linear-gradient(rgba(1, 31, 16, 0.9), rgba(1, 31, 16, 0.9)), 
+                url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2000'); 
       --sidebar: rgba(1, 31, 16, 0.7); 
       --panel: rgba(2, 43, 22, 0.8); 
       --border: rgba(39, 174, 96, 0.5); 
@@ -116,7 +125,8 @@
     
     :root[data-theme="sunset"] { 
       --bg-color: #2c0e18; 
-      --bg-img: linear-gradient(rgba(44, 14, 24, 0.85), rgba(44, 14, 24, 0.85)), url('https://images.unsplash.com/photo-1502489597346-bf10f4d5be94?q=80&w=2000'); 
+      --bg-img: linear-gradient(rgba(44, 14, 24, 0.85), rgba(44, 14, 24, 0.85)), 
+                url('https://images.unsplash.com/photo-1502489597346-bf10f4d5be94?q=80&w=2000'); 
       --sidebar: rgba(44, 14, 24, 0.6); 
       --panel: rgba(60, 20, 35, 0.75); 
       --border: rgba(255, 118, 117, 0.4); 
@@ -136,9 +146,11 @@
       --warn: #fbc531; 
     }
 
-    /* ==========================================================================
-       CORE LAYOUT & RESET
-       ========================================================================== */
+    /* 
+    ======================================================================
+    CORE LAYOUT & RESET
+    ======================================================================
+    */
     * { 
       box-sizing: border-box; 
       margin: 0; 
@@ -189,10 +201,12 @@
       -webkit-backdrop-filter: blur(var(--glass-blur)); 
       box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
     }
-    
-    /* ==========================================================================
-       BRANDING & SIDEBAR
-       ========================================================================== */
+
+    /* 
+    ======================================================================
+    BRANDING & NAVIGATION
+    ======================================================================
+    */
     .brand-box { 
       display: flex; 
       align-items: center; 
@@ -264,9 +278,11 @@
       border-color: var(--border); 
     }
 
-    /* ==========================================================================
-       BUTTONS & INPUTS
-       ========================================================================== */
+    /* 
+    ======================================================================
+    BUTTONS & INPUTS
+    ======================================================================
+    */
     .panel-head { 
       display: flex; 
       justify-content: space-between; 
@@ -344,10 +360,12 @@
       background-color: #0f172a; 
       color: #fff; 
     }
-    
-    /* ==========================================================================
-       TABLES & BADGES
-       ========================================================================== */
+
+    /* 
+    ======================================================================
+    TABLES & BADGES
+    ======================================================================
+    */
     .table-responsive { 
       overflow-x: auto; 
       width: 100%; 
@@ -403,10 +421,12 @@
       background: rgba(79, 107, 247, 0.15); 
       color: var(--primary); 
     }
-    
-    /* ==========================================================================
-       WIDGETS & CHARTS
-       ========================================================================== */
+
+    /* 
+    ======================================================================
+    WIDGETS & CHARTS
+    ======================================================================
+    */
     .chart-container { 
       height: 300px; 
       width: 100%; 
@@ -489,9 +509,11 @@
       font-weight: 800; 
     }
 
-    /* ==========================================================================
-       MODALS & VAULTS
-       ========================================================================== */
+    /* 
+    ======================================================================
+    MODALS & OVERLAYS
+    ======================================================================
+    */
     .modal-overlay { 
       position: fixed; 
       inset: 0; 
@@ -546,7 +568,12 @@
       text-transform: uppercase; 
       font-weight: 700; 
     }
-    
+
+    /* 
+    ======================================================================
+    VAULTS & CARDS
+    ======================================================================
+    */
     .quick-tile { 
       background: rgba(255,255,255,0.03); 
       border: 1px solid var(--border); 
@@ -613,9 +640,11 @@
       border: 1px solid var(--border); 
     }
 
-    /* ==========================================================================
-       RESPONSIVE WEB ADJUSTMENTS
-       ========================================================================== */
+    /* 
+    ======================================================================
+    RESPONSIVE MEDIA QUERIES
+    ======================================================================
+    */
     @media (max-width: 850px) {
       body { 
         flex-direction: column; 
@@ -694,9 +723,11 @@
 </head>
 <body>
 
-  <!-- ==========================================================================
-       SIDEBAR NAVIGATION
-       ========================================================================== -->
+  <!-- 
+  ======================================================================
+  SIDEBAR NAVIGATION
+  ======================================================================
+  -->
   <aside class="sidebar">
     <div class="brand-box">
       <div class="brand-icon">
@@ -720,9 +751,11 @@
     </nav>
   </aside>
 
-  <!-- ==========================================================================
-       MAIN DASHBOARD AREA
-       ========================================================================== -->
+  <!-- 
+  ======================================================================
+  MAIN DASHBOARD VIEW
+  ======================================================================
+  -->
   <main class="main">
     <div style="display:flex; justify-content:space-between; margin-bottom: 24px; align-items:center; flex-wrap:wrap; gap:12px;">
       <div>
@@ -739,9 +772,11 @@
     <div id="view-container"></div>
   </main>
 
-  <!-- ==========================================================================
-       MODAL: TRANSACTION ENTRY
-       ========================================================================== -->
+  <!-- 
+  ======================================================================
+  MODALS & OVERLAYS
+  ======================================================================
+  -->
   <div id="tx-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -804,9 +839,6 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL: BUDGET CONFIGURATION
-       ========================================================================== -->
   <div id="budget-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -836,9 +868,6 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL: REMINDERS
-       ========================================================================== -->
   <div id="rem-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -875,9 +904,6 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL: VEHICLE LOG ENTRY
-       ========================================================================== -->
   <div id="fuel-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -965,9 +991,6 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL: DOC VAULT UPLOAD
-       ========================================================================== -->
   <div id="doc-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -988,9 +1011,6 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL: ENCRYPTED PASSWORD VAULT
-       ========================================================================== -->
   <div id="pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -1019,9 +1039,6 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL: ADMIN PASSWORD RESET
-       ========================================================================== -->
   <div id="admin-pass-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -1040,9 +1057,11 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       CORE JAVASCRIPT ENGINE
-       ========================================================================== -->
+  <!-- 
+  ======================================================================
+  CORE JAVASCRIPT ENGINE
+  ======================================================================
+  -->
   <script>
     // --- ENTERPRISE API CONFIGURATION ---
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTrK6rH_zgsaUVl0TRRjaxvZvvlvk5ga6pocudZ3fpQtA_AYeOP_T5fuzSHD0RRGRCLQ/exec";
@@ -1054,7 +1073,7 @@
       this.parentElement.innerHTML = '<span style="font-size:18px; font-weight:800; color:#fff;">A</span>';
     });
 
-    // Master Clock Updater
+    // Master Clock
     setInterval(() => {
       const timeEl = document.getElementById('live-time');
       const dateEl = document.getElementById('live-date');
@@ -1071,27 +1090,23 @@
       }
     }, 1000);
 
-    // Formats local time for inputs perfectly
     function getLocalISOTime() {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000;
         return (new Date(Date.now() - tzOffset)).toISOString().slice(0, 16);
     }
 
-    // Mathematical Password Encryption
     function encryptData(text) { 
         return btoa(encodeURIComponent(text)); 
     }
     
-    // Mathematical Password Decryption
     function decryptData(text) { 
         try { 
             return decodeURIComponent(atob(text)); 
-        } catch(e){ 
+        } catch(e) { 
             return "Encryption Error"; 
         } 
     }
     
-    // Native File Downloader for Vaults
     function downloadDoc(b64, title) { 
         const a = document.createElement('a'); 
         a.href = b64; 
@@ -1101,11 +1116,9 @@
         document.body.removeChild(a); 
     }
 
-    // --------------------------------------------------------------------------
-    // SECURITY: INACTIVITY TIMEOUT ENGINE
-    // --------------------------------------------------------------------------
+    // --- SECURITY TIMEOUT ---
     let inactivityTimer; 
-    const TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
+    const TIMEOUT_MS = 10 * 60 * 1000;
     
     function autoLogout() { 
         localStorage.removeItem('gf_user'); 
@@ -1130,20 +1143,17 @@
         } 
     }
     
-    // Bind security listeners
     ['touchstart', 'click', 'keypress', 'scroll', 'mousemove'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
     document.addEventListener('visibilitychange', checkVisibilityState); 
     resetInactivityTimer(); 
 
-    // Theme Instantiation
+    // --- STATE INITIALIZATION ---
     let currentTheme = localStorage.getItem('gf_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
 
-    // Base Category Configurations
     const expCategories = ['Rent Paid', 'Groceries', 'Electricity (EB)', 'Fuel / Petrol', 'Dining Out', 'Parking', 'Snacks', 'Credit Card Bill', 'Credit Card Proxy Spend', 'Given Loan (Asset)', 'Gold Loan Paid', 'Personal Loan Paid', 'Vehicle Service', 'Vehicle Insurance', 'Home Maintenance', 'Saloon / Parlour', 'LIC Payment', 'Utility Bills', 'Shopping', 'Travel', 'Other Expense'];
     const incCategories = ['Salary Received', 'Rent Received', 'Bonus', 'Reimbursement', 'Credit Card Proxy Refund', 'Received Loan Repayment', 'Gold Loan Received', 'Personal Loan Received', 'Received Individual Loan'];
 
-    // Core Database Variables
     let ledger = []; 
     let users = JSON.parse(localStorage.getItem('gf_users')) || ['Admin', 'User 2'];
     let budgets = JSON.parse(localStorage.getItem('gf_budgets')) || { 'Groceries': { type: 'Fixed', val: 15000 }, 'Credit Card Bill': { type: 'Percentage', val: 15 } };
@@ -1151,15 +1161,12 @@
     let docs = JSON.parse(localStorage.getItem('gf_docs')) || []; 
     let passwords = JSON.parse(localStorage.getItem('gf_passwords')) || [];
 
-    // Sorting State Variables
     let sortCol = 'date'; 
     let sortAsc = false; 
     let selectedMonthA = '2026-08'; 
     let selectedMonthB = '2026-09';
 
-    // --------------------------------------------------------------------------
-    // DATABASE SANITIZATION ENGINE (Prevents Blank Screen Errors)
-    // --------------------------------------------------------------------------
+    // --- SANITIZATION (CRASH PROTECTION) ---
     function deduplicateLedger(txList) { 
         if (!txList || !Array.isArray(txList)) return []; 
         const map = new Map(); 
@@ -1196,9 +1203,55 @@
         return Array.from(map.values()).sort((a,b) => String(a.service).localeCompare(String(b.service))); 
     }
 
-    // --------------------------------------------------------------------------
-    // CLOUD SYNC ENGINE
-    // --------------------------------------------------------------------------
+    // --- CORE RENDERING ENGINE (THE MISSING FUNCTION) ---
+    // This perfectly formats all tables and guarantees no "undefined" crashes.
+    function renderTableHTML(data, title, sortable) {
+      try {
+          const th = (lbl, col) => sortable ? `<th onclick="sortTable('${col}')">${lbl} ${sortCol===col ? (sortAsc?'↑':'↓') : ''}</th>` : `<th>${lbl}</th>`;
+          
+          return `
+            ${title ? `<div class="panel-head"><h3>${title}</h3></div>` : ''}
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    ${th('Date & Time','date')} 
+                    ${th('Type','type')} 
+                    ${th('Category','category')} 
+                    ${th('Description','desc')} 
+                    ${th('Amount','amount')} 
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(!data || data.length === 0) ? '<tr><td colspan="6" style="text-align:center;">No records found.</td></tr>' : ''}
+                  ${(data || []).map(t => {
+                      if (!t) return '';
+                      const displayDate = t.date ? String(t.date).replace('T', ' ') : 'No Date';
+                      const tType = t.type ? String(t.type) : 'DEBIT';
+                      const tAmt = parseFloat(t.amount || 0).toLocaleString('en-IN');
+                      
+                      return `<tr>
+                        <td style="white-space:nowrap;">${displayDate}</td>
+                        <td><span class="badge ${tType.toLowerCase()}">${tType}</span></td>
+                        <td>${t.category || ''}</td>
+                        <td>${t.desc || ''}</td>
+                        <td style="font-weight:700; color:${tType==='CREDIT'?'var(--green)':'var(--red)'};">${tType==='CREDIT'?'+':'-'} ₹${tAmt}</td>
+                        <td>
+                          <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="editTx('${t.id}')">✎ Edit</button> 
+                          <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteTx('${t.id}')">🗑 Delete</button>
+                        </td>
+                      </tr>`;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>`;
+      } catch (e) {
+          return `<p style="color:var(--red);">Table Render Error: ${e.message}</p>`;
+      }
+    }
+
+    // --- CLOUD SYNC ENGINE ---
     let isSyncing = false; 
 
     function apiGetJSONP(action) {
@@ -1207,7 +1260,7 @@
         
         const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
         
-        // BUG FIX: Add Timeout so app doesn't spin forever if Google Sheets fails
+        // Timeout Failsafe: Kills infinite spinners if network fails
         const timeoutId = setTimeout(() => {
             reject(new Error("Timeout: Master Storage did not respond."));
         }, 15000);
@@ -1328,7 +1381,6 @@
             } else { navigate('home'); }
         }
       } catch(e) { 
-          // Revert to displaying Home if API fails
           if (isBoot) navigate('home'); 
       } finally { 
           isSyncing = false; 
@@ -1354,7 +1406,6 @@
       }
       
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
-          // If no local data, wait for Cloud connection
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
                   <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
@@ -1362,7 +1413,6 @@
               </div>`;
           await backgroundSync(true);
       } else {
-          // If local data exists, load immediately, then background sync
           ledger = deduplicateLedger(JSON.parse(localData) || []);
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
           navigate('home');
@@ -1374,195 +1424,7 @@
       }
     }
 
-    // --------------------------------------------------------------------------
-    // USER MANAGEMENT & SECURITY CONTROLS
-    // --------------------------------------------------------------------------
-    function logout() {
-        if(confirm("Are you sure you want to log out?")) {
-            localStorage.removeItem('gf_user');
-            window.location.href = '../index.html'; 
-        }
-    }
-
-    async function addNewUser() {
-        const input = document.getElementById('new-username'); 
-        const name = input.value.trim();
-        if(name && !users.includes(name)) {
-            users.push(name); 
-            localStorage.setItem('gf_users', JSON.stringify(users)); 
-            input.value = ''; 
-            navigate('settings');
-            
-            if (APPS_SCRIPT_URL) { 
-                try { 
-                    await apiPost('addUser', { name: name }); 
-                } catch(err) {} 
-            }
-        }
-    }
-
-    async function removeUser(name) {
-        if(confirm(`Remove user ${name}?`)) {
-            users = users.filter(u => u !== name); 
-            localStorage.setItem('gf_users', JSON.stringify(users)); 
-            navigate('settings');
-            
-            if (APPS_SCRIPT_URL) { 
-                try { 
-                    await apiPost('removeUser', { name: name }); 
-                } catch(err) {} 
-            }
-        }
-    }
-
-    function openPasswordChange(uid) { 
-        document.getElementById('admin-pass-target-user').innerText = uid; 
-        document.getElementById('admin-pass-user-hidden').value = uid; 
-        document.getElementById('admin-new-pass').value = ''; 
-        document.getElementById('admin-pass-modal').style.display = 'grid'; 
-    }
-    
-    async function saveAdminPassChange(e) { 
-        e.preventDefault(); 
-        const btn = document.getElementById('admin-pass-btn'); 
-        btn.disabled = true; 
-        btn.innerText = "Hashing..."; 
-        
-        const uid = document.getElementById('admin-pass-user-hidden').value; 
-        const newPass = document.getElementById('admin-new-pass').value; 
-        
-        if (APPS_SCRIPT_URL) { 
-            try { 
-                await apiPost('changeUserPassword', { user: uid, newPass: newPass }); 
-                
-                // Update Local Device Cache simultaneously to prevent lockout
-                let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; 
-                authDB[uid.toLowerCase()] = btoa(newPass); 
-                localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
-                
-                alert(`Password successfully securely hashed and updated for ${uid}.`); 
-            } catch(err) { 
-                alert("Error changing password."); 
-            } 
-        } 
-        
-        closeModal('admin-pass-modal'); 
-        btn.disabled = false; 
-        btn.innerText = "Hash & Secure"; 
-    }
-
-    // --------------------------------------------------------------------------
-    // TRANSACTION MANAGEMENT (CRUD)
-    // --------------------------------------------------------------------------
-    function openTxModal(type) { 
-        document.getElementById('tx-form').reset(); 
-        document.getElementById('tx-id').value = ''; 
-        document.getElementById('tx-modal-title').innerText = type === 'DEBIT' ? 'Add Expense' : 'Add Income'; 
-        document.getElementById('tx-type').value = type; 
-        document.getElementById('tx-date').value = getLocalISOTime(); 
-        document.getElementById('tx-save-btn').innerText = 'Save Transaction'; 
-        updateCatOptions(); 
-        document.getElementById('tx-modal').style.display = 'grid'; 
-    }
-    
-    function updateCatOptions() { 
-        const type = document.getElementById('tx-type').value; 
-        const catSelect = document.getElementById('tx-category'); 
-        const list = type === 'DEBIT' ? expCategories : incCategories; 
-        catSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join(''); 
-        
-        const userSelect = document.getElementById('tx-user'); 
-        if(userSelect) userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join(''); 
-    }
-    
-    function editTx(id) { 
-        const t = ledger.find(x => String(x.id).trim() === String(id).trim()); 
-        if (!t) return; 
-        
-        document.getElementById('tx-id').value = t.id; 
-        document.getElementById('tx-modal-title').innerText = 'Edit Transaction'; 
-        document.getElementById('tx-date').value = t.date; 
-        document.getElementById('tx-type').value = t.type; 
-        updateCatOptions(); 
-        document.getElementById('tx-category').value = t.category; 
-        document.getElementById('tx-desc').value = t.desc; 
-        document.getElementById('tx-amount').value = t.amount; 
-        document.getElementById('tx-user').value = t.user; 
-        document.getElementById('tx-method').value = t.method || 'UPI'; 
-        document.getElementById('tx-notes').value = t.notes || ''; 
-        document.getElementById('tx-save-btn').innerText = 'Update Transaction'; 
-        document.getElementById('tx-modal').style.display = 'grid'; 
-    }
-    
-    async function deleteTx(id) { 
-        if (!confirm('Delete this transaction permanently?')) return; 
-        
-        ledger = ledger.filter(x => String(x.id).trim() !== String(id).trim()); 
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
-        
-        const activeNav = document.querySelector('.nav-item.active').innerText; 
-        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
-        
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-            try { 
-              await apiPost('deleteTransaction', { id: id }); 
-            } catch (err) {} 
-        } 
-    }
-
-    async function saveTx(e) { 
-        e.preventDefault(); 
-        const btn = document.getElementById('tx-save-btn'); 
-        btn.disabled = true; 
-        btn.innerText = 'Saving...'; 
-        
-        const id = document.getElementById('tx-id').value || 'tx_' + String(Date.now()); 
-        const isEdit = document.getElementById('tx-id').value !== ''; 
-        const rawDate = document.getElementById('tx-date').value || new Date().toISOString(); 
-        
-        const record = { 
-            id: id, 
-            date: rawDate, 
-            type: document.getElementById('tx-type').value, 
-            category: document.getElementById('tx-category').value || 'Other', 
-            method: document.getElementById('tx-method').value || 'UPI', 
-            desc: document.getElementById('tx-desc').value || 'Transaction', 
-            notes: document.getElementById('tx-notes').value || '', 
-            amount: parseFloat(document.getElementById('tx-amount').value) || 0, 
-            user: document.getElementById('tx-user').value || 'User' 
-        }; 
-        
-        const idx = ledger.findIndex(x => String(x.id).trim() === String(id).trim()); 
-        if (idx >= 0) {
-            ledger[idx] = record; 
-        } else {
-            ledger.unshift(record); 
-        }
-        
-        ledger = deduplicateLedger(ledger); 
-        localStorage.setItem('gf_ledger', JSON.stringify(ledger)); 
-        closeModal('tx-modal'); 
-        
-        btn.disabled = false; 
-        btn.innerText = 'Save Transaction'; 
-        
-        const activeNav = document.querySelector('.nav-item.active').innerText; 
-        if(activeNav.includes('Records')) navigate('records'); else navigate('overview'); 
-        
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-            try { 
-              await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
-            } catch (err) {} 
-        } 
-    }
-    
-    function closeModal(modalId) { 
-        document.getElementById(modalId).style.display = 'none'; 
-    }
-
-    // --------------------------------------------------------------------------
-    // DASHBOARD ROUTING & RENDERING ENGINE (Crash-Proofed)
-    // --------------------------------------------------------------------------
+    // --- NAVIGATION ENGINE ---
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       if (btn) { 
@@ -1590,6 +1452,7 @@
       else if (view === 'settings') { title.innerText = 'Settings & Security'; sub.innerText = 'Manage preferences, user access, and theme.'; container.innerHTML = renderSettings(); }
     }
 
+    // --- DASHBOARD RENDERERS (CRASH-PROOFED) ---
     function renderHome() {
       try {
         const currentHour = new Date().getHours(); 
@@ -1604,14 +1467,51 @@
         
         if (pendingRems.length > 0) {
           remHtml = `<div style="display:flex; gap:14px; overflow-x:auto; padding-bottom:8px;">${pendingRems.map(r => `
-              <div class="reminder-card"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span class="badge ${(r.type || '').includes('Date') ? 'primary' : 'warn'}">${r.type || 'Reminder'}</span><span style="font-size:11px; color:var(--primary); font-weight:700;">${(r.date || '').split('T')[0]}</span></div><div style="font-size:14px; font-weight:700; margin-bottom:4px;">${r.title || 'Untitled'}</div><div style="font-size:12px; color:var(--muted);">${r.amount ? 'Expected: ₹' + r.amount : 'No amount linked'}</div></div>`).join('')}</div>`;
+              <div class="reminder-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <span class="badge ${(r.type || '').includes('Date') ? 'primary' : 'warn'}">${r.type || 'Reminder'}</span>
+                  <span style="font-size:11px; color:var(--primary); font-weight:700;">${(r.date || '').split('T')[0]}</span>
+                </div>
+                <div style="font-size:14px; font-weight:700; margin-bottom:4px;">${r.title || 'Untitled'}</div>
+                <div style="font-size:12px; color:var(--muted);">${r.amount ? 'Expected: ₹' + r.amount : 'No amount linked'}</div>
+              </div>`).join('')}
+            </div>`;
         }
         
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; margin-bottom: 24px;"><div><h2 style="font-size: 32px; margin-bottom: 8px;">${greeting}, ${userName}!</h2><p style="color: var(--muted); font-size: 15px;">Welcome back to your Enterprise Finance Ledger.</p></div><div class="modern-clock-box"><div id="live-time" class="modern-time">--:--:-- <span>--</span></div><div id="live-date" class="modern-date">Loading date...</div></div></div>
-          <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:14px; font-weight:700;">🔔 Upcoming Reminders & Scheduled Payments</h3>${remHtml}<br>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; margin-bottom: 24px;">
+            <div>
+              <h2 style="font-size: 32px; margin-bottom: 8px;">${greeting}, ${userName}!</h2>
+              <p style="color: var(--muted); font-size: 15px;">Welcome back to your Enterprise Finance Ledger.</p>
+            </div>
+            <div class="modern-clock-box">
+              <div id="live-time" class="modern-time">--:--:-- <span>--</span></div>
+              <div id="live-date" class="modern-date">Loading date...</div>
+            </div>
+          </div>
+          
+          <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:14px; font-weight:700;">🔔 Upcoming Reminders & Scheduled Payments</h3>
+          ${remHtml}<br>
+          
           <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:14px; font-weight:700;">⚡ Quick Actions</h3>
-          <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;"><div class="quick-tile" onclick="openTxModal('DEBIT')"><div style="font-size: 32px; margin-bottom: 12px;">💸</div><h3 style="font-size: 16px; font-weight: 700;">Add Expense</h3></div><div class="quick-tile" onclick="openTxModal('CREDIT')"><div style="font-size: 32px; margin-bottom: 12px;">💰</div><h3 style="font-size: 16px; font-weight: 700;">Add Income</h3></div><div class="quick-tile" onclick="navigate('budget')"><div style="font-size: 32px; margin-bottom: 12px;">🎯</div><h3 style="font-size: 16px; font-weight: 700;">Check Budgets</h3></div><div class="quick-tile" onclick="navigate('analyzer')"><div style="font-size: 32px; margin-bottom: 12px;">📈</div><h3 style="font-size: 16px; font-weight: 700;">Spend Analyzer</h3></div></div>`;
+          <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div class="quick-tile" onclick="openTxModal('DEBIT')">
+              <div style="font-size: 32px; margin-bottom: 12px;">💸</div>
+              <h3 style="font-size: 16px; font-weight: 700;">Add Expense</h3>
+            </div>
+            <div class="quick-tile" onclick="openTxModal('CREDIT')">
+              <div style="font-size: 32px; margin-bottom: 12px;">💰</div>
+              <h3 style="font-size: 16px; font-weight: 700;">Add Income</h3>
+            </div>
+            <div class="quick-tile" onclick="navigate('budget')">
+              <div style="font-size: 32px; margin-bottom: 12px;">🎯</div>
+              <h3 style="font-size: 16px; font-weight: 700;">Check Budgets</h3>
+            </div>
+            <div class="quick-tile" onclick="navigate('analyzer')">
+              <div style="font-size: 32px; margin-bottom: 12px;">📈</div>
+              <h3 style="font-size: 16px; font-weight: 700;">Spend Analyzer</h3>
+            </div>
+          </div>`;
       } catch (err) {
         return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
       }
@@ -1707,7 +1607,16 @@
 
     function renderAllRecords(data = ledger) {
       try {
-        return `<div class="panel"><div class="table-controls"><input type="text" id="search-input" class="input-field" placeholder="Search by description, category, or amount..."><button class="btn primary" onclick="executeSearch()">Find</button></div><div id="records-table-container">${renderTableHTML(data, '', true)}</div></div>`;
+        return `
+          <div class="panel">
+            <div class="table-controls">
+              <input type="text" id="search-input" class="input-field" placeholder="Search by description, category, or amount...">
+              <button class="btn primary" onclick="executeSearch()">Find</button>
+            </div>
+            <div id="records-table-container">
+              ${renderTableHTML(data, '', true)}
+            </div>
+          </div>`;
       } catch (err) {
         return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
       }
@@ -2701,6 +2610,74 @@
       currentTheme = val; 
       document.documentElement.setAttribute('data-theme', val); 
       localStorage.setItem('gf_theme', val); 
+    }
+
+    // --- STANDARD WEB VOICE BROWSER SUPPORT ---
+    async function startVoiceAssistant() { 
+        const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; 
+        if (!WebSpeech) { 
+            alert("Voice recognition is restricted in this browser."); 
+            return; 
+        } 
+        try { 
+            const recognition = new WebSpeech(); 
+            recognition.continuous = false; 
+            recognition.lang = 'en-IN'; 
+            recognition.interimResults = false; 
+            
+            const topBtn = document.getElementById('voice-top-btn'); 
+            const modalBtn = document.getElementById('voice-modal-btn'); 
+            
+            if (topBtn) { topBtn.classList.add('voice-pulse'); topBtn.innerText = "🛑 Listening..."; } 
+            if (modalBtn) { modalBtn.classList.add('voice-pulse'); modalBtn.innerText = "🛑 Listening..."; } 
+            
+            recognition.onerror = (e) => { resetVoiceUI(); }; 
+            recognition.onend = () => { resetVoiceUI(); }; 
+            recognition.onresult = (event) => { processVoiceCommand(event.results[0][0].transcript); }; 
+            
+            recognition.start(); 
+        } catch (err) { 
+            resetVoiceUI(); 
+        } 
+    }
+    
+    function resetVoiceUI() { 
+        const topBtn = document.getElementById('voice-top-btn'); 
+        const modalBtn = document.getElementById('voice-modal-btn'); 
+        if (topBtn) { topBtn.classList.remove('voice-pulse'); topBtn.innerText = "🎙️ Voice Add"; } 
+        if (modalBtn) { modalBtn.classList.remove('voice-pulse'); modalBtn.innerText = "🎙️ Speak"; } 
+    }
+    
+    function processVoiceCommand(text) { 
+        const lower = text.toLowerCase(); 
+        let type = 'DEBIT'; 
+        
+        if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) {
+            type = 'CREDIT'; 
+        }
+        
+        let amount = ''; 
+        const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i); 
+        if (amtMatch) amount = parseFloat(amtMatch[1]); 
+        
+        let method = 'UPI'; 
+        if (lower.includes('credit card')) method = 'Credit Card'; 
+        else if (lower.includes('debit card')) method = 'Debit Card'; 
+        else if (lower.includes('cash')) method = 'Cash'; 
+        
+        let category = type === 'DEBIT' ? expCategories[0] : incCategories[0]; 
+        const voiceCatMap = { 'grocery': 'Groceries', 'supermarket': 'Groceries', 'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 'electricity': 'Electricity (EB)', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'dining': 'Dining Out', 'restaurant': 'Dining Out', 'snack': 'Snacks', 'salary': 'Salary Received', 'shopping': 'Shopping', 'travel': 'Travel' }; 
+        
+        for (const [key, val] of Object.entries(voiceCatMap)) { 
+            if (lower.includes(key)) { category = val; break; } 
+        } 
+        
+        openTxModal(type); 
+        document.getElementById('tx-amount').value = amount || ''; 
+        document.getElementById('tx-category').value = category; 
+        document.getElementById('tx-method').value = method; 
+        document.getElementById('tx-desc').value = text; 
+        document.getElementById('tx-notes').value = "Added via Voice Assistant"; 
     }
 
     // Initialize Application
