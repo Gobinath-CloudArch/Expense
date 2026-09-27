@@ -73,6 +73,7 @@
       <form id="tx-form" onsubmit="saveTx(event)">
         <input type="hidden" id="tx-id">
         <div class="grid-2">
+          <!-- DATETIME INJECTION FOR PERFECT TIMESTAMPING -->
           <div class="form-group">
             <label>Date & Time</label>
             <input type="datetime-local" id="tx-date" class="input-field" required>
@@ -278,7 +279,7 @@
     </div>
   </div>
 
-  <!-- Document Modal (FIXED SAVE BUTTON) -->
+  <!-- Document Modal (UPDATED WITH CATEGORY SELECTION) -->
   <div id="doc-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -368,7 +369,7 @@
     </div>
   </div>
 
-  <!-- ACTIVE LOAN MODAL -->
+  <!-- ACTIVE LOAN MODAL (WITH ADVANCED CALCULATIONS) -->
   <div id="al-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -655,6 +656,8 @@
     // CLOUD SYNC ENGINE
     // --------------------------------------------------------------------------
     let isSyncing = false; 
+    
+    // Master lock to prevent backgroundSync from running right after you make an edit!
     window.pauseSync = false; 
 
     function apiGetJSONP(action) {
@@ -689,7 +692,7 @@
        try { 
            await fetch(APPS_SCRIPT_URL, { 
                method: 'POST', 
-               mode: 'no-cors', 
+               mode: 'no-cors', // Added to prevent CORS errors from silently crashing the sync lock
                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                body: JSON.stringify({ action: action, data: data, apiKey: API_KEY }) 
            }); 
@@ -717,6 +720,8 @@
 
         const cloudData = await apiGetJSONP('getDashboard');
         
+        // If you started editing something during the exact 2 seconds it took to download the data, 
+        // abort the overwrite completely to protect your edit!
         if (window.pauseSync) {
             isSyncing = false;
             return; 
@@ -773,6 +778,7 @@
         localStorage.setItem('gf_ledger', JSON.stringify(ledger));
         localStorage.setItem('gf_reminders', JSON.stringify(reminders));
         
+        // Explicitly map EVERY tab name so backgroundSync NEVER kicks you back to the home screen!
         if (requiresRefresh || isBoot) {
             const activeNav = document.querySelector('.nav-item.active');
             if (activeNav) {
@@ -817,6 +823,7 @@
       }
       
       if (isLocalEmpty && APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith("PASTE")) {
+          // If no local data, wait for Cloud connection
           document.getElementById('view-container').innerHTML = `
               <div style="padding: 80px 20px; text-align: center;">
                   <h3 style="color:var(--primary); font-size:24px; margin-bottom:10px;">☁️ Connecting to Secure Cloud</h3>
@@ -824,6 +831,7 @@
               </div>`;
           await backgroundSync(true);
       } else {
+          // If local data exists, load immediately, then background sync
           ledger = deduplicateLedger(JSON.parse(localData) || []);
           if (localRemData) reminders = deduplicateReminders(JSON.parse(localRemData));
           navigate('home');
@@ -841,7 +849,6 @@
     function logout() {
         if(confirm("Are you sure you want to log out?")) {
             localStorage.removeItem('gf_user');
-            // FIXED FOR NATIVE MOBILE (No more 'mobile-index.html')
             window.location.href = 'index.html'; 
         }
     }
@@ -901,6 +908,7 @@
             try { 
                 await apiPost('changeUserPassword', { user: uid, newPass: newPass }); 
                 
+                // Update Local Device Cache simultaneously to prevent lockout
                 let authDB = JSON.parse(localStorage.getItem('gf_local_auth')) || {}; 
                 authDB[uid.toLowerCase()] = btoa(newPass); 
                 localStorage.setItem('gf_local_auth', JSON.stringify(authDB));
@@ -1018,8 +1026,11 @@
         
         if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
             try { 
-              window.pauseSync = true; 
+              window.pauseSync = true; // Lock the background sync from reverting edits
               await apiPost(isEdit ? 'editTransaction' : 'addTransaction', record); 
+              
+              // Wait 8 FULL seconds for Google Sheets to execute and confirm database update 
+              // before we permit the app to sync with the cloud again.
               setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000); 
             } catch (err) { window.pauseSync = false; } 
         } 
