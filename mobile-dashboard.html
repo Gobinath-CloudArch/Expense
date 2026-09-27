@@ -488,17 +488,64 @@
         } 
     }
     
-    function downloadDoc(b64, title) { 
-        const a = document.createElement('a'); 
-        a.href = b64; 
-        a.download = title + (b64.includes('image/png') ? '.png' : '.jpg'); 
-        document.body.appendChild(a); 
-        a.click(); 
-        document.body.removeChild(a); 
+    // Doc Vault helpers: pass only the document ID through HTML event handlers.
+    // The full Base64 payload stays in the document object and is looked up here.
+    function getDocById(docId) {
+        const id = String(docId || '').trim();
+        return (docs || []).find(d => d && String(d.id || '').trim() === id) || null;
     }
 
-    function viewDoc(b64) {
-        document.getElementById('doc-view-image').src = b64;
+    function downloadDoc(docId) {
+        const doc = getDocById(docId);
+        if (!doc || !doc.b64) {
+            alert("Document data is unavailable. Please sync and try again.");
+            return;
+        }
+
+        const parts = String(doc.b64).split(',');
+        const meta = parts.length > 1 ? parts[0] : '';
+        const payload = parts.length > 1 ? parts.slice(1).join(',') : parts[0];
+        const mimeMatch = meta.match(/data:([^;]+);base64/i);
+        const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+        try {
+            const binary = atob(payload);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            const blob = new Blob([bytes], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const titleParts = String(doc.title || 'Document').split('::');
+            const title = titleParts.length > 1 ? titleParts.slice(1).join('::') : titleParts[0];
+            const ext = mimeType === 'image/png' ? '.png' : '.jpg';
+
+            a.href = url;
+            a.download = title + ext;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (err) {
+            // Fallback to the data URL method if Blob conversion is unavailable.
+            const a = document.createElement('a');
+            const titleParts = String(doc.title || 'Document').split('::');
+            const title = titleParts.length > 1 ? titleParts.slice(1).join('::') : titleParts[0];
+            const ext = String(doc.b64).includes('image/png') ? '.png' : '.jpg';
+            a.href = doc.b64;
+            a.download = title + ext;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
+
+    function viewDoc(docId) {
+        const doc = getDocById(docId);
+        if (!doc || !doc.b64) {
+            alert("Document data is unavailable. Please sync and try again.");
+            return;
+        }
+        document.getElementById('doc-view-image').src = doc.b64;
         document.getElementById('doc-view-modal').style.display = 'flex';
     }
 
@@ -724,8 +771,9 @@
         const missingRems = localRems.filter(r => !cloudRemIds.has(String(r.id).trim()));
         
         let cloudDocs = deduplicateDocs(cloudData.docs || []);
+        let localDocs = deduplicateDocs(docs || JSON.parse(localStorage.getItem('gf_docs') || '[]'));
         const cloudDocIds = new Set(cloudDocs.map(d => String(d.id).trim()));
-        const missingDocs = docs.filter(d => !cloudDocIds.has(String(d.id).trim()));
+        const missingDocs = localDocs.filter(d => !cloudDocIds.has(String(d.id).trim()));
         
         let cloudPass = deduplicatePasswords(cloudData.passwords || []);
         const cloudPassIds = new Set(cloudPass.map(p => String(p.id).trim()));
@@ -743,17 +791,28 @@
            ledger = deduplicateLedger(updatedCloudData.transactions || []);
            
            if (updatedCloudData.reminders) { reminders = deduplicateReminders(updatedCloudData.reminders); }
-           if (updatedCloudData.docs) { docs = deduplicateDocs(updatedCloudData.docs); localStorage.setItem('gf_docs', JSON.stringify(docs)); }
+           if (updatedCloudData.docs) {
+               // Merge instead of replacing so a local document cannot disappear if the
+               // cloud response is temporarily stale or a remote write is still propagating.
+               docs = deduplicateDocs([...(updatedCloudData.docs || []), ...localDocs]);
+               localStorage.setItem('gf_docs', JSON.stringify(docs));
+           } else {
+               docs = deduplicateDocs(localDocs);
+               localStorage.setItem('gf_docs', JSON.stringify(docs));
+           }
            if (updatedCloudData.passwords) { passwords = deduplicatePasswords(updatedCloudData.passwords); localStorage.setItem('gf_passwords', JSON.stringify(passwords)); }
            if (updatedCloudData.users) { users = updatedCloudData.users; localStorage.setItem('gf_users', JSON.stringify(users)); }
            if (updatedCloudData.budgets) { budgets = updatedCloudData.budgets; localStorage.setItem('gf_budgets', JSON.stringify(budgets)); }
            requiresRefresh = true;
         } else {
-           if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length || cloudPass.length !== passwords.length) { requiresRefresh = true; }
+            if (cloudTxs.length !== localTxs.length || cloudRems.length !== localRems.length || cloudDocs.length !== localDocs.length || cloudPass.length !== passwords.length) { requiresRefresh = true; }
            ledger = cloudTxs; 
            reminders = cloudRems;
            
-           if (cloudData.docs) { docs = deduplicateDocs(cloudData.docs); localStorage.setItem('gf_docs', JSON.stringify(docs)); }
+            // Merge local + cloud documents so one device cannot overwrite another device's
+            // newly uploaded document with an older/stale cloud snapshot.
+            docs = deduplicateDocs([...(cloudData.docs || []), ...localDocs]);
+            localStorage.setItem('gf_docs', JSON.stringify(docs));
            if (cloudData.passwords) { passwords = deduplicatePasswords(cloudData.passwords); localStorage.setItem('gf_passwords', JSON.stringify(passwords)); }
            if (cloudData.users && cloudData.users.length > 0) { users = cloudData.users; localStorage.setItem('gf_users', JSON.stringify(users)); requiresRefresh = true; }
            if (cloudData.budgets && Object.keys(cloudData.budgets).length > 0) { budgets = cloudData.budgets; localStorage.setItem('gf_budgets', JSON.stringify(budgets)); requiresRefresh = true; }
@@ -2027,13 +2086,13 @@
                 
                 return `
                 <div class="doc-card">
-                  <img src="${d.b64 || ''}" onclick="viewDoc('${d.b64 || ''}')" style="cursor:pointer;">
+                  <img src="${d.b64 || ''}" onclick="viewDoc('${String(d.id || '')}')" style="cursor:pointer;">
                   <div class="doc-card-info">
                     <h4 style="font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${actualTitle || ''}</h4>
                     <p style="font-size:11px; color:var(--muted);">${(d.date || '').split('T')[0]}</p>
                     <div style="display:flex; gap:8px; margin-top:8px;">
-                      <button class="btn" style="flex:1; font-size:11px;" onclick="viewDoc('${d.b64 || ''}')">👁️ View</button>
-                      <button class="btn primary" style="flex:1; font-size:11px;" onclick="downloadDoc('${d.b64 || ''}', '${actualTitle.replace(/'/g,"\\'")}')">⬇ Save</button>
+                      <button class="btn" style="flex:1; font-size:11px;" onclick="viewDoc('${String(d.id || '')}')">👁️ View</button>
+                      <button class="btn primary" style="flex:1; font-size:11px;" onclick="downloadDoc('${String(d.id || '')}')">⬇ Save</button>
                     </div>
                   </div>
                 </div>`;
