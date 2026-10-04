@@ -817,8 +817,11 @@
 
     let sortCol = 'date'; 
     let sortAsc = false; 
-    let selectedMonthA = '2026-08'; 
-    let selectedMonthB = '2026-09';
+    
+    // --- DYNAMIC MONTH FIX ---
+    function _getLocalMonthStr(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+    let selectedMonthA = _getLocalMonthStr(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)); 
+    let selectedMonthB = _getLocalMonthStr(new Date());
     window.currentDocCategory = null; 
 
     function deduplicateLedger(txList) { 
@@ -902,7 +905,7 @@
       }
     }
 
-    let isSyncing = false; 
+let isSyncing = false; 
     window.pauseSync = false; 
 
     function apiGetJSONP(action) {
@@ -1021,7 +1024,7 @@
               else if(navText.includes('Reminders')) navigate('reminders', activeNav);
               else if(navText.includes('Doc Vault') || (navText.includes('Vault') && !navText.includes('Pass'))) navigate('vault', activeNav);
               else if(navText.includes('Pass Vault') || navText.includes('Pass')) navigate('passwords', activeNav);
-              else if(navText.includes('Sync') || navText.includes('Export') || navText.includes('Import')) navigate('statements', activeNav);
+              else if(navText.includes('Import') || navText.includes('Export')) navigate('statements', activeNav);
               else if(navText.includes('Settings')) navigate('settings', activeNav);
               else navigate('home');
             } else { navigate('home'); }
@@ -1260,7 +1263,6 @@
     function navigate(view, btn = null) {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       
-      // Strict exact matching logic for Active State
       if (btn) { 
           btn.classList.add('active'); 
       } else { 
@@ -1494,7 +1496,6 @@
       document.getElementById('records-table-container').innerHTML = renderTableHTML(filtered, '', true); 
     }
 
-    // --- LOAN MANAGEMENT ENGINE (WITH ADVANCED INTEREST & TOTAL OUTSTANDING) ---
     function renderLoans() {
       try {
         const loanData = (ledger || []).filter(t => t.type !== 'ACTIVE_LOAN' && ((t.category || '').includes('Loan') || (t.category || '').includes('Lent')));
@@ -1575,6 +1576,7 @@
                         <div style="font-size:16px; font-weight:bold; color:var(--warn);">₹${interestPaid.toLocaleString('en-IN')}</div>
                     </div>
                 </div>
+                
                 <div style="padding:10px 14px; background:rgba(0,0,0,0.2); border-radius:10px; border:1px solid var(--border); margin-bottom:12px; font-size:12px;">
                     <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                       <div><strong>Plan:</strong> ${emiDisplay}</div>
@@ -1583,6 +1585,7 @@
                     </div>
                     ${accruedInterestInfo}
                 </div>
+
                 <div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:var(--green);"></div></div>
                 <div style="font-size:11px; color:var(--muted); text-align:right; margin-top:6px;">Principal Repaid: <span style="color:var(--green); font-weight:bold;">${pct}%</span></div>
             </div>`;
@@ -1833,15 +1836,18 @@
       }); 
     }
 
+    // --- DYNAMIC MONTH FIX APPLIED TO BUDGET ---
     function renderBudget() {
       try {
-        let totalIncome = (ledger || []).filter(t => t.type === 'CREDIT' && !(t.category || '').includes('Loan') && !(t.category || '').includes('Proxy') && (t.date || '').startsWith('2026-09')).reduce((s, t) => s + (t.amount || 0), 0); 
+        const currentMonthPrefix = _getLocalMonthStr(new Date());
+        
+        let totalIncome = (ledger || []).filter(t => t.type === 'CREDIT' && !(t.category || '').includes('Loan') && !(t.category || '').includes('Proxy') && (t.date || '').startsWith(currentMonthPrefix)).reduce((s, t) => s + (t.amount || 0), 0); 
         if(totalIncome === 0) totalIncome = 68000; 
         
         let budgetHTML = Object.keys(budgets || {}).map(cat => {
           const b = budgets[cat]; 
           const target = b.type === 'Percentage' ? (totalIncome * (b.val || 0) / 100) : (b.val || 0); 
-          const spent = (ledger || []).filter(t => t.type === 'DEBIT' && t.category === cat && (t.date || '').startsWith('2026-09')).reduce((s,t) => s + (t.amount || 0), 0);
+          const spent = (ledger || []).filter(t => t.type === 'DEBIT' && t.category === cat && (t.date || '').startsWith(currentMonthPrefix)).reduce((s,t) => s + (t.amount || 0), 0);
           
           const pct = target > 0 ? Math.round((spent / target) * 100) : 0; 
           let color = 'var(--green)'; 
@@ -1900,6 +1906,130 @@
           apiPost('updateBudget', { category: cat, type: type, val: val }); 
           setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
         } catch(err) { window.pauseSync = false; } 
+      } 
+    }
+
+    // --- REMINDERS ENGINE ADDED ---
+    function renderReminders() {
+      try {
+        let pending = (reminders || []).filter(r => r && (String(r.status).toLowerCase() === 'pending' || !r.status)).sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0)); 
+        let done = (reminders || []).filter(r => r && String(r.status).toLowerCase() === 'done').sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+        
+        const rowHtml = (r) => { 
+          const displayDate = r.date ? String(r.date).replace('T', ' ') : 'N/A'; 
+          const rType = r.type || 'Reminder';
+          const isPending = !r.status || String(r.status).toLowerCase() === 'pending';
+          const amtStr = (r.amount !== undefined && r.amount !== null && r.amount !== '' && !isNaN(Number(r.amount)) && Number(r.amount) > 0) 
+            ? '₹' + Number(r.amount).toLocaleString('en-IN') 
+            : '-';
+          
+          return `<tr>
+            <td style="white-space:nowrap;">${displayDate}</td>
+            <td><span class="badge ${isPending ? 'warn' : 'credit'}">${isPending ? 'Pending' : 'Done'}</span></td>
+            <td><span class="badge ${rType.includes('Date') ? 'primary' : 'debit'}">${rType}</span></td>
+            <td style="font-weight:700;">${r.title || 'Untitled'}</td>
+            <td style="font-weight:600;">${amtStr}</td>
+            <td style="white-space:nowrap;">
+              ${isPending ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Done</button>` : ''} 
+              <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
+            </td>
+          </tr>`; 
+        };
+        
+        return `
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Scheduled Tracker</h3>
+              <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead><tr><th>Date & Time</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr></thead>
+                <tbody>${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center; padding:16px; color:var(--muted);">No pending reminders.</td></tr>'}</tbody>
+              </table>
+            </div>
+            <br>
+            <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
+            <div class="table-responsive">
+              <table>
+                <tbody style="opacity: 0.6;">${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center; padding:16px; color:var(--muted);">No completed history.</td></tr>'}</tbody>
+              </table>
+            </div>
+          </div>`;
+      } catch (err) {
+        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
+      }
+    }
+
+    function openRemModal() { 
+      document.getElementById('rem-id').value = ''; 
+      document.getElementById('rem-title').value = ''; 
+      document.getElementById('rem-date').value = getLocalISOTime(); 
+      document.getElementById('rem-amount').value = ''; 
+      document.getElementById('rem-modal').style.display = 'grid'; 
+    }
+    
+    async function saveReminder(e) { 
+      e.preventDefault(); 
+      const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
+      const isEdit = document.getElementById('rem-id').value !== ''; 
+      
+      const record = { 
+        id: id, 
+        date: document.getElementById('rem-date').value, 
+        title: document.getElementById('rem-title').value, 
+        type: document.getElementById('rem-type').value, 
+        amount: parseFloat(document.getElementById('rem-amount').value) || null, 
+        status: 'Pending' 
+      }; 
+      
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) reminders[idx] = record; else reminders.push(record); 
+      
+      reminders = deduplicateReminders(reminders); 
+      localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+      closeModal('rem-modal'); 
+      navigate('reminders'); 
+      
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+        try { 
+          window.pauseSync = true;
+          await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
+          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+        } catch(err) { window.pauseSync = false; } 
+      } 
+    }
+    
+    async function markRemDone(id) { 
+      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
+      if (idx >= 0) { 
+        reminders[idx].status = 'Done'; 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            window.pauseSync = true;
+            await apiPost('editReminder', reminders[idx]); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+          } catch(err) { window.pauseSync = false; } 
+        } 
+      } 
+    }
+    
+    async function deleteRem(id) { 
+      if(confirm('Delete this reminder?')) { 
+        reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
+        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
+        navigate('reminders'); 
+        
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
+          try { 
+            window.pauseSync = true;
+            await apiPost('deleteReminder', { id }); 
+            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
+          } catch(err) { window.pauseSync = false; } 
+        } 
       } 
     }
 
@@ -2126,133 +2256,6 @@
       }
     }
 
-    // REMINDERS ENGINE
-    function renderReminders() {
-      try {
-        let pending = (reminders || []).filter(r => r && (String(r.status).toLowerCase() === 'pending' || !r.status)).sort((a,b) => new Date(a.date || 0) - new Date(b.date || 0)); 
-        let done = (reminders || []).filter(r => r && String(r.status).toLowerCase() === 'done').sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
-        
-        const rowHtml = (r) => { 
-          const displayDate = r.date ? String(r.date).replace('T', ' ') : 'N/A'; 
-          const rType = r.type || 'Reminder';
-          const isPending = !r.status || String(r.status).toLowerCase() === 'pending';
-          const amtStr = (r.amount !== undefined && r.amount !== null && r.amount !== '' && !isNaN(Number(r.amount)) && Number(r.amount) > 0) 
-            ? '₹' + Number(r.amount).toLocaleString('en-IN') 
-            : '-';
-          
-          return `<tr>
-            <td style="white-space:nowrap;">${displayDate}</td>
-            <td><span class="badge ${isPending ? 'warn' : 'credit'}">${isPending ? 'Pending' : 'Done'}</span></td>
-            <td><span class="badge ${rType.includes('Date') ? 'primary' : 'debit'}">${rType}</span></td>
-            <td style="font-weight:700;">${r.title || 'Untitled'}</td>
-            <td style="font-weight:600;">${amtStr}</td>
-            <td style="white-space:nowrap;">
-              ${isPending ? `<button class="btn" style="padding:4px 8px; font-size:11px; color:var(--green);" onclick="markRemDone('${r.id}')">✓ Done</button>` : ''} 
-              <button class="btn" style="padding:4px 8px; font-size:11px; color:var(--red);" onclick="deleteRem('${r.id}')">🗑</button>
-            </td>
-          </tr>`; 
-        };
-        
-        return `
-          <div class="panel">
-            <div class="panel-head">
-              <h3>Scheduled Tracker</h3>
-              <button class="btn primary" onclick="openRemModal()">+ Add Reminder / Scheduled Bill</button>
-            </div>
-            <div class="table-responsive">
-              <table>
-                <thead><tr><th>Date & Time</th><th>Status</th><th>Category</th><th>Title</th><th>Amount</th><th>Actions</th></tr></thead>
-                <tbody>${pending.length > 0 ? pending.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center; padding:16px; color:var(--muted);">No pending reminders.</td></tr>'}</tbody>
-              </table>
-            </div>
-            <br>
-            <h4 style="font-size:13px; color:var(--muted); margin-bottom:10px;">Completed / Past</h4>
-            <div class="table-responsive">
-              <table>
-                <tbody style="opacity: 0.6;">${done.length > 0 ? done.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center; padding:16px; color:var(--muted);">No completed history.</td></tr>'}</tbody>
-              </table>
-            </div>
-          </div>`;
-      } catch (err) {
-        return `<div class="panel" style="border-color:var(--red);"><h3 style="color:var(--red);">Rendering Error</h3><p style="font-size:13px; color:var(--muted);">${err.message}</p></div>`;
-      }
-    }
-
-    function openRemModal() { 
-      document.getElementById('rem-id').value = ''; 
-      document.getElementById('rem-title').value = ''; 
-      document.getElementById('rem-date').value = getLocalISOTime(); 
-      document.getElementById('rem-amount').value = ''; 
-      document.getElementById('rem-modal').style.display = 'grid'; 
-    }
-    
-    async function saveReminder(e) { 
-      e.preventDefault(); 
-      const id = document.getElementById('rem-id').value || 'r_' + Date.now(); 
-      const isEdit = document.getElementById('rem-id').value !== ''; 
-      
-      const record = { 
-        id: id, 
-        date: document.getElementById('rem-date').value, 
-        title: document.getElementById('rem-title').value, 
-        type: document.getElementById('rem-type').value, 
-        amount: parseFloat(document.getElementById('rem-amount').value) || null, 
-        status: 'Pending' 
-      }; 
-      
-      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
-      if (idx >= 0) reminders[idx] = record; else reminders.push(record); 
-      
-      reminders = deduplicateReminders(reminders); 
-      localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-      closeModal('rem-modal'); 
-      navigate('reminders'); 
-      
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-        try { 
-          window.pauseSync = true;
-          await apiPost(isEdit ? 'editReminder' : 'addReminder', record); 
-          setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
-        } catch(err) { window.pauseSync = false; } 
-      } 
-    }
-    
-    async function markRemDone(id) { 
-      const idx = reminders.findIndex(x => String(x.id).trim() === String(id).trim()); 
-      if (idx >= 0) { 
-        reminders[idx].status = 'Done'; 
-        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-        navigate('reminders'); 
-        
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { 
-            window.pauseSync = true;
-            await apiPost('editReminder', reminders[idx]); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
-          } catch(err) { window.pauseSync = false; } 
-        } 
-      } 
-    }
-    
-    async function deleteRem(id) { 
-      if(confirm('Delete this reminder?')) { 
-        reminders = reminders.filter(x => String(x.id).trim() !== String(id).trim()); 
-        localStorage.setItem('gf_reminders', JSON.stringify(reminders)); 
-        navigate('reminders'); 
-        
-        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.startsWith("http")) { 
-          try { 
-            window.pauseSync = true;
-            await apiPost('deleteReminder', { id }); 
-            setTimeout(() => { window.pauseSync = false; backgroundSync(false); }, 8000);
-          } catch(err) { window.pauseSync = false; } 
-        } 
-      } 
-    }
-
-    // --------------------------------------------------------------------------
-    // VAULT ENGINE (WITH CATEGORY FOLDERS & NATIVE VIEWER)
-    // --------------------------------------------------------------------------
     function openDocCategory(cat) {
         window.currentDocCategory = cat;
         document.getElementById('view-container').innerHTML = renderVaultCategory(cat);
@@ -2505,7 +2508,7 @@
           <div class="panel-head"><h3>Device Sync (Backup & Restore)</h3></div>
           <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Move your data safely to another device. Export a complete database backup here, then import it on your phone or laptop.</p>
           <div class="grid-2">
-            <div><button class="btn" style="width:100%; height:41px;" onclick="exportFullBackup()">⬇️ Download Full Backup</button></div>
+            <div><button class="btn" style="width:100%; height:41px;" onclick="exportFullBackup()">⬇️️ Download Full Backup</button></div>
             <div>
               <input type="file" id="import-backup-file" accept=".json" style="display:none" onchange="importFullBackup(event)">
               <button class="btn primary" style="width:100%; height:41px;" onclick="document.getElementById('import-backup-file').click()">⬆️ Restore / Import Backup</button>
@@ -2816,6 +2819,7 @@
       localStorage.setItem('gf_theme', val); 
     }
 
+    // --- STANDARD WEB VOICE BROWSER SUPPORT ---
     async function startVoiceAssistant() { 
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SpeechRecognition) {
             try {
@@ -2843,7 +2847,7 @@
     
         const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; 
         if (!WebSpeech) { 
-            alert("Voice recognition is restricted. Install the Native App."); 
+            alert("Voice recognition is restricted in this browser."); 
             return; 
         } 
         try { 
@@ -2879,13 +2883,17 @@
         const lower = text.toLowerCase(); 
         let type = 'DEBIT'; 
         
-        if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) {
+        // Advanced NLP: Context Detection
+        if (lower.includes('loan repay') || lower.includes('repay') || lower.includes('repayment')) {
+            type = 'CREDIT'; 
+        } else if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) {
             type = 'CREDIT'; 
         }
         
+        // Advanced NLP: Number Extraction
         let amount = ''; 
-        const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i); 
-        if (amtMatch) amount = parseFloat(amtMatch[1]); 
+        const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?([\d,]+(?:\.\d+)?)/i); 
+        if (amtMatch) amount = parseFloat(amtMatch[1].replace(/,/g, '')); 
         
         let method = 'UPI'; 
         if (lower.includes('credit card')) method = 'Credit Card'; 
@@ -2893,20 +2901,53 @@
         else if (lower.includes('cash')) method = 'Cash'; 
         
         let category = type === 'DEBIT' ? expCategories[0] : incCategories[0]; 
-        const voiceCatMap = { 'grocery': 'Groceries', 'supermarket': 'Groceries', 'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 'electricity': 'Electricity (EB)', 'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'dining': 'Dining Out', 'restaurant': 'Dining Out', 'snack': 'Snacks', 'salary': 'Salary Received', 'shopping': 'Shopping', 'travel': 'Travel' }; 
+        
+        // Advanced NLP: Keyword Dictionary
+        const voiceCatMap = { 
+            'grocery': 'Groceries', 'supermarket': 'Groceries', 'egg': 'Groceries', 'milk': 'Groceries', 'vegetable': 'Groceries', 'meat': 'Groceries',
+            'swiggy': 'Dining Out', 'zomato': 'Dining Out', 'lunch': 'Dining Out', 'dinner': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out',
+            'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 
+            'eb bill': 'Electricity (EB)', 'electricity': 'Electricity (EB)', 'power': 'Electricity (EB)',
+            'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'diesel': 'Fuel / Petrol', 'bunk': 'Fuel / Petrol',
+            'snack': 'Snacks', 'tea': 'Snacks', 'coffee': 'Snacks', 'bakery': 'Snacks',
+            'salary': 'Salary Received', 'pay': 'Salary Received',
+            'shopping': 'Shopping', 'dress': 'Shopping', 'clothes': 'Shopping', 'amazon': 'Shopping', 'flipkart': 'Shopping',
+            'travel': 'Travel', 'ticket': 'Travel', 'bus': 'Travel', 'train': 'Travel', 'flight': 'Travel', 'cab': 'Travel', 'auto': 'Travel',
+            'medical': 'Other Expense', 'hospital': 'Other Expense', 'medicine': 'Other Expense', 'pharmacy': 'Other Expense',
+            'repay': 'Received Loan Repayment', 'loan repay': 'Received Loan Repayment'
+        }; 
         
         for (const [key, val] of Object.entries(voiceCatMap)) { 
             if (lower.includes(key)) { category = val; break; } 
         } 
         
+        // Advanced NLP: Filler Word Filter
+        let cleanDesc = lower
+            .replace(/add income/gi, '')
+            .replace(/add expense/gi, '')
+            .replace(/rupees/gi, '')
+            .replace(/rs/gi, '')
+            .replace(/for/gi, '')
+            .replace(/spent/gi, '')
+            .trim();
+            
+        if (amtMatch && amtMatch[1]) {
+            cleanDesc = cleanDesc.replace(new RegExp(amtMatch[1], 'gi'), '').trim();
+        }
+            
+        // Fallback to raw text if filter wiped it out entirely
+        if (!cleanDesc || cleanDesc === '') cleanDesc = text;
+        else cleanDesc = cleanDesc.charAt(0).toUpperCase() + cleanDesc.slice(1);
+        
         openTxModal(type); 
         document.getElementById('tx-amount').value = amount || ''; 
         document.getElementById('tx-category').value = category; 
         document.getElementById('tx-method').value = method; 
-        document.getElementById('tx-desc').value = text; 
+        document.getElementById('tx-desc').value = cleanDesc; 
         document.getElementById('tx-notes').value = "Added via Voice Assistant"; 
     }
 
+    // Initialize Application
     window.addEventListener('DOMContentLoaded', bootApp);
   </script>
 </body>
