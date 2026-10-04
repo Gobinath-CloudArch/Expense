@@ -1266,11 +1266,10 @@
     let sortCol = 'date'; 
     let sortAsc = false; 
 
-    // Dynamic Month Tracking (Calculates current and previous month mathematically)
-    const _now = new Date();
-    const _prevMonth = new Date(_now.getFullYear(), _now.getMonth() - 1, 1);
-    let selectedMonthA = _prevMonth.getFullYear() + '-' + String(_prevMonth.getMonth() + 1).padStart(2, '0'); 
-    let selectedMonthB = _now.getFullYear() + '-' + String(_now.getMonth() + 1).padStart(2, '0');
+    // Dynamic Month Tracking (Calculates current and previous month mathematically in Local Time)
+    function _getLocalMonthStr(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+    let selectedMonthA = _getLocalMonthStr(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)); 
+    let selectedMonthB = _getLocalMonthStr(new Date());
     
     window.currentDocCategory = null;
 
@@ -3213,7 +3212,7 @@
             type = 'CREDIT'; 
         }
         
-        // Advanced NLP: Number Extraction
+        // Advanced NLP: Number Extraction (Handles commas and surrounding text)
         let amount = ''; 
         const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?([\d,]+(?:\.\d+)?)/i); 
         if (amtMatch) amount = parseFloat(amtMatch[1].replace(/,/g, '')); 
