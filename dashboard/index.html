@@ -1265,8 +1265,12 @@
 
     let sortCol = 'date'; 
     let sortAsc = false; 
-    let selectedMonthA = '2026-08'; 
-    let selectedMonthB = '2026-09';
+
+    // Dynamic Month Tracking (Calculates current and previous month mathematically)
+    const _now = new Date();
+    const _prevMonth = new Date(_now.getFullYear(), _now.getMonth() - 1, 1);
+    let selectedMonthA = _prevMonth.getFullYear() + '-' + String(_prevMonth.getMonth() + 1).padStart(2, '0'); 
+    let selectedMonthB = _now.getFullYear() + '-' + String(_now.getMonth() + 1).padStart(2, '0');
     
     window.currentDocCategory = null; 
 
@@ -2310,16 +2314,18 @@
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } 
       }); 
     }
-
-    function renderBudget() {
+    
+      function renderBudget() {
       try {
-        let totalIncome = (ledger || []).filter(t => t.type === 'CREDIT' && !(t.category || '').includes('Loan') && !(t.category || '').includes('Proxy') && (t.date || '').startsWith('2026-09')).reduce((s, t) => s + (t.amount || 0), 0); 
+        const currentMonthPrefix = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
+        
+        let totalIncome = (ledger || []).filter(t => t.type === 'CREDIT' && !(t.category || '').includes('Loan') && !(t.category || '').includes('Proxy') && (t.date || '').startsWith(currentMonthPrefix)).reduce((s, t) => s + (t.amount || 0), 0); 
         if(totalIncome === 0) totalIncome = 68000; 
         
         let budgetHTML = Object.keys(budgets || {}).map(cat => {
           const b = budgets[cat]; 
           const target = b.type === 'Percentage' ? (totalIncome * (b.val || 0) / 100) : (b.val || 0); 
-          const spent = (ledger || []).filter(t => t.type === 'DEBIT' && t.category === cat && (t.date || '').startsWith('2026-09')).reduce((s,t) => s + (t.amount || 0), 0);
+          const spent = (ledger || []).filter(t => t.type === 'DEBIT' && t.category === cat && (t.date || '').startsWith(currentMonthPrefix)).reduce((s,t) => s + (t.amount || 0), 0);
           
           const pct = target > 0 ? Math.round((spent / target) * 100) : 0; 
           let color = 'var(--green)'; 
@@ -3200,9 +3206,66 @@
         const lower = text.toLowerCase(); 
         let type = 'DEBIT'; 
         
-        if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) {
+        // Advanced NLP: Context Detection
+        if (lower.includes('loan repay') || lower.includes('repay') || lower.includes('repayment')) {
+            type = 'CREDIT'; 
+        } else if (lower.includes('credit') || lower.includes('income') || lower.includes('salary') || lower.includes('received')) {
             type = 'CREDIT'; 
         }
+        
+        // Advanced NLP: Number Extraction (Handles commas and surrounding text)
+        let amount = ''; 
+        const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?([\d,]+(?:\.\d+)?)/i); 
+        if (amtMatch) amount = parseFloat(amtMatch[1].replace(/,/g, '')); 
+        
+        let method = 'UPI'; 
+        if (lower.includes('credit card')) method = 'Credit Card'; 
+        else if (lower.includes('debit card')) method = 'Debit Card'; 
+        else if (lower.includes('cash')) method = 'Cash'; 
+        
+        let category = type === 'DEBIT' ? expCategories[0] : incCategories[0]; 
+        
+        // Advanced NLP: Keyword Dictionary
+        const voiceCatMap = { 
+            'grocery': 'Groceries', 'supermarket': 'Groceries', 'egg': 'Groceries', 'milk': 'Groceries', 'vegetable': 'Groceries', 'meat': 'Groceries',
+            'swiggy': 'Dining Out', 'zomato': 'Dining Out', 'lunch': 'Dining Out', 'dinner': 'Dining Out', 'restaurant': 'Dining Out', 'food': 'Dining Out',
+            'rent': type === 'CREDIT' ? 'Rent Received' : 'Rent Paid', 
+            'eb bill': 'Electricity (EB)', 'electricity': 'Electricity (EB)', 'power': 'Electricity (EB)',
+            'petrol': 'Fuel / Petrol', 'fuel': 'Fuel / Petrol', 'diesel': 'Fuel / Petrol', 'bunk': 'Fuel / Petrol',
+            'snack': 'Snacks', 'tea': 'Snacks', 'coffee': 'Snacks', 'bakery': 'Snacks',
+            'salary': 'Salary Received', 'pay': 'Salary Received',
+            'shopping': 'Shopping', 'dress': 'Shopping', 'clothes': 'Shopping', 'amazon': 'Shopping', 'flipkart': 'Shopping',
+            'travel': 'Travel', 'ticket': 'Travel', 'bus': 'Travel', 'train': 'Travel', 'flight': 'Travel', 'cab': 'Travel', 'auto': 'Travel',
+            'medical': 'Other Expense', 'hospital': 'Other Expense', 'medicine': 'Other Expense', 'pharmacy': 'Other Expense',
+            'repay': 'Received Loan Repayment', 'loan repay': 'Received Loan Repayment'
+        }; 
+        
+        for (const [key, val] of Object.entries(voiceCatMap)) { 
+            if (lower.includes(key)) { category = val; break; } 
+        } 
+        
+        // Advanced NLP: Filler Word Filter
+        let cleanDesc = lower
+            .replace(/add income/gi, '')
+            .replace(/add expense/gi, '')
+            .replace(/rupees/gi, '')
+            .replace(/rs/gi, '')
+            .replace(new RegExp(amtMatch ? amtMatch[1] : '', 'gi'), '') // Remove the amount from description
+            .replace(/for/gi, '')
+            .replace(/spent/gi, '')
+            .trim();
+            
+        // Fallback to raw text if filter wiped it out entirely, otherwise format it
+        if (!cleanDesc || cleanDesc === '') cleanDesc = text;
+        else cleanDesc = cleanDesc.charAt(0).toUpperCase() + cleanDesc.slice(1);
+        
+        openTxModal(type); 
+        document.getElementById('tx-amount').value = amount || ''; 
+        document.getElementById('tx-category').value = category; 
+        document.getElementById('tx-method').value = method; 
+        document.getElementById('tx-desc').value = cleanDesc; 
+        document.getElementById('tx-notes').value = "Added via Voice Assistant"; 
+    }
         
         let amount = ''; 
         const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?(\d+(?:\.\d+)?)/i); 
