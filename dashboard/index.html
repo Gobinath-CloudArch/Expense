@@ -1272,7 +1272,7 @@
     let selectedMonthA = _prevMonth.getFullYear() + '-' + String(_prevMonth.getMonth() + 1).padStart(2, '0'); 
     let selectedMonthB = _now.getFullYear() + '-' + String(_now.getMonth() + 1).padStart(2, '0');
     
-    window.currentDocCategory = null; 
+    window.currentDocCategory = null;
 
     // --- SANITIZATION ---
     function deduplicateLedger(txList) { 
@@ -2315,7 +2315,7 @@
       }); 
     }
     
-      function renderBudget() {
+    function renderBudget() {
       try {
         const currentMonthPrefix = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
         
@@ -3213,7 +3213,7 @@
             type = 'CREDIT'; 
         }
         
-        // Advanced NLP: Number Extraction (Handles commas and surrounding text)
+        // Advanced NLP: Number Extraction
         let amount = ''; 
         const amtMatch = lower.match(/(?:(?:rs\.?|rupees|inr|₹)\s*)?([\d,]+(?:\.\d+)?)/i); 
         if (amtMatch) amount = parseFloat(amtMatch[1].replace(/,/g, '')); 
@@ -3250,10 +3250,13 @@
             .replace(/add expense/gi, '')
             .replace(/rupees/gi, '')
             .replace(/rs/gi, '')
-            .replace(new RegExp(amtMatch ? amtMatch[1] : '', 'gi'), '') // Remove the amount from description
             .replace(/for/gi, '')
             .replace(/spent/gi, '')
             .trim();
+            
+        if (amtMatch && amtMatch[1]) {
+            cleanDesc = cleanDesc.replace(new RegExp(amtMatch[1], 'gi'), '').trim();
+        }
             
         // Fallback to raw text if filter wiped it out entirely, otherwise format it
         if (!cleanDesc || cleanDesc === '') cleanDesc = text;
