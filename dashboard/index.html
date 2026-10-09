@@ -1358,6 +1358,157 @@
       }
     }
 
+    // ==============================================================
+// ENTERPRISE NOTIFICATION & SCHEDULER ENGINE
+// ==============================================================
+const NotificationEngine = {
+  initialized: false,
+
+  init() {
+    if (this.initialized) return;
+    this.initialized = true;
+
+    // 1. Request system notification permission on user interaction
+    if ('Notification' in window && Notification.permission === 'default') {
+      document.addEventListener('click', () => {
+        Notification.requestPermission();
+      }, { once: true });
+    }
+
+    // 2. Start automated client-side scheduler loop (checks every 60 seconds)
+    this.startScheduler();
+  },
+
+  // Push notification with dual support: System Push + Floating In-App Banner
+  notify(title, body, icon = '🔔', tag = null) {
+    // A. Native System Push Notification (Mobile/Desktop OS)
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        new Notification(title, {
+          body: body,
+          icon: 'logo.png',
+          badge: 'logo.png',
+          tag: tag || 'notify_' + Date.now(),
+          vibrate: [200, 100, 200]
+        });
+      } catch (e) {
+        console.warn('System push failed, falling back to in-app banner', e);
+      }
+    }
+
+    // B. Capacitor / Native Android Wrapper Support
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+      try {
+        window.Capacitor.Plugins.LocalNotifications.schedule({
+          notifications: [{
+            title: title,
+            body: body,
+            id: Math.floor(Math.random() * 100000),
+            schedule: { at: new Date(Date.now() + 100) }
+          }]
+        });
+      } catch (e) {}
+    }
+
+    // C. Non-blocking In-App Heads-Up Banner
+    this.showInAppBanner(title, body, icon);
+  },
+
+  showInAppBanner(title, body, icon) {
+    let container = document.getElementById('push-toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'push-toast-container';
+      container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      `;
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      pointer-events: auto;
+      background: var(--surface, #1e293b);
+      color: var(--text, #ffffff);
+      border: 1px solid var(--border, #334155);
+      border-left: 5px solid #2563eb;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+      max-width: 380px;
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    `;
+
+    toast.innerHTML = `
+      <div style="font-size: 24px; line-height: 1;">${icon}</div>
+      <div style="flex: 1;">
+        <div style="font-weight: 600; font-size: 14px; color: var(--primary, #3b82f6);">${title}</div>
+        <div style="font-size: 12px; color: var(--muted, #94a3b8); margin-top: 2px;">${body}</div>
+      </div>
+    `;
+
+    container.appendChild(toast);
+    requestAnimationFrame(() => {
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+    });
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-15px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 4500);
+  },
+
+  // Client Scheduler: Checks pending reminders due today or overdue
+  startScheduler() {
+    const check = () => {
+      const stored = localStorage.getItem('gf_reminders');
+      if (!stored) return;
+      try {
+        const remList = JSON.parse(stored) || [];
+        const todayStr = new Date().toISOString().split('T')[0];
+        const notifiedKey = 'gf_notified_reminders_' + todayStr;
+        const alreadyNotified = JSON.parse(localStorage.getItem(notifiedKey) || '[]');
+
+        remList.forEach(r => {
+          if (r.status !== 'Done' && r.date && r.date <= todayStr && !alreadyNotified.includes(r.id)) {
+            const amtText = r.amount ? ` (₹${Number(r.amount).toLocaleString('en-IN')})` : '';
+            const isOverdue = r.date < todayStr;
+            const prefix = isOverdue ? '⚠️ Overdue' : '⏰ Reminder Due Today';
+
+            this.notify(`${prefix}: ${r.title}`, `${r.type}${amtText} is due on ${r.date}.`, '⏰', 'rem_' + r.id);
+            alreadyNotified.push(r.id);
+          }
+        });
+        localStorage.setItem(notifiedKey, JSON.stringify(alreadyNotified));
+      } catch (e) {
+        console.error('Scheduler check error', e);
+      }
+    };
+
+    // Run immediately and every 60 seconds
+    check();
+    setInterval(check, 60000);
+  }
+};
+
+// Initialize Notification Engine
+NotificationEngine.init();
+    
     // --------------------------------------------------------------------------
     // CLOUD SYNC ENGINE
     // --------------------------------------------------------------------------
