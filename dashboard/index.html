@@ -838,7 +838,13 @@
       </form>
     </div>
   </div>
-
+  // After saving record to ledger:
+const icon = record.type === 'CREDIT' ? '💵' : '💳';
+NotificationEngine.notify(
+  `Transaction ${isEdit ? 'Updated' : 'Added'}`,
+  `${record.category}: ₹${record.amount.toLocaleString('en-IN')} (${record.desc || 'No description'})`,
+  icon
+);
   <div id="budget-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -868,6 +874,13 @@
     </div>
   </div>
 
+  // After saving budget:
+NotificationEngine.notify(
+  `Budget Updated`,
+  `${cat}: ${val} (${type})`,
+  '📊'
+);
+  
   <div id="rem-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -903,7 +916,14 @@
       </form>
     </div>
   </div>
-
+  
+// After saving reminder:
+NotificationEngine.notify(
+  `Reminder ${isEdit ? 'Updated' : 'Scheduled'}`,
+  `${record.title} on ${record.date}${record.amount ? ' (₹' + record.amount.toLocaleString('en-IN') + ')' : ''}`,
+  '⏰'
+);
+  
   <div id="fuel-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-head">
@@ -967,6 +987,12 @@
             </div>
         </div>
 
+ // After saving fuel record:
+ NotificationEngine.notify(
+  `Fuel Record Saved`,
+  `${notesObj.vehicle}: ${notesObj.liters} L (₹${amount.toLocaleString('en-IN')}) at ${notesObj.odo} km`,
+  '⛽'
+);
         <div class="grid-2">
           <div class="form-group">
             <label>Total Amount Spent (₹)</label>
@@ -3415,7 +3441,12 @@ function editTx(id) {
       document.documentElement.setAttribute('data-theme', val); 
       localStorage.setItem('gf_theme', val); 
     }
-
+  NotificationEngine.notify(
+  `Family Member Added`,
+  `${name} has been added to the family finance account.`,
+  '👤'
+);
+    
     // --- STANDARD WEB VOICE BROWSER SUPPORT ---
     async function startVoiceAssistant() { 
         const WebSpeech = window.SpeechRecognition || window.webkitSpeechRecognition; 
